@@ -37,7 +37,7 @@
    belakangan, setelah penyambungan terbukti jalan.
 ═══════════════════════════════════════════════════════════════════════════ */
 
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ4Yez1bc5K-COQCgCnqZWJGwHm6vx2n9tmyd25kBO9PcjqG6y1orDVxbRh64vysFv/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7SA2XRFwzda99-MaRgVWkzDqun86BmwKxlYZvGz5H9YWTVQkMjsKxgFA0zVXFLRck/exec";
 var URL_BATCH = new URLSearchParams(window.location.search).get("batch") || "General";
 var WA_LINK = "https://wa.me/6282126373601";
 
