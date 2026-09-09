@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Lakon™ — Dasbor Analis</title>
+<link rel="icon" type="image/png" href="/images/lakon-favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  LAKON™ — DASBOR ANALIS  v3
+  BERKAS UTUH SIAP TIMPA. Menggantikan analyst.html lama.
+
+  TIGA MASALAH YANG DIPERBAIKI
+
+  1. KATA SANDI TERTANAM DI BERKAS PUBLIK
+     Versi lama menyimpan  const ADMIN_PASSWORD = "…"  di dalam berkas ini,
+     dan memakainya langsung sebagai token API. Siapa pun yang membuka
+     view-source bisa membacanya, lalu memanggil endpoint dan mengunduh
+     seluruh data peserta.
+     Sekarang: kata sandi dikirim sekali ke server, server membandingkan
+     hash-nya, lalu mengembalikan token sesi berumur 2 jam yang disimpan
+     di memori halaman saja. Token hilang saat tab ditutup, dan itu memang
+     yang diinginkan untuk dasbor berisi data pribadi.
+
+  2. MEMBACA TAB SHEET LAMA
+     Versi lama membaca kolom `kelompok_best_fit`, `participant_company`,
+     `batch_id`, dan seterusnya. Tidak ada satu pun yang masih ada di tab
+     `responses_index_v3`. Setelah backend v3 dipasang, dasbor lama akan
+     tampil kosong tanpa pesan galat apa pun.
+
+  3. MENDUPLIKASI 21 KB ISI NASKAH
+     Versi lama menyalin OVERVIEW, KEKUATAN, LINGKUNGAN, dan RISIKO untuk
+     24 Paraga ke dalam berkas ini. Begitu naskahnya disunting di berkas
+     isi, dasbor tetap menampilkan teks lama dan tidak ada yang menyadari.
+     Sekarang: dasbor memuat berkas isi yang sama dengan situs dan merender
+     lewat LakonReport. Satu sumber, tidak ada salinan.
+
+  YANG BARU DITAMPILKAN
+     Indeks Diferensiasi · Konsistensi heksagon · Acquiescence ·
+     penanda kualitas respons · penanda dua kandidat Watak ·
+     ringkasan sebaran Paraga dari getStats()
+
+  Sebaran Paraga wajib dipantau tiap 50 responden. Pada 43 responden versi
+  lama, hanya 16 dari 24 Paraga pernah muncul dan lima teratas menyerap 58%
+  peserta. Kalau setelah perbaikan tetap timpang, ada item yang bermasalah.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
+
+<style>
+  body { background: var(--linen, #F5F1EA); }
+  .an-wrap { max-width: 1180px; margin: 0 auto; padding: 22px 18px 60px; }
+
+  .an-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 22px; }
+  .an-logo { font-size: 19px; font-weight: 800; color: var(--ink, #26221E); }
+  .an-logo em { font-style: normal; font-size: 11px; vertical-align: super; opacity: .5; }
+
+  /* ── Login ─────────────────────────────────────────────── */
+  .an-login { max-width: 380px; margin: 12vh auto; text-align: center; }
+  .an-login h1 { font-size: 21px; margin: 0 0 6px; }
+  .an-login p { font-size: 13.5px; color: var(--mid, #6B6259); margin: 0 0 22px; }
+  .an-field {
+    width: 100%; padding: 13px 15px; font-size: 15px; font-family: inherit;
+    border: 1.5px solid var(--border, #E3DCD2); border-radius: 12px;
+    background: #fff; margin-bottom: 10px;
+  }
+  .an-field:focus { outline: none; border-color: var(--amber, #C17A3C); }
+  .an-btn {
+    width: 100%; padding: 13px; font-size: 15px; font-weight: 600; font-family: inherit;
+    background: var(--amber, #C17A3C); color: #fff; border: none; border-radius: 12px; cursor: pointer;
+  }
+  .an-btn:disabled { opacity: .55; cursor: default; }
+  .an-err { font-size: 13px; color: #A23B2E; margin-top: 10px; min-height: 18px; }
+
+  /* ── Ringkasan ─────────────────────────────────────────── */
+  .an-stats { display: grid; grid-template-columns: repeat(auto-fit,minmax(150px,1fr)); gap: 10px; margin-bottom: 20px; }
+  .an-stat { background: #fff; border: 1px solid var(--border,#E3DCD2); border-radius: 14px; padding: 14px 16px; }
+  .an-stat-n { font-size: 24px; font-weight: 700; color: var(--ink,#26221E); line-height: 1.1; }
+  .an-stat-l { font-size: 11.5px; color: var(--mid,#6B6259); margin-top: 4px; }
+  .an-stat.warn .an-stat-n { color: #A23B2E; }
+
+  /* ── Filter ───────────────────────────────────────────── */
+  .an-filter { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .an-filter input, .an-filter select {
+    padding: 9px 12px; font-size: 13.5px; font-family: inherit;
+    border: 1.5px solid var(--border,#E3DCD2); border-radius: 10px; background: #fff;
+  }
+  .an-filter input { flex: 1; min-width: 170px; }
+
+  /* ── Tabel ────────────────────────────────────────────── */
+  .an-tabel-wrap { background: #fff; border: 1px solid var(--border,#E3DCD2); border-radius: 14px; overflow: auto; }
+  table.an-tabel { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .an-tabel th {
+    text-align: left; padding: 11px 12px; font-size: 10.5px; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; color: var(--light,#9A9086);
+    border-bottom: 1px solid var(--border,#E3DCD2); white-space: nowrap;
+  }
+  .an-tabel td { padding: 11px 12px; border-bottom: 1px solid var(--linen,#F5F1EA); vertical-align: top; }
+  .an-tabel tr:last-child td { border-bottom: none; }
+  .an-tabel tbody tr:hover { background: var(--linen,#F5F1EA); cursor: pointer; }
+  .an-nama { font-weight: 600; color: var(--ink,#26221E); }
+  .an-sub { font-size: 11.5px; color: var(--light,#9A9086); }
+  .an-paraga { font-weight: 600; }
+  .an-alt { font-size: 11px; color: var(--karsa,#7B5A9E); }
+
+  .an-flag {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 20px; margin-right: 4px; white-space: nowrap;
+  }
+  .an-flag-ok   { background: #E8F0EA; color: #3F6B52; }
+  .an-flag-bad  { background: #F7E6E3; color: #A23B2E; }
+  .an-flag-dual { background: #EFE7F5; color: #6A4A8C; }
+
+  .an-kosong { padding: 40px; text-align: center; color: var(--mid,#6B6259); font-size: 14px; }
+
+  /* ── Modal ────────────────────────────────────────────── */
+  .an-modal {
+    position: fixed; inset: 0; background: rgba(30,26,22,.55);
+    display: none; align-items: flex-start; justify-content: center;
+    padding: 30px 16px; overflow-y: auto; z-index: 200;
+  }
+  .an-modal.on { display: flex; }
+  .an-modal-box {
+    background: #fff; border-radius: 18px; max-width: 760px; width: 100%;
+    padding: 26px 24px 34px; position: relative;
+  }
+  .an-modal-x {
+    position: absolute; top: 16px; right: 18px; border: none; background: none;
+    font-size: 24px; color: var(--light,#9A9086); cursor: pointer; line-height: 1;
+  }
+  .an-modal-h { font-size: 22px; font-weight: 700; margin: 0 0 2px; }
+  .an-modal-sub { font-size: 14px; color: var(--mid,#6B6259); margin: 0 0 18px; }
+
+  .an-meta { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 10px; margin-bottom: 22px; }
+  .an-meta div { background: var(--linen,#F5F1EA); border-radius: 10px; padding: 10px 12px; }
+  .an-meta dt { font-size: 10.5px; color: var(--light,#9A9086); text-transform: uppercase; letter-spacing: .04em; }
+  .an-meta dd { margin: 3px 0 0; font-size: 14px; font-weight: 600; color: var(--ink,#26221E); }
+
+  @media (max-width: 640px) {
+    .an-tabel th:nth-child(n+5), .an-tabel td:nth-child(n+5) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════ LOGIN ══════════════════ -->
+<div class="an-wrap" id="an-login-screen">
+  <div class="an-login">
+    <div class="an-logo" style="margin-bottom:26px">Lakon<em>™</em> · Dasbor Analis</div>
+    <h1>Masuk</h1>
+    <p>Halaman ini berisi data pribadi peserta. Jangan dibuka di perangkat bersama.</p>
+    <input class="an-field" type="password" id="an-pw" placeholder="Kata sandi"
+           onkeydown="if(event.key==='Enter')masuk()" autocomplete="current-password">
+    <button class="an-btn" id="an-masuk" onclick="masuk()">Masuk</button>
+    <div class="an-err" id="an-err"></div>
+  </div>
+</div>
+
+<!-- ══════════════════ DASBOR ══════════════════ -->
+<div class="an-wrap" id="an-dash" style="display:none">
+
+  <div class="an-top">
+    <div class="an-logo">Lakon<em>™</em> · Dasbor Analis</div>
+    <div>
+      <button class="an-btn" style="width:auto;padding:9px 16px;font-size:13px;background:transparent;color:var(--ink);border:1.5px solid var(--border)" onclick="muatUlang()">Muat ulang</button>
+      <button class="an-btn" style="width:auto;padding:9px 16px;font-size:13px;background:transparent;color:var(--ink);border:1.5px solid var(--border)" onclick="keluar()">Keluar</button>
+    </div>
+  </div>
+
+  <div class="an-stats" id="an-stats"></div>
+
+  <div class="an-filter">
+    <input type="text" id="f-cari" placeholder="Cari nama atau email…" oninput="saring()">
+    <select id="f-batch" onchange="saring()"><option value="">Semua batch</option></select>
+    <select id="f-kelompok" onchange="saring()"><option value="">Semua Kelompok</option></select>
+    <select id="f-watak" onchange="saring()"><option value="">Semua Watak</option></select>
+    <select id="f-kualitas" onchange="saring()">
+      <option value="">Semua kualitas</option>
+      <option value="bad">Perlu diperiksa</option>
+      <option value="dual">Dua kandidat Watak</option>
+    </select>
+  </div>
+
+  <div class="an-tabel-wrap">
+    <table class="an-tabel">
+      <thead><tr>
+        <th>Peserta</th><th>Paraga</th><th>Minat</th><th>Kualitas</th>
+        <th>Diferensiasi</th><th>Konsistensi</th><th>Acq.</th><th>Waktu</th>
+      </tr></thead>
+      <tbody id="an-body"></tbody>
+    </table>
+    <div class="an-kosong" id="an-kosong">Memuat…</div>
+  </div>
+</div>
+
+<!-- ══════════════════ MODAL ══════════════════ -->
+<div class="an-modal" id="an-modal" onclick="if(event.target===this)tutupModal()">
+  <div class="an-modal-box">
+    <button class="an-modal-x" onclick="tutupModal()">&times;</button>
+    <div id="an-modal-isi"></div>
+  </div>
+</div>
+
+<!--
+  Berkas isi dimuat SAMA PERSIS dengan situs, supaya tidak ada salinan
+  naskah kedua yang bisa menyimpang. Urutan menentukan.
+-->
+<script src="lakon_label.js"></script>
+<script src="lakon_content.js"></script>
+<script src="lakon_kelompok_content.js"></script>
+<script src="lakon_watak_content.js"></script>
+<script src="lakon_paraga.js"></script>
+<script src="lakon_nuansa.js"></script>
+<script src="lakon_hexagon.js"></script>
+<script src="lakon_report.js"></script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   KONFIGURASI
+   TIDAK ADA KATA SANDI DI BERKAS INI. Yang tersimpan hanya URL
+   endpoint, dan itu memang tidak rahasia: Code.gs v3 memisahkan
+   aksi publik dari aksi istimewa dan menolak semua aksi istimewa
+   tanpa token yang sah.
+   ═══════════════════════════════════════════════════════════ */
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ4Yez1bc5K-COQCgCnqZWJGwHm6vx2n9tmyd25kBO9PcjqG6y1orDVxbRh64vysFv/exec";
+
+var lang = "id";                 // dibutuhkan LakonReport
+var TOKEN = null;                // token sesi, di memori saja
+var semuaBaris = [], barisTersaring = [];
+var clientId = "an-" + Math.random().toString(36).slice(2, 10);
+
+var KEL = ["Yasa", "Nalar", "Karya", "Bakti", "Karsa", "Tata"];
+var WAT = ["Reka", "Logika", "Jaga", "Guna"];
+
+function el(id) { return document.getElementById(id); }
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MASUK
+   Kata sandi dikirim sekali. Server membandingkan hash-nya dan
+   mengembalikan token sesi. Token disimpan di memori halaman saja,
+   bukan di localStorage, karena halaman ini berisi data pribadi
+   dan token yang bertahan setelah tab ditutup adalah risiko.
+   ═══════════════════════════════════════════════════════════ */
+function masuk() {
+  var pw = el("an-pw").value;
+  if (!pw) { el("an-err").textContent = "Kata sandi belum diisi."; return; }
+
+  var btn = el("an-masuk");
+  btn.disabled = true; btn.textContent = "Memeriksa…";
+  el("an-err").textContent = "";
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action: "analyst_login", password: pw, client_id: clientId })
+  })
+    .then(function (r) { return r.json(); })
+    .then(function (res) {
+      if (res.status !== "ok") throw new Error(res.message || "Gagal masuk");
+      TOKEN = res.token;
+      el("an-pw").value = "";
+      el("an-login-screen").style.display = "none";
+      el("an-dash").style.display = "";
+      muatUlang();
+      // Token kedaluwarsa 2 jam. Diberitahukan, bukan dibiarkan gagal diam-diam.
+      setTimeout(function () {
+        if (TOKEN) { TOKEN = null; alert("Sesi berakhir. Silakan masuk lagi."); keluar(); }
+      }, (res.expires_in || 7200) * 1000);
+    })
+    .catch(function (e) { el("an-err").textContent = e.message; })
+    .then(function () { btn.disabled = false; btn.textContent = "Masuk"; });
+}
+
+function keluar() {
+  TOKEN = null; semuaBaris = []; barisTersaring = [];
+  el("an-dash").style.display = "none";
+  el("an-login-screen").style.display = "";
+  el("an-pw").focus();
+}
+
+function panggil(params) {
+  if (!TOKEN) return Promise.reject(new Error("Belum masuk"));
+  var q = Object.keys(params).map(function (k) {
+    return k + "=" + encodeURIComponent(params[k]);
+  }).join("&");
+  return fetch(APPS_SCRIPT_URL + "?token=" + encodeURIComponent(TOKEN) + "&" + q)
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d && d.error) throw new Error(d.error);
+      return d;
+    });
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MUAT DATA
+   Membaca tab responses_index_v3. Seluruh nama kolom berbeda dari
+   tab lama; tidak ada satu pun yang masih cocok.
+   ═══════════════════════════════════════════════════════════ */
+function muatUlang() {
+  el("an-kosong").textContent = "Memuat…";
+  el("an-kosong").style.display = "";
+  el("an-body").innerHTML = "";
+
+  Promise.all([panggil({ action: "list", limit: 1000 }), panggil({ action: "stats" })])
+    .then(function (hasil) {
+      semuaBaris = (hasil[0] && hasil[0].data) || [];
+      isiStats(hasil[1] || {});
+      isiPilihan();
+      saring();
+    })
+    .catch(function (e) {
+      el("an-kosong").textContent = "Gagal memuat: " + e.message;
+    });
+}
+
+function isiStats(s) {
+  if (!s || !s.total) { el("an-stats").innerHTML = ""; return; }
+
+  /* Sebaran Paraga dipantau tiap 50 responden. Pada 43 responden versi lama,
+     hanya 16 dari 24 Paraga pernah muncul dan lima teratas menyerap 58%.
+     Angka merah di sini artinya bank soal masih perlu diperiksa. */
+  var timpang = (s.paraga_unik || 0) < 18 || (s.paraga_top5_pct || 0) > 50;
+
+  var kartu = [
+    ["Total responden", s.total, false],
+    ["Paraga unik muncul", (s.paraga_unik || 0) + " / 24", timpang],
+    ["Top-5 Paraga", (s.paraga_top5_pct || 0) + "%", timpang],
+    ["Kualitas respons lolos", (s.kualitas_lolos_pct || 0) + "%", (s.kualitas_lolos_pct || 100) < 85],
+    ["Dua kandidat Watak", (s.dual_kandidat_pct || 0) + "%", (s.dual_kandidat_pct || 0) > 30],
+    ["Diferensiasi rerata", s.diferensiasi_rerata || "—", false],
+    ["Jarak #1–#2 rerata", s.gap_rerata || "—", false]
+  ];
+
+  el("an-stats").innerHTML = kartu.map(function (k) {
+    return '<div class="an-stat' + (k[2] ? " warn" : "") + '">' +
+      '<div class="an-stat-n">' + esc(k[1]) + "</div>" +
+      '<div class="an-stat-l">' + esc(k[0]) + "</div></div>";
+  }).join("");
+}
+
+function isiPilihan() {
+  var batch = {}, i;
+  for (i = 0; i < semuaBaris.length; i++) if (semuaBaris[i].batch) batch[semuaBaris[i].batch] = 1;
+
+  el("f-batch").innerHTML = '<option value="">Semua batch</option>' +
+    Object.keys(batch).sort().map(function (b) { return '<option>' + esc(b) + "</option>"; }).join("");
+  el("f-kelompok").innerHTML = '<option value="">Semua Kelompok</option>' +
+    KEL.map(function (k) { return "<option>" + k + "</option>"; }).join("");
+  el("f-watak").innerHTML = '<option value="">Semua Watak</option>' +
+    WAT.map(function (w) { return "<option>" + w + "</option>"; }).join("");
+}
+
+function saring() {
+  var cari = el("f-cari").value.toLowerCase().trim();
+  var b = el("f-batch").value, k = el("f-kelompok").value;
+  var w = el("f-watak").value, q = el("f-kualitas").value;
+
+  barisTersaring = semuaBaris.filter(function (r) {
+    if (b && String(r.batch) !== b) return false;
+    if (k && String(r.kelompok_1) !== k) return false;
+    if (w && String(r.watak) !== w) return false;
+    if (q === "bad" && String(r.quality_passed) === "ya") return false;
+    if (q === "dual" && !r.paraga_alt) return false;
+    if (cari) {
+      var t = (String(r.name || "") + " " + String(r.email || "")).toLowerCase();
+      if (t.indexOf(cari) < 0) return false;
+    }
+    return true;
+  });
+  renderTabel();
+}
+
+function renderTabel() {
+  if (!barisTersaring.length) {
+    el("an-body").innerHTML = "";
+    el("an-kosong").textContent = semuaBaris.length ? "Tidak ada yang cocok dengan saringan." : "Belum ada responden.";
+    el("an-kosong").style.display = "";
+    return;
+  }
+  el("an-kosong").style.display = "none";
+
+  el("an-body").innerHTML = barisTersaring.map(function (r, i) {
+    var tgl = r.timestamp ? new Date(r.timestamp).toLocaleDateString("id-ID",
+      { day: "2-digit", month: "short", year: "numeric" }) : "—";
+
+    var bendera = String(r.quality_passed) === "ya"
+      ? '<span class="an-flag an-flag-ok">OK</span>'
+      : '<span class="an-flag an-flag-bad">Periksa</span>';
+    if (r.paraga_alt) bendera += '<span class="an-flag an-flag-dual">2 Watak</span>';
+
+    var skorK1 = r["skor_" + r.kelompok_1];
+
+    return '<tr onclick="bukaDetail(' + i + ')">' +
+      '<td><div class="an-nama">' + esc(r.name) + "</div>" +
+        '<div class="an-sub">' + esc(r.email) + (r.company ? " · " + esc(r.company) : "") + "</div></td>" +
+      '<td><div class="an-paraga">' + esc(r.paraga_id) + "</div>" +
+        '<div class="an-sub">' + esc(r.paraga_en) + "</div>" +
+        (r.paraga_alt ? '<div class="an-alt">alt: ' + esc(r.paraga_alt) + "</div>" : "") + "</td>" +
+      "<td>" + esc(r.kelompok_1) + " <span class=\"an-sub\">" + (skorK1 != null ? skorK1 : "—") + "</span>" +
+        '<div class="an-sub">→ ' + esc(r.kelompok_2) + " (Δ" + esc(r.gap_top2) + ")</div></td>" +
+      "<td>" + bendera + (String(r.quality_passed) !== "ya"
+        ? '<div class="an-sub">' + esc(r.quality_flags) + "</div>" : "") + "</td>" +
+      "<td>" + esc(r.diff_index) + ' <span class="an-sub">' + esc(r.diff_label) + "</span></td>" +
+      "<td>" + esc(r.consistency_label) + "</td>" +
+      "<td>" + esc(r.acquiescence) + "</td>" +
+      "<td>" + tgl + '<div class="an-sub">' + esc(r.duration_sec) + "s</div></td>" +
+      "</tr>";
+  }).join("");
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DETAIL
+   Isi laporan dirender lewat LakonReport, berkas yang sama dengan
+   yang dipakai situs. Versi lama menyalin naskah 24 Paraga ke dalam
+   berkas ini, sehingga dasbor menampilkan teks lama setiap kali
+   naskahnya disunting, tanpa ada yang menyadarinya.
+   ═══════════════════════════════════════════════════════════ */
+function bukaDetail(i) {
+  var r = barisTersaring[i];
+  if (!r) return;
+
+  var skor = {
+    kelompok1: r.kelompok_1, kelompok2: r.kelompok_2, watak: r.watak,
+    watakAlt: r.watak_alt || null,
+    needsDualDisplay: !!r.paraga_alt,
+    konsistensi: { label: r.consistency_label, distance: r.consistency_dist },
+    diferensiasi: { label: r.diff_label, index: r.diff_index }
+  };
+
+  var meta = [
+    ["MBTI", r.mbti_type], ["Keyakinan Watak", r.watak_confidence],
+    ["Jarak #1–#2", r.gap_top2], ["Acquiescence", r.acquiescence],
+    ["Kesesuaian Pick-2", r.pick2_agreement], ["Tie-break", r.tiebreak_applied],
+    ["Durasi", (r.duration_sec || "—") + "s"], ["Attention gagal", r.attention_failed],
+    ["Mesin", r.engine_version], ["Bank", r.bank_version]
+  ];
+
+  var skorBar = KEL.map(function (k) {
+    var v = r["skor_" + k], c = r["centered_" + k];
+    return '<div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;font-size:13px">' +
+      '<span style="width:56px">' + k + "</span>" +
+      '<span style="width:44px;font-weight:600">' + esc(v) + "</span>" +
+      '<span style="color:var(--light);font-size:11.5px">centered ' + esc(c) + "</span></div>";
+  }).join("");
+
+  var dims = ["arus", "pandang", "timbang", "irama"].map(function (d) {
+    return '<div style="font-size:13px;margin-bottom:4px">' + d + ": <strong>" +
+      esc(r[d + "_pole"]) + "</strong> · " + esc(r[d + "_zone"]) +
+      ' <span style="color:var(--light)">(' + esc(r[d + "_clarity"]) + ")</span></div>";
+  }).join("");
+
+  var isiNaskah = "";
+  try {
+    isiNaskah = LakonReport.gratis(skor) + LakonReport.gratisLanjutan(skor) +
+      LakonReport.terkunci(skor).map(function (b) {
+        return '<h4 style="margin:26px 0 10px;font-size:14px">' + esc(b.judul) + "</h4>" +
+               (b.terbuka || "") + b.tertutup;
+      }).join("");
+  } catch (e) {
+    isiNaskah = '<p style="color:#A23B2E">Isi naskah gagal dirender: ' + esc(e.message) + "</p>";
+  }
+
+  el("an-modal-isi").innerHTML =
+    '<h2 class="an-modal-h">' + esc(r.name) + "</h2>" +
+    '<p class="an-modal-sub">' + esc(r.email) + (r.company ? " · " + esc(r.company) : "") +
+      " · " + esc(r.batch) + " · " + esc(r.response_id) + "</p>" +
+    (String(r.quality_passed) !== "ya"
+      ? '<div style="background:#F7E6E3;color:#A23B2E;padding:11px 14px;border-radius:11px;font-size:13px;margin-bottom:16px">' +
+        "<strong>Kualitas respons perlu diperiksa:</strong> " + esc(r.quality_flags) + "</div>" : "") +
+    '<dl class="an-meta">' + meta.map(function (m) {
+      return "<div><dt>" + esc(m[0]) + "</dt><dd>" + esc(m[1] == null ? "—" : m[1]) + "</dd></div>";
+    }).join("") + "</dl>" +
+    '<h4 style="font-size:13px;margin:0 0 8px">Skor Kelompok</h4>' + skorBar +
+    '<h4 style="font-size:13px;margin:18px 0 8px">Dimensi</h4>' + dims +
+    '<hr style="border:none;border-top:1px solid var(--border);margin:24px 0">' +
+    isiNaskah;
+
+  el("an-modal").classList.add("on");
+}
+
+function tutupModal() { el("an-modal").classList.remove("on"); }
+document.addEventListener("keydown", function (e) { if (e.key === "Escape") tutupModal(); });
+
+document.addEventListener("DOMContentLoaded", function () {
+  if (typeof LakonReport === "undefined") {
+    console.error("lakon_report.js belum dimuat. Detail peserta tidak akan menampilkan naskah.");
+  } else {
+    var c = LakonReport.periksa();
+    if (!c.lolos) console.error("Isi lapis tidak lengkap:", c.masalah);
+  }
+  el("an-pw").focus();
+});
+</script>
+
+</body>
+</html>
