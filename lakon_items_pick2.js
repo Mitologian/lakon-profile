@@ -162,24 +162,20 @@ var LAKON_ITEMS_PICK2 = [
 
 
 /* ═══════════════════════════════════════════════════════════════════
-   ATTENTION CHECK
-   Disisipkan ke dalam alur item Minat, memakai tampilan Likert yang
-   sama persis supaya tidak menonjol. Dua buah, dijauhkan posisinya,
-   dan nilai yang diminta berbeda agar tidak bisa dilewati dengan
-   satu pola jawaban.
+   ATTENTION CHECK DIBUANG
+   Versi lama menyisipkan dua pernyataan berbunyi "Untuk pernyataan ini,
+   pilih Tidak Setuju". Itu merendahkan orang yang membayar Rp 199.000 dan
+   mematahkan alur baca; peserta tahu persis sedang diuji.
 
-   Hasilnya hanya untuk analis lewat responseQuality(). TIDAK
-   ditampilkan ke peserta dan TIDAK memengaruhi skor.
+   Penggantinya ada di bank Watak: sepasang item yang isinya berdekatan,
+   ditaruh berjauhan, ditandai field `pasangan`. Kalau keduanya dijawab
+   tegas ke arah berlawanan, itu tanda menjawab asal, dan peserta tidak
+   pernah merasa sedang diperiksa.
+
+   LAKON_ITEMS_VALIDITY dipertahankan sebagai larik kosong supaya kontrak
+   data ke LakonScoring dan LakonBank tidak berubah.
    ═══════════════════════════════════════════════════════════════════ */
-var LAKON_ITEMS_VALIDITY = [
-  { id:"v_att_01", expected:2, sisip:14,
-    id_s:"Untuk pernyataan ini, pilih Tidak Setuju.",
-    en_s:"For this statement, choose Disagree." },
-
-  { id:"v_att_02", expected:5, sisip:38,
-    id_s:"Untuk pernyataan ini, pilih Sangat Setuju.",
-    en_s:"For this statement, choose Strongly Agree." }
-];
+var LAKON_ITEMS_VALIDITY = [];
 
 
 /* ═══════════════════════════════════════════════════════════════════

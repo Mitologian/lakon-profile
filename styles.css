@@ -1393,8 +1393,12 @@ ul, ol { list-style: none; }
 .sk-btn.sk-1 .sk-dot, .sk-btn.sk-3 .sk-dot { width: 18px; height: 18px; }
 .sk-btn.sk-2 .sk-dot                        { width: 15px; height: 15px; }
 
-.sk-btn.sk-0 .sk-dot { border-color: var(--sage-mid); }
-.sk-btn.sk-4 .sk-dot { border-color: var(--amber-bd); }
+/* Kedua ujung memakai warna yang SAMA.
+   Versi lama memberi hijau pada "Sangat Setuju" dan oranye pada ujung
+   lain. Hijau berarti benar; peserta melayang ke sana tanpa sadar.
+   Yang membedakan sekarang hanya ukuran titik, bukan artinya. */
+.sk-btn.sk-0 .sk-dot,
+.sk-btn.sk-4 .sk-dot { border-color: var(--light); }
 
 .sk-lbl {
   font-size: 11px;
@@ -1409,9 +1413,8 @@ ul, ol { list-style: none; }
 .sk-btn.sel { border-color: var(--amber); background: var(--amber-lt); }
 .sk-btn.sel .sk-dot { border-color: var(--amber); background: var(--amber); }
 .sk-btn.sel .sk-lbl { color: var(--amber-dk); font-weight: 600; }
-.sk-btn.sk-0.sel { border-color: var(--sage); background: var(--sage-lt); }
-.sk-btn.sk-0.sel .sk-dot { border-color: var(--sage); background: var(--sage); }
-.sk-btn.sk-0.sel .sk-lbl { color: var(--sage-dk); }
+/* Tidak ada aturan khusus untuk ujung mana pun saat terpilih.
+   Semua titik memakai warna terpilih yang sama. */
 
 /* ── PICK-2 ───────────────────────────────────────────────────
    Tombol, bukan checkbox tersembunyi. Enam opsi dalam dua kolom
@@ -1941,3 +1944,199 @@ ul, ol { list-style: none; }
 
 @media (max-width: 420px) { .hex-wrap { max-width: 260px; } }
 @media print { .hex-area { fill-opacity: .1; } }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PILIHAN BERPASANGAN — ITEM WATAK  (v4)
+
+   Menggantikan skala setuju untuk bagian Watak. Alasannya bias keinginan
+   sosial: selama peserta hanya melihat satu pernyataan, otaknya menilai
+   "apakah ini terdengar seperti orang yang baik", bukan "apakah ini saya".
+
+   KAIDAH VISUAL YANG DIPEGANG DI SINI
+   Kedua sisi HARUS punya bobot visual yang persis sama. Ukuran huruf,
+   warna, latar, jarak, semuanya cermin. Begitu satu sisi terlihat lebih
+   menonjol, ia menarik pilihan tanpa alasan, dan seluruh gunanya format
+   berpasangan hilang.
+
+   Yang membedakan keempat tombol hanya UKURAN titik, menandakan seberapa
+   tegas, bukan seberapa benar.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.q-tanya {
+  font-size: 13px; font-weight: 600; color: var(--mid);
+  letter-spacing: .01em; margin: 0 0 12px;
+}
+
+.pasangan {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;
+}
+.ps-sisi {
+  padding: 13px 14px; border-radius: 12px;
+  background: var(--white); border: 1.5px solid var(--border);
+  font-size: 14.5px; line-height: 1.45; color: var(--ink);
+  display: flex; align-items: center; min-height: 62px;
+}
+/* Sengaja identik. Jangan beri warna berbeda pada kiri dan kanan. */
+.ps-kiri  { text-align: left; }
+.ps-kanan { text-align: right; justify-content: flex-end; }
+
+.ps-skala { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
+.ps-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  padding: 11px 4px 9px;
+  background: var(--white); border: 1.5px solid var(--border);
+  border-radius: 12px; cursor: pointer; font-family: inherit;
+  transition: border-color .15s ease, background .15s ease, transform .1s ease;
+  min-height: 72px;
+}
+.ps-btn:hover { border-color: var(--amber-bd); background: var(--amber-lt); }
+.ps-btn:active { transform: scale(.97); }
+.ps-btn:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+.ps-dot {
+  border-radius: 50%; border: 2px solid var(--light);
+  background: transparent; flex: none;
+  transition: border-color .15s ease, background .15s ease;
+}
+/* Ukuran menandakan seberapa tegas, bukan seberapa benar. */
+.ps-kuat    .ps-dot { width: 22px; height: 22px; }
+.ps-condong .ps-dot { width: 15px; height: 15px; }
+
+.ps-lbl {
+  font-size: 11px; line-height: 1.25; text-align: center;
+  color: var(--mid); font-weight: 500; letter-spacing: -.01em;
+}
+
+.ps-btn.sel { border-color: var(--amber); background: var(--amber-lt); }
+.ps-btn.sel .ps-dot { border-color: var(--amber); background: var(--amber); }
+.ps-btn.sel .ps-lbl { color: var(--amber-dk); font-weight: 600; }
+
+@media (max-width: 420px) {
+  .pasangan { gap: 8px; }
+  .ps-sisi { font-size: 13.5px; padding: 11px 12px; min-height: 58px; }
+  .ps-skala { gap: 4px; }
+  .ps-btn { padding: 9px 2px 8px; min-height: 66px; }
+  .ps-lbl { font-size: 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ps-btn { transition: none; }
+  .ps-btn:active { transform: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RANTAI ARAH · JURUSAN · MATRIKS INDUSTRI
+
+   Dipakai LakonReport.rantaiArah(), .jurusan(), dan .industri().
+   Semuanya berada di dalam blok terkunci C.
+
+   PRINSIP TAMPILAN
+   Rantai ini menafsirkan, bukan menunjuk satu jawaban. Karena itu kandidat
+   kedua perpaduan TIDAK ditampilkan lebih kecil atau lebih pudar: pada 30%
+   peserta, keduanya memang setara. Membuat yang kedua terlihat sekunder
+   sama dengan mengaku pasti padahal tidak.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ar-sub {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--light); margin: 14px 0 7px;
+}
+
+.ar-perpaduan {
+  border: 1.5px solid var(--border); border-radius: 14px;
+  padding: 16px 16px 14px; margin-bottom: 12px; background: var(--white);
+}
+/* Kandidat kedua: beda penanda, BUKAN beda bobot. */
+.ar-alt { border-style: dashed; }
+
+.ar-kepala { display: flex; align-items: baseline; gap: 9px; flex-wrap: wrap; margin-bottom: 9px; }
+.ar-kode {
+  font-size: 11.5px; font-weight: 700; letter-spacing: .04em;
+  background: var(--amber-lt); color: var(--amber-dk);
+  padding: 3px 9px; border-radius: 20px; white-space: nowrap;
+}
+.ar-label { font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.35; }
+
+.ar-bentuk { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--linen); }
+.ar-peran { display: flex; flex-wrap: wrap; gap: 7px; }
+.ar-chip {
+  font-size: 13px; font-weight: 500; color: var(--sage-dk);
+  background: var(--sage-lt); padding: 6px 12px; border-radius: 20px;
+}
+
+.ar-catatan {
+  font-size: 13.5px; line-height: 1.65; color: var(--mid);
+  margin: 0 0 12px; padding: 12px 14px;
+  background: var(--linen); border-radius: 12px; max-width: 62ch;
+}
+
+/* ── Jurusan ──────────────────────────────────────────────────
+   Vokasi diberi lariknya sendiri. Kalau diselipkan di akhir daftar
+   S1, ia terbaca sebagai pilihan kelas dua, padahal segmen ini yang
+   paling jarang digarap alat asesmen di Indonesia.            */
+.ju-larik { margin-bottom: 18px; }
+.ju-item {
+  padding: 11px 13px; border-radius: 11px;
+  background: var(--white); border: 1px solid var(--border); margin-bottom: 8px;
+}
+.ju-nama {
+  font-size: 14.5px; font-weight: 600; color: var(--ink);
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.ju-jenjang {
+  font-size: 10.5px; font-weight: 700; letter-spacing: .04em;
+  background: var(--linen); color: var(--mid); padding: 2px 7px; border-radius: 6px;
+}
+.ju-arah { font-size: 13px; color: var(--amber-dk); margin-top: 4px; }
+.ju-catatan { font-size: 12.5px; line-height: 1.55; color: var(--mid); margin-top: 5px; }
+
+.ju-vokasi .ju-item { border-left: 3px solid var(--sage); }
+.ju-nuansa .ju-item { border-left: 3px solid var(--border-strong, var(--border)); }
+
+/* Nota kejujuran. Wajib ada: alat ini tahu minat, tidak tahu biaya
+   kuliah, jarak dari rumah, nilai rapor, atau keadaan keluarga. */
+.ju-nota {
+  font-size: 12.5px; line-height: 1.6; color: var(--light);
+  margin: 10px 0 0; max-width: 62ch; font-style: italic;
+}
+
+/* ── Matriks industri ─────────────────────────────────────────
+   Enam pintu semuanya tetap terlihat, bukan hanya pintu peserta.
+   Peserta yang industrinya tidak ada di daftar harus tetap bisa
+   memakai polanya untuk memetakan bidangnya sendiri.          */
+.in-nama { font-size: 16px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.in-pintu {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px; margin: 12px 0;
+}
+.in-kolom {
+  padding: 11px 12px; border-radius: 11px;
+  background: var(--white); border: 1px solid var(--border);
+}
+.in-milik { border-color: var(--amber); background: var(--amber-lt); }
+.in-kedua { border-color: var(--sage); }
+.in-kepala {
+  font-size: 12.5px; font-weight: 700; color: var(--ink);
+  display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 5px;
+}
+.in-tanda {
+  font-size: 9.5px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+  background: var(--amber); color: var(--white); padding: 2px 6px; border-radius: 5px;
+}
+.in-tanda-2 { background: var(--sage); }
+.in-apa { font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+.in-kenapa { font-size: 12px; line-height: 1.55; color: var(--mid); margin-top: 6px; }
+.in-contoh { font-size: 11.5px; line-height: 1.5; color: var(--light); margin-top: 6px; }
+.in-watak {
+  font-size: 13px; line-height: 1.65; color: var(--ink-2);
+  margin: 12px 0 0; padding-left: 13px;
+  border-left: 2px solid var(--amber); max-width: 62ch;
+}
+
+@media (max-width: 420px) {
+  .in-pintu { grid-template-columns: 1fr 1fr; }
+  .ar-label { font-size: 15px; }
+  .ar-chip { font-size: 12.5px; }
+}

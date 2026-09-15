@@ -1,283 +1,297 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   LAKON™ CAREER PROFILE — BANK ITEM WATAK  v3
-   48 item · 12 per dimensi · format 5 titik · keying seimbang 6/6
+   LAKON™ CAREER PROFILE — BANK ITEM WATAK  v4.1
+   Naskah disunting Dedy (6 Sep 2026), lalu diselaraskan ID/EN dan
+   diperiksa ulang terhadap enam kaidah penulisan di bawah.
+   48 pasang · pilihan berpasangan bertingkat 4 titik · 12 pasang per dimensi
 
-   Dipakai oleh lakon_scoring.js melalui bank.watak
+   ═══════════════════════════════════════════════════════════════════════
+   KENAPA FORMATNYA BERUBAH LAGI
+   ═══════════════════════════════════════════════════════════════════════
 
+   v3 memakai pernyataan tunggal dengan skala setuju 5 titik. Format itu
+   menyelesaikan masalah "Samar" dari versi biner, tapi menukarnya dengan
+   masalah lain yang tidak kalah serius: BIAS KEINGINAN SOSIAL.
+
+   Selama peserta hanya melihat satu sisi, otaknya menilai "apakah ini
+   terdengar seperti orang yang baik", bukan "apakah ini saya". Audit pada
+   48 item v3 menemukan 15 di antaranya memuat isyarat norma sosial yang
+   jelas, dan angka sebenarnya lebih tinggi. Contoh terburuk:
+
+     "Saya lebih suka mengerjakan sesuatu dengan cara yang sudah terbukti
+      berhasil."     → hampir semua orang setuju, apa pun tipenya
+     "Saya senang membahas gagasan yang masih abstrak dan belum jelas
+      bentuknya."    → terdengar seperti mengaku suka mengkhayal
+     "Saya lebih nyaman mengambil keputusan lebih cepat daripada
+      menundanya."   → menunda terdengar seperti kelemahan
+
+   Inilah sebabnya MBTI asli memakai pilihan berpasangan, bukan skala
+   setuju. Kalau dua sisi ditampilkan bersamaan dan keduanya sama-sama
+   masuk akal, tidak ada arah yang "benar" untuk dituju.
+
+   Bagian Minat (Holland) TIDAK diubah dan memang tidak perlu: menyukai
+   mesin tidak lebih mulia daripada menyukai orang, jadi tidak ada kutub
+   yang menang secara norma di sana.
+
+   ═══════════════════════════════════════════════════════════════════════
+   KENAPA BERTINGKAT, BUKAN SEKADAR PILIH SALAH SATU
+   ═══════════════════════════════════════════════════════════════════════
+
+   Pilihan berpasangan biasa (pilih A atau B) berarti kembali ke biner,
+   dan seri akan muncul lagi seperti versi paling awal. Empat titik antara
+   dua kutub mempertahankan gradasi tanpa mengembalikan bias:
+
+     Jelas A · Condong A · Condong B · Jelas B   →   +2 · +1 · −1 · −2
+
+   Tidak ada titik tengah. Pada format berpasangan, titik tengah hanya jadi
+   tempat kabur. Pada v3 titik tengahnya bahkan tidak bisa diklik.
+
+   ═══════════════════════════════════════════════════════════════════════
+   ENAM KAIDAH PENULISAN
+   ═══════════════════════════════════════════════════════════════════════
+
+   1. KATA KERJANYA SAMA DI KEDUA SISI, ISINYA YANG BERBEDA.
+      "Cara teruji terasa menarik" / "Cara baru terasa menarik" — dua-duanya
+      berbunyi "terasa menarik". Begitu satu sisi memakai kata kerja yang
+      lebih berbobot, sisi itu menang sebelum dibaca isinya.
+
+   2. TIDAK ADA SISI YANG MENYEBUT KELEMAHAN.
+      Dilarang: "menunda", "berantakan", "tidak penting", "bosan",
+      "mengkhayal". Semua dinyatakan sebagai keadaan yang wajar.
+
+   3. KEDUANYA SAMA PANJANG.
+      Sisi yang lebih panjang terlihat lebih dipikirkan, dan itu menarik
+      pilihan tanpa alasan. Selisih dijaga di bawah 12 karakter.
+
+   4. PENDEK, maksimal sekitar 8 kata.
+      Pasangan yang panjang membuat peserta membandingkan tata bahasa,
+      bukan membandingkan dirinya.
+
+   5. POSISI KUTUB DISELANG (`flip`).
+      Setengah pasang menampilkan kutub A di kiri, setengah lagi di kanan.
+      Ini menggantikan kontrol acquiescence versi lama: yang dijaga bukan
+      lagi kecenderungan setuju, melainkan kecenderungan memilih sisi kiri.
+
+   6. TIDAK ADA ATTENTION CHECK YANG TERLIHAT.
+      "Untuk pernyataan ini, pilih Tidak Setuju" merendahkan orang yang
+      membayar, dan mematahkan alur baca. Penggantinya sepasang item yang
+      isinya berdekatan, ditaruh berjauhan, ditandai `pasangan`. Kalau
+      jawabannya bertolak belakang, itu tanda menjawab asal, tanpa peserta
+      pernah merasa sedang diuji.
+
+   ═══════════════════════════════════════════════════════════════════════
    KONTRAK DATA
-     id       : id unik item
-     dim      : 'arus' | 'pandang' | 'timbang' | 'irama'
-     reverse  : true bila pernyataan mengarah ke KUTUB B
-     id_s/en_s: bunyi pernyataan
+   ═══════════════════════════════════════════════════════════════════════
+     id        id unik
+     dim       'arus' | 'pandang' | 'timbang' | 'irama'
+     a         pernyataan kutub A  { id, en }
+     b         pernyataan kutub B  { id, en }
+     flip      true = kutub B ditampilkan di kiri
+     pasangan  opsional, penanda pasangan konsistensi
 
    KUTUB
-     arus     A=E (Luar)          B=I (Dalam)
-     pandang  A=N (Luas)          B=S (Nyata)
-     timbang  A=T (Logika)        B=F (Rasa)
-     irama    A=J (Pasti)         B=P (Bebas)
+     arus     A=E  B=I          pandang  A=N  B=S
+     timbang  A=T  B=F          irama    A=J  B=P
 
-   CARA PENSKORAN
-     Peserta menyatakan tingkat kesetujuan terhadap pernyataan:
-       Sangat Setuju +2 | Setuju +1 | Netral 0 | Tidak Setuju -1 | Sangat Tidak Setuju -2
-     Mesin membalik nilai bila reverse:true, lalu menjumlahkan per dimensi.
-
-   CATATAN REVISI DARI VERSI LAMA
-     - Dibuang: m6 (pesan vs telepon; terkontaminasi usia & kebiasaan digital)
-     - Dibuang: m17 (cari solusi vs dengarkan; bercampur orientasi aksi SP)
-     - Dibuang: m22 & m30 (nyaris duplikat satu sama lain)
-     - Arus dinaikkan dari 6 ke 12 item, setara dimensi lain
-     - Tidak ada pasangan item cermin, agar alfa tidak naik semu
+   Nilai yang disimpan SELALU relatif terhadap kutub A, berapa pun urutan
+   tampilnya. UI yang membalik posisi, bukan datanya.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 var LAKON_SKALA_WATAK = {
   id: [
-    { v:  2, label: "Sangat Setuju" },
-    { v:  1, label: "Setuju" },
-    { v:  0, label: "Netral" },
-    { v: -1, label: "Tidak Setuju" },
-    { v: -2, label: "Sangat Tidak Setuju" }
+    { v:  2, label: "Jelas",   sisi: "a" },
+    { v:  1, label: "Condong", sisi: "a" },
+    { v: -1, label: "Condong", sisi: "b" },
+    { v: -2, label: "Jelas",   sisi: "b" }
   ],
   en: [
-    { v:  2, label: "Strongly Agree" },
-    { v:  1, label: "Agree" },
-    { v:  0, label: "Neutral" },
-    { v: -1, label: "Disagree" },
-    { v: -2, label: "Strongly Disagree" }
-  ]
+    { v:  2, label: "Clearly", sisi: "a" },
+    { v:  1, label: "Leaning", sisi: "a" },
+    { v: -1, label: "Leaning", sisi: "b" },
+    { v: -2, label: "Clearly", sisi: "b" }
+  ],
+  tanya: { id: "Mana yang lebih terasa seperti kamu?", en: "Which feels more like you?" }
 };
 
 var LAKON_ITEMS_WATAK = [
 
-  /* ───────────────────────── ARUS · E / I ─────────────────────────
-     Ke mana energi mengalir. Tidak menentukan Watak, tapi menentukan
-     nuansa dan cara peserta menjalani peran.                          */
+  /* ───────────────────── ARUS · E / I ─────────────────────
+     Ke mana energi mengalir. Tidak menentukan Watak, tapi
+     menentukan nuansa dan cara menjalani peran. */
+  { id:"w_ar_01", dim:"arus", flip:false,
+    a:{ id:"Bicara dulu, perjelas arti kemudian", en:"Speak first, clarify meaning later" },
+    b:{ id:"Rencanakan arti dulu, bicara kemudian", en:"Shape the meaning first, speak later" } },
+  { id:"w_ar_02", dim:"arus", flip:true, pasangan:"k1",
+    a:{ id:"Keramaian lebih mengisi tenaga", en:"A crowd fills your tank more" },
+    b:{ id:"Ketenangan lebih mengisi tenaga", en:"Calm fills your tank more" } },
+  { id:"w_ar_03", dim:"arus", flip:false,
+    a:{ id:"Kenal cepat dengan banyak orang", en:"Warm up fast, with many people" },
+    b:{ id:"Kenal perlahan dengan sedikit orang", en:"Warm up slowly, with few people" } },
+  { id:"w_ar_04", dim:"arus", flip:true,
+    a:{ id:"Ide muncul saat mengobrol", en:"Ideas arrive while talking" },
+    b:{ id:"Ide muncul saat menyendiri", en:"Ideas arrive while alone" } },
+  { id:"w_ar_05", dim:"arus", flip:false,
+    a:{ id:"Akhir pekan bersama orang", en:"Weekends among people" },
+    b:{ id:"Akhir pekan tanpa acara", en:"Weekends with nothing on" } },
+  { id:"w_ar_06", dim:"arus", flip:true,
+    a:{ id:"Suara sekitar tidak terasa", en:"Background noise goes unnoticed" },
+    b:{ id:"Suara sekitar terasa jelas", en:"Background noise stays noticed" } },
+  { id:"w_ar_07", dim:"arus", flip:false,
+    a:{ id:"Menyapa duluan terasa wajar", en:"Greeting first feels natural" },
+    b:{ id:"Disapa duluan terasa wajar", en:"Being greeted feels natural" } },
+  { id:"w_ar_08", dim:"arus", flip:true,
+    a:{ id:"Berpikir sambil bersuara", en:"Thinking out loud" },
+    b:{ id:"Berpikir dalam diam", en:"Thinking in silence" } },
+  { id:"w_ar_09", dim:"arus", flip:false,
+    a:{ id:"Lebih nyaman berinteraksi", en:"Interaction feels natural" },
+    b:{ id:"Lebih nyaman berkonsentrasi", en:"Concentration feels natural" } },
+  { id:"w_ar_10", dim:"arus", flip:true,
+    a:{ id:"Cerita ke beberapa orang", en:"Telling several people" },
+    b:{ id:"Cerita ke satu orang saja", en:"Telling just one person" } },
+  { id:"w_ar_11", dim:"arus", flip:false, pasangan:"k1",
+    a:{ id:"Ruangan penuh terasa hidup", en:"A full room feels alive" },
+    b:{ id:"Ruangan penuh terasa padat", en:"A full room feels dense" } },
+  { id:"w_ar_12", dim:"arus", flip:true,
+    a:{ id:"Jeda kosong diisi obrolan", en:"Empty gaps filled with talk" },
+    b:{ id:"Jeda kosong diisi ketenangan", en:"Empty gaps filled with calm" } },
 
-  { id:"w_ar_01", dim:"arus", reverse:false,
-    id_s:"Setelah seharian bertemu banyak orang, energi saya justru terasa lebih penuh.",
-    en_s:"After a full day of meeting many people, my energy actually feels fuller." },
+  /* ───────────────────── PANDANG · N / S ─────────────────────
+     Bagaimana keadaan diserap. Penentu Watak pertama. */
+  { id:"w_pa_01", dim:"pandang", flip:false,
+    a:{ id:"Pola besar dulu, rincian kemudian", en:"Big pattern first, detail later" },
+    b:{ id:"Rincian dulu, pola besar kemudian", en:"Detail first, big pattern later" } },
+  { id:"w_pa_02", dim:"pandang", flip:true,
+    a:{ id:"Cara baru terasa lebih menarik", en:"A new way feels more inviting" },
+    b:{ id:"Cara teruji terasa lebih menarik", en:"A proven way feels more inviting" } },
+  { id:"w_pa_03", dim:"pandang", flip:false,
+    a:{ id:"Menjelaskan lewat perumpamaan", en:"Explaining through analogy" },
+    b:{ id:"Menjelaskan lewat contoh nyata", en:"Explaining through real cases" } },
+  { id:"w_pa_04", dim:"pandang", flip:true,
+    a:{ id:"Lebih mengingat kesan keseluruhan", en:"Remembering the overall feel more" },
+    b:{ id:"Lebih mengingat urutan kejadian", en:"Remembering the sequence more" } },
+  { id:"w_pa_05", dim:"pandang", flip:false,
+    a:{ id:"Membahas soal kemungkinan", en:"Discussing what is possible" },
+    b:{ id:"Membahas soal fakta adanya", en:"Discussing what is factual" } },
+  { id:"w_pa_06", dim:"pandang", flip:true,
+    a:{ id:"Arahan garis besar sudah cukup", en:"Broad direction is enough" },
+    b:{ id:"Arahan terperinci lebih enak", en:"Detailed direction sits better" } },
+  { id:"w_pa_07", dim:"pandang", flip:false,
+    a:{ id:"Memikirkan lima tahun lagi", en:"Thinking five years out" },
+    b:{ id:"Memikirkan lima hari ini", en:"Thinking about the next five days" } },
+  { id:"w_pa_08", dim:"pandang", flip:true,
+    a:{ id:"Menangkap maksud di baliknya", en:"Catching what is meant" },
+    b:{ id:"Menangkap apa yang dikatakan", en:"Catching what is said" } },
+  { id:"w_pa_09", dim:"pandang", flip:false,
+    a:{ id:"Tertarik pada ide yang baru", en:"Drawn to new ideas and options" },
+    b:{ id:"Tertarik pada yang sudah terbukti", en:"Drawn to what is already proven" } },
+  { id:"w_pa_10", dim:"pandang", flip:true,
+    a:{ id:"Melompat antar gagasan", en:"Jumping between ideas" },
+    b:{ id:"Melangkah satu per satu", en:"Stepping one at a time" } },
+  { id:"w_pa_11", dim:"pandang", flip:false,
+    a:{ id:"Hal baru terasa menyegarkan", en:"Something new feels refreshing" },
+    b:{ id:"Hal yang sama terasa menenangkan", en:"The same thing feels settling" } },
+  { id:"w_pa_12", dim:"pandang", flip:true,
+    a:{ id:"Bertanya bisa jadi apa", en:"Asking what it could become" },
+    b:{ id:"Bertanya sekarang bagaimana", en:"Asking what it is right now" } },
 
-  { id:"w_ar_02", dim:"arus", reverse:true,
-    id_s:"Saya butuh waktu sendirian untuk memulihkan energi setelah banyak berinteraksi.",
-    en_s:"I need time alone to recover my energy after a lot of interaction." },
+  /* ───────────────────── TIMBANG · T / F ─────────────────────
+     Bagaimana keputusan ditimbang. Penentu Watak jalur N. */
+  { id:"w_ti_01", dim:"timbang", flip:false,
+    a:{ id:"Menimbang untung ruginya", en:"Weighing costs and gains" },
+    b:{ id:"Menimbang dampaknya pada orang", en:"Weighing the effect on people" } },
+  { id:"w_ti_02", dim:"timbang", flip:true,
+    a:{ id:"Berterus terang lebih dulu", en:"Being straight comes first" },
+    b:{ id:"Menjaga perasaan lebih dulu", en:"Protecting feelings comes first" } },
+  { id:"w_ti_03", dim:"timbang", flip:false,
+    a:{ id:"Menilai dari alasannya", en:"Judging by the reasoning" },
+    b:{ id:"Menilai dari maksudnya", en:"Judging by the intent" } },
+  { id:"w_ti_04", dim:"timbang", flip:true,
+    a:{ id:"Perbaiki masalahnya dulu", en:"Fix the problem first" },
+    b:{ id:"Tenangkan orangnya dulu", en:"Settle the person first" } },
+  { id:"w_ti_05", dim:"timbang", flip:false,
+    a:{ id:"Adil berarti sama untuk semua", en:"Fair means the same for all" },
+    b:{ id:"Adil berarti sesuai keadaannya", en:"Fair means fitting each case" } },
+  { id:"w_ti_06", dim:"timbang", flip:true,
+    a:{ id:"Kritik langsung mudah dicerna", en:"Blunt feedback lands easily" },
+    b:{ id:"Kritik perlu dirasa untuk dicerna", en:"Blunt feedback needs to be felt first" } },
+  { id:"w_ti_07", dim:"timbang", flip:false,
+    a:{ id:"Diyakinkan oleh angka", en:"Convinced by the numbers" },
+    b:{ id:"Diyakinkan oleh pengalaman", en:"Convinced by lived experience" } },
+  { id:"w_ti_08", dim:"timbang", flip:true,
+    a:{ id:"Memisahkan orang dari masalahnya", en:"Separating person from problem" },
+    b:{ id:"Memandang orang dalam masalahnya", en:"Regarding the person within the problem" } },
+  { id:"w_ti_09", dim:"timbang", flip:false,
+    a:{ id:"Tetap pada aturan yang sama", en:"Holding to the same rule" },
+    b:{ id:"Sesuaikan pada tiap orangnya", en:"Adjusting to each person" } },
+  { id:"w_ti_10", dim:"timbang", flip:true,
+    a:{ id:"Beda pendapat terasa biasa", en:"Disagreement feels ordinary" },
+    b:{ id:"Beda pendapat terasa berat", en:"Disagreement feels weighty" } },
+  { id:"w_ti_11", dim:"timbang", flip:false,
+    a:{ id:"Bertanya apakah ini masuk akal", en:"Asking whether it makes sense" },
+    b:{ id:"Bertanya apakah ini terasa pas", en:"Asking whether it sits right" } },
+  { id:"w_ti_12", dim:"timbang", flip:true,
+    a:{ id:"Keputusan berdiri di hitungan", en:"Decisions rest on the maths" },
+    b:{ id:"Keputusan berdiri di keyakinan", en:"Decisions rest on conviction" } },
 
-  { id:"w_ar_03", dim:"arus", reverse:false,
-    id_s:"Di acara yang ramai, saya biasanya termasuk yang paling aktif mengajak orang bicara.",
-    en_s:"At busy events, I'm usually among the most active in starting conversations." },
-
-  { id:"w_ar_04", dim:"arus", reverse:true,
-    id_s:"Saya lebih fokus bekerja di tempat yang sepi daripada di tempat yang ramai.",
-    en_s:"I focus better working somewhere quiet than somewhere busy." },
-
-  { id:"w_ar_05", dim:"arus", reverse:false,
-    id_s:"Saya mudah akrab dengan orang yang baru saya kenal.",
-    en_s:"I warm up quickly to people I've just met." },
-
-  { id:"w_ar_06", dim:"arus", reverse:true,
-    id_s:"Orang perlu waktu cukup lama untuk benar-benar mengenal saya.",
-    en_s:"People need quite a long time to really get to know me." },
-
-  { id:"w_ar_07", dim:"arus", reverse:false,
-    id_s:"Saya lebih cepat menemukan ide saat mengobrol dengan orang lain daripada saat memikirkannya sendiri.",
-    en_s:"I find ideas faster while talking with others than while thinking alone." },
-
-  { id:"w_ar_08", dim:"arus", reverse:true,
-    id_s:"Saya lebih menikmati percakapan mendalam dengan sedikit orang daripada obrolan ringan dengan banyak orang.",
-    en_s:"I enjoy deep conversations with a few people more than light chat with many." },
-
-  { id:"w_ar_09", dim:"arus", reverse:false,
-    id_s:"Saya cenderung langsung menyuarakan pendapat begitu terpikir.",
-    en_s:"I tend to voice an opinion as soon as it occurs to me." },
-
-  { id:"w_ar_10", dim:"arus", reverse:true,
-    id_s:"Saya biasanya memikirkan sesuatu matang-matang di dalam kepala sebelum membicarakannya.",
-    en_s:"I usually think something through in my head before talking about it." },
-
-  { id:"w_ar_11", dim:"arus", reverse:false,
-    id_s:"Kalau ada waktu luang, saya lebih sering mencari teman untuk melakukan sesuatu bersama.",
-    en_s:"When I have free time, I more often look for company to do something with." },
-
-  { id:"w_ar_12", dim:"arus", reverse:true,
-    id_s:"Akhir pekan yang tenang di rumah terasa lebih menyegarkan daripada acara bersama banyak orang.",
-    en_s:"A quiet weekend at home feels more refreshing than an event with a crowd." },
-
-
-  /* ──────────────────────── PANDANG · N / S ────────────────────────
-     Bagaimana informasi diserap. Salah satu dari dua penentu Watak.   */
-
-  { id:"w_pa_01", dim:"pandang", reverse:false,
-    id_s:"Saya lebih tertarik pada pola dan makna di balik sesuatu daripada pada rinciannya.",
-    en_s:"I'm more drawn to the pattern and meaning behind things than to their details." },
-
-  { id:"w_pa_02", dim:"pandang", reverse:true,
-    id_s:"Saya lebih mempercayai apa yang bisa diamati langsung daripada dugaan atau tafsiran.",
-    en_s:"I trust what can be directly observed more than guesses or interpretations." },
-
-  { id:"w_pa_03", dim:"pandang", reverse:false,
-    id_s:"Saya sering memikirkan berbagai kemungkinan yang bisa terjadi di masa depan.",
-    en_s:"I often think about the range of possibilities that could unfold ahead." },
-
-  { id:"w_pa_04", dim:"pandang", reverse:true,
-    id_s:"Saya memperhatikan detail kecil yang sering luput dari orang lain.",
-    en_s:"I notice small details that others often miss." },
-
-  { id:"w_pa_05", dim:"pandang", reverse:false,
-    id_s:"Saya lebih mudah menjelaskan sesuatu lewat perumpamaan daripada lewat rincian yang tepat.",
-    en_s:"I explain things more easily through analogy than through precise specifics." },
-
-  { id:"w_pa_06", dim:"pandang", reverse:true,
-    id_s:"Saya lebih suka mengerjakan sesuatu dengan cara yang sudah terbukti berhasil.",
-    en_s:"I prefer doing things the way that has already been proven to work." },
-
-  { id:"w_pa_07", dim:"pandang", reverse:false,
-    id_s:"Saya senang membahas gagasan yang masih abstrak dan belum jelas bentuknya.",
-    en_s:"I enjoy discussing ideas that are still abstract and not yet fully formed." },
-
-  { id:"w_pa_08", dim:"pandang", reverse:true,
-    id_s:"Arahan yang rinci membuat saya bekerja lebih tenang daripada arahan yang umum.",
-    en_s:"Detailed instructions let me work more calmly than general guidance does." },
-
-  { id:"w_pa_09", dim:"pandang", reverse:false,
-    id_s:"Saat mendengar rencana baru, hal pertama yang saya bayangkan adalah bisa berkembang jadi apa nanti.",
-    en_s:"When I hear a new plan, the first thing I picture is what it could grow into." },
-
-  { id:"w_pa_10", dim:"pandang", reverse:true,
-    id_s:"Saya lebih tertarik pada apa yang nyata sekarang daripada pada apa yang mungkin terjadi nanti.",
-    en_s:"I'm more interested in what is real now than in what might happen later." },
-
-  { id:"w_pa_11", dim:"pandang", reverse:false,
-    id_s:"Saya lebih mengingat kesan keseluruhan dari suatu peristiwa daripada urutan kejadiannya.",
-    en_s:"I remember the overall impression of an event more than the sequence of what happened." },
-
-  { id:"w_pa_12", dim:"pandang", reverse:true,
-    id_s:"Saya biasanya mengingat fakta dan angka dengan cukup akurat.",
-    en_s:"I usually remember facts and figures fairly accurately." },
-
-
-  /* ──────────────────────── TIMBANG · T / F ────────────────────────
-     Bagaimana keputusan ditimbang. Penentu Watak untuk jalur N
-     (Reka vs Logika).                                                 */
-
-  { id:"w_ti_01", dim:"timbang", reverse:false,
-    id_s:"Dalam keputusan penting, saya lebih mengandalkan analisis daripada perasaan.",
-    en_s:"For important decisions, I rely on analysis more than on feeling." },
-
-  { id:"w_ti_02", dim:"timbang", reverse:true,
-    id_s:"Sebelum menyampaikan sesuatu, saya memikirkan dulu bagaimana perasaan orang yang mendengarnya.",
-    en_s:"Before saying something, I first consider how the listener will feel." },
-
-  { id:"w_ti_03", dim:"timbang", reverse:false,
-    id_s:"Saya bisa mengesampingkan rasa tidak enak demi keputusan yang lebih tepat.",
-    en_s:"I can set aside discomfort for the sake of a more correct decision." },
-
-  { id:"w_ti_04", dim:"timbang", reverse:true,
-    id_s:"Keputusan yang baik menurut saya adalah yang mempertimbangkan dampaknya pada orang-orang yang terlibat.",
-    en_s:"To me, a good decision is one that weighs its impact on the people involved." },
-
-  { id:"w_ti_05", dim:"timbang", reverse:false,
-    id_s:"Saat menilai sesuatu, saya berusaha melepaskan diri dari keterlibatan pribadi.",
-    en_s:"When judging something, I try to detach myself from personal involvement." },
-
-  { id:"w_ti_06", dim:"timbang", reverse:true,
-    id_s:"Suasana hubungan yang baik dalam tim sama pentingnya dengan hasil kerjanya.",
-    en_s:"Good relationships within a team matter as much as the work output." },
-
-  { id:"w_ti_07", dim:"timbang", reverse:false,
-    id_s:"Saya lebih menghargai kejujuran yang lugas daripada penyampaian yang halus.",
-    en_s:"I value blunt honesty more than a gently worded delivery." },
-
-  { id:"w_ti_08", dim:"timbang", reverse:true,
-    id_s:"Saya mudah ikut merasakan apa yang sedang dialami orang lain.",
-    en_s:"I easily feel along with what another person is going through." },
-
-  { id:"w_ti_09", dim:"timbang", reverse:false,
-    id_s:"Kalau ada perselisihan di tim, saya lebih dulu menyelesaikan masalahnya daripada menenangkan perasaan orang.",
-    en_s:"When a team disagrees, I address the problem before settling anyone's feelings." },
-
-  { id:"w_ti_10", dim:"timbang", reverse:true,
-    id_s:"Saya sulit mengambil keputusan yang saya tahu akan menyakiti seseorang, meski keputusan itu masuk akal.",
-    en_s:"I struggle to make a decision I know will hurt someone, even when it makes sense." },
-
-  { id:"w_ti_11", dim:"timbang", reverse:false,
-    id_s:"Alasan yang logis lebih meyakinkan saya daripada pengalaman pribadi seseorang.",
-    en_s:"A logical argument convinces me more than someone's personal experience." },
-
-  { id:"w_ti_12", dim:"timbang", reverse:true,
-    id_s:"Nilai yang saya yakini lebih menentukan pilihan saya daripada perhitungan untung rugi.",
-    en_s:"The values I hold shape my choices more than a calculation of costs and benefits." },
-
-
-  /* ───────────────────────── IRAMA · J / P ─────────────────────────
-     Bagaimana hari dijalani. Penentu Watak untuk jalur S
-     (Jaga vs Guna).                                                   */
-
-  { id:"w_ir_01", dim:"irama", reverse:false,
-    id_s:"Saya merasa lebih tenang kalau rencana sudah pasti dan tidak banyak berubah.",
-    en_s:"I feel calmer when plans are settled and don't shift much." },
-
-  { id:"w_ir_02", dim:"irama", reverse:true,
-    id_s:"Saya cenderung menunda keputusan supaya pilihan tetap terbuka.",
-    en_s:"I tend to delay decisions so that options stay open." },
-
-  { id:"w_ir_03", dim:"irama", reverse:false,
-    id_s:"Saya puas ketika daftar tugas saya selesai dan tercentang semua.",
-    en_s:"I feel satisfied when my task list is finished and fully checked off." },
-
-  { id:"w_ir_04", dim:"irama", reverse:true,
-    id_s:"Rencana yang terlalu rapi justru membuat saya merasa terkurung.",
-    en_s:"An overly tidy plan actually makes me feel boxed in." },
-
-  { id:"w_ir_05", dim:"irama", reverse:false,
-    id_s:"Saya biasanya menyelesaikan pekerjaan jauh sebelum tenggat waktu.",
-    en_s:"I usually finish work well before the deadline." },
-
-  { id:"w_ir_06", dim:"irama", reverse:true,
-    id_s:"Aturan dan jadwal bagi saya lebih merupakan panduan daripada ketentuan yang harus dipatuhi.",
-    en_s:"To me, rules and schedules are guidance more than requirements to obey." },
-
-  { id:"w_ir_07", dim:"irama", reverse:false,
-    id_s:"Saya suka sudah tahu lebih awal apa yang akan saya lakukan akhir pekan nanti.",
-    en_s:"I like knowing in advance what I'll be doing on the coming weekend." },
-
-  { id:"w_ir_08", dim:"irama", reverse:true,
-    id_s:"Saya nyaman menjalani hari tanpa jadwal yang pasti.",
-    en_s:"I'm comfortable going through a day without a fixed schedule." },
-
-  { id:"w_ir_09", dim:"irama", reverse:false,
-    id_s:"Saya lebih nyaman mengambil keputusan lebih cepat daripada menundanya.",
-    en_s:"I'm more comfortable deciding sooner than putting a decision off." },
-
-  { id:"w_ir_10", dim:"irama", reverse:true,
-    id_s:"Saya sering mengubah cara kerja di tengah jalan kalau menemukan yang lebih baik.",
-    en_s:"I often change my approach midway when I find a better one." },
-
-  { id:"w_ir_11", dim:"irama", reverse:false,
-    id_s:"Saya menjaga barang dan berkas saya tetap tertata pada tempatnya.",
-    en_s:"I keep my belongings and files arranged in their places." },
-
-  { id:"w_ir_12", dim:"irama", reverse:true,
-    id_s:"Saya lebih menikmati proses mengerjakan sesuatu daripada saat menyelesaikannya.",
-    en_s:"I enjoy the process of working on something more than the moment of finishing it." }
+  /* ───────────────────── IRAMA · J / P ─────────────────────
+     Bagaimana hari dijalani. Penentu Watak jalur S. */
+  { id:"w_ir_01", dim:"irama", flip:false,
+    a:{ id:"Rencana yang pasti menenangkan", en:"A definite plan settles you" },
+    b:{ id:"Pilihan yang terbuka menenangkan", en:"Open options settle you" } },
+  { id:"w_ir_02", dim:"irama", flip:true,
+    a:{ id:"Tenang setelah selesai sesuai jadwal", en:"Calm comes from finishing as planned" },
+    b:{ id:"Fokus datang saat tenggat mendekat", en:"Focus comes as the deadline draws near" } },
+  { id:"w_ir_03", dim:"irama", flip:false,
+    a:{ id:"Daftar tugas terasa membantu", en:"A task list feels helpful" },
+    b:{ id:"Daftar tugas terasa mengikat", en:"A task list feels binding" } },
+  { id:"w_ir_04", dim:"irama", flip:true,
+    a:{ id:"Akhir pekan sudah ada rencana", en:"The weekend already has a plan" },
+    b:{ id:"Akhir pekan dilihat nanti saja", en:"The weekend gets decided later" } },
+  { id:"w_ir_05", dim:"irama", flip:false,
+    a:{ id:"Menutup keputusan terasa melegakan", en:"Closing a decision feels like relief" },
+    b:{ id:"Memiliki pilihan terasa melegakan", en:"Having options feels like relief" } },
+  { id:"w_ir_06", dim:"irama", flip:true,
+    a:{ id:"Ruang rapi membantu fokus", en:"A tidy space helps you focus" },
+    b:{ id:"Ruang apa adanya tidak mengganggu", en:"A space as-is does not distract" } },
+  { id:"w_ir_07", dim:"irama", flip:false,
+    a:{ id:"Aturan adalah patokan", en:"Rules are the benchmark" },
+    b:{ id:"Aturan adalah panduan", en:"Rules are guidance" } },
+  { id:"w_ir_08", dim:"irama", flip:true,
+    a:{ id:"Rencana diikuti sampai tuntas", en:"Plans followed through to the end" },
+    b:{ id:"Rencana berubah sesuai situasi", en:"Plans shift to suit the situation" } },
+  { id:"w_ir_09", dim:"irama", flip:false,
+    a:{ id:"Perubahan mendadak mengusik", en:"A sudden change unsettles" },
+    b:{ id:"Perubahan mendadak menyegarkan", en:"A sudden change refreshes" } },
+  { id:"w_ir_10", dim:"irama", flip:true,
+    a:{ id:"Satu hal sampai tuntas", en:"One thing until it is done" },
+    b:{ id:"Beberapa hal berjalan bersama", en:"Several things running together" } },
+  { id:"w_ir_11", dim:"irama", flip:false,
+    a:{ id:"Datang lebih awal terasa tenang", en:"Arriving early feels calm" },
+    b:{ id:"Datang pas waktu terasa cukup", en:"Arriving on time feels enough" } },
+  { id:"w_ir_12", dim:"irama", flip:true,
+    a:{ id:"Puas ketika sudah diselesaikan", en:"Satisfied once it has been completed" },
+    b:{ id:"Puas mengeksplorasi kemungkinan", en:"Satisfied while exploring options" } }
 
 ];
 
 
+
 /* ═══════════════════════════════════════════════════════════════════
    URUTAN TAMPIL
-   Item TIDAK ditampilkan berkelompok per dimensi. Blok yang seragam
-   memudahkan peserta menebak apa yang diukur, dan memicu straight-lining.
-   Fungsi ini menyelang-nyeling dimensi dan menyebar arah keying.
+   Dimensi diselang-seling. Dua belas pasang sedimensi berturut-turut
+   memudahkan peserta menebak apa yang diukur, dan begitu ia menebak,
+   ia mulai menjawab sesuai tebakannya.
    ═══════════════════════════════════════════════════════════════════ */
 function lakonUrutkanItemWatak(items) {
   var byDim = { arus: [], pandang: [], timbang: [], irama: [] }, i;
   for (i = 0; i < items.length; i++) byDim[items[i].dim].push(items[i]);
 
-  var order = ["pandang", "arus", "timbang", "irama"], out = [], round = 0;
-  while (out.length < items.length) {
+  var order = ["pandang", "arus", "timbang", "irama"], out = [], putaran = 0;
+  while (out.length < items.length && putaran < 50) {
     for (i = 0; i < order.length; i++) {
       var pool = byDim[order[i]];
-      if (pool[round]) out.push(pool[round]);
+      if (pool[putaran]) out.push(pool[putaran]);
     }
-    round++;
+    putaran++;
   }
   return out;
 }
@@ -285,30 +299,62 @@ function lakonUrutkanItemWatak(items) {
 
 /* ═══════════════════════════════════════════════════════════════════
    PEMERIKSAAN MANDIRI
-   Jalankan setiap kali bank item disunting. Menolak diam-diam adalah
-   cara termudah kehilangan keseimbangan keying.
+   Jalankan setiap kali bank item disunting. Keempat kaidah yang bisa
+   diperiksa mesin diperiksa di sini; dua sisanya (kata kerja sama,
+   tidak menyebut kelemahan) hanya bisa dinilai manusia.
    ═══════════════════════════════════════════════════════════════════ */
 function lakonPeriksaBankWatak(items) {
-  var stat = {}, ids = {}, masalah = [], i, it;
+  var stat = {}, ids = {}, masalah = [], pasangan = {}, i, it;
 
   for (i = 0; i < items.length; i++) {
     it = items[i];
+
     if (ids[it.id]) masalah.push("id ganda: " + it.id);
     ids[it.id] = true;
-    if (!stat[it.dim]) stat[it.dim] = { total: 0, poleA: 0, poleB: 0 };
+
+    if (!it.a || !it.a.id || !it.a.en) { masalah.push(it.id + " sisi A tidak lengkap"); continue; }
+    if (!it.b || !it.b.id || !it.b.en) { masalah.push(it.id + " sisi B tidak lengkap"); continue; }
+
+    if (!stat[it.dim]) stat[it.dim] = { total: 0, kiriA: 0, kiriB: 0 };
     stat[it.dim].total++;
-    if (it.reverse) stat[it.dim].poleB++; else stat[it.dim].poleA++;
-    if (!it.id_s || !it.en_s) masalah.push("teks kosong: " + it.id);
+    if (it.flip) stat[it.dim].kiriB++; else stat[it.dim].kiriA++;
+
+    /* Kaidah 3: sisi yang lebih panjang terlihat lebih dipikirkan,
+       dan itu menarik pilihan tanpa alasan. */
+    var selisih = Math.abs(it.a.id.length - it.b.id.length);
+    if (selisih > 12) masalah.push(it.id + " panjang kedua sisi timpang, selisih " + selisih + " karakter");
+
+    /* Kaidah 4: pendek. */
+    [["A", it.a.id], ["B", it.b.id]].forEach(function (s) {
+      var n = s[1].trim().split(/\s+/).length;
+      if (n > 8) masalah.push(it.id + " sisi " + s[0] + " terlalu panjang, " + n + " kata");
+    });
+
+    if (it.pasangan) (pasangan[it.pasangan] = pasangan[it.pasangan] || []).push(it.id);
   }
 
   for (var d in stat) {
     if (!stat.hasOwnProperty(d)) continue;
-    if (stat[d].total !== 12) masalah.push(d + " punya " + stat[d].total + " item, seharusnya 12");
-    if (stat[d].poleA !== stat[d].poleB)
-      masalah.push(d + " keying timpang: " + stat[d].poleA + " vs " + stat[d].poleB);
+    if (stat[d].total !== 12) masalah.push(d + " punya " + stat[d].total + " pasang, seharusnya 12");
+    /* Kaidah 5: posisi kutub diselang, supaya kecenderungan memilih sisi
+       kiri tidak menumpuk pada satu kutub. */
+    if (Math.abs(stat[d].kiriA - stat[d].kiriB) > 2)
+      masalah.push(d + " posisi timpang: A di kiri " + stat[d].kiriA + "x, B di kiri " + stat[d].kiriB + "x");
   }
 
-  return { total: items.length, perDimensi: stat, masalah: masalah, lolos: masalah.length === 0 };
+  var jml = 0;
+  for (var k in pasangan) {
+    if (!pasangan.hasOwnProperty(k)) continue;
+    jml++;
+    if (pasangan[k].length !== 2)
+      masalah.push("pasangan konsistensi '" + k + "' berisi " + pasangan[k].length + " item, seharusnya 2");
+  }
+  if (jml < 1) masalah.push("tidak ada pasangan konsistensi; kualitas respons kehilangan satu penanda");
+
+  return {
+    total: items.length, perDimensi: stat, pasangan: pasangan,
+    masalah: masalah, lolos: masalah.length === 0
+  };
 }
 
 

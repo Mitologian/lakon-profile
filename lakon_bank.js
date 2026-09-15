@@ -15,16 +15,20 @@
    LakonBank.build() dan LakonScoring.computeAll() seperti di browser.
 
    SUSUNAN 108 ITEM
-     Watak     48   12 per dimensi, keying seimbang 6/6
+     Watak     48   12 pasang per dimensi, pilihan berpasangan 4 titik
      Minat     48    8 per Kelompok, 6 positif + 2 reverse
      Pick-2    10    6 opsi per item, satu opsi per Kelompok
-     Validity   2    attention check, tidak memengaruhi skor
+     Total    106   attention check yang terlihat sudah dibuang
 ═══════════════════════════════════════════════════════════════════════════ */
 
 var LakonBank = (function () {
   "use strict";
 
-  var TARGET = { watak: 48, minat: 48, pick2: 10, validity: 2, total: 108 };
+  /* Attention check yang terlihat DIBUANG. "Untuk pernyataan ini, pilih Tidak
+   Setuju" merendahkan orang yang membayar dan mematahkan alur baca.
+   Penggantinya pasangan konsistensi tak terlihat di bank Watak, ditandai
+   field `pasangan`, dan diperiksa LakonScoring.responseQuality(). */
+var TARGET = { watak: 48, minat: 48, pick2: 10, validity: 0, total: 106 };
 
   /* Pencarian bank item.
      TIDAK memakai globalThis. Pada runtime V8 Apps Script, deklarasi var di
@@ -130,11 +134,24 @@ var LakonBank = (function () {
     // ── teks pernyataan tidak boleh kembar ──
     // Dua item berbunyi hampir sama akan menaikkan alfa secara semu
     // tanpa menambah informasi apa pun.
+    /* Item Watak kini berformat berpasangan (a/b), bukan pernyataan tunggal
+       (id_s). Kalau tidak ditangani, seluruhnya terbaca undefined dan
+       dianggap kembar satu sama lain. */
     var teks = [];
-    for (i = 0; i < bank.watak.length; i++) teks.push({ id: bank.watak[i].id, s: bank.watak[i].id_s });
+    for (i = 0; i < bank.watak.length; i++) {
+      var w = bank.watak[i];
+      if (w.a && w.b) {
+        teks.push({ id: w.id + ".a", s: w.a.id });
+        teks.push({ id: w.id + ".b", s: w.b.id });
+      } else if (w.id_s) {
+        teks.push({ id: w.id, s: w.id_s });
+      }
+    }
     for (i = 0; i < bank.minat.length; i++) teks.push({ id: bank.minat[i].id, s: bank.minat[i].id_s });
     for (i = 0; i < teks.length; i++) {
       for (j = i + 1; j < teks.length; j++) {
+        // dua sisi dari pasangan yang sama memang sengaja bermiripan
+        if (teks[i].id.split(".")[0] === teks[j].id.split(".")[0]) continue;
         if (miripKuat(teks[i].s, teks[j].s))
           masalah.push("teks nyaris kembar: " + teks[i].id + " dan " + teks[j].id);
       }
@@ -171,7 +188,11 @@ var LakonBank = (function () {
       return out;
     }
     var wa = kata(a), wb = kata(b);
-    if (!wa.length || !wb.length) return false;
+    /* Ambang minimum. Item Watak berformat berpasangan sangat pendek
+       (5 sampai 8 kata), jadi setelah kata umum dibuang bisa tersisa
+       satu-dua kata bermakna saja. Tanpa ambang ini, pembaginya jadi 1
+       dan hampir semua pasangan pendek terbaca 100% kembar. */
+    if (wa.length < 3 || wb.length < 3) return false;
     var sh = 0, i;
     for (i = 0; i < wa.length; i++) if (wb.indexOf(wa[i]) >= 0) sh++;
     return sh / Math.min(wa.length, wb.length) >= 0.7;

@@ -22,7 +22,8 @@
      #btn-back  #btn-fwd-lbl
 
    PERBAIKAN
-   - Skala 5 titik dengan titik tengah AKTIF dan berlabel "Netral".
+   - Item Watak berformat PILIHAN BERPASANGAN 4 titik (v4), bukan skala
+     setuju. Item Minat tetap skala 5 titik dengan titik tengah aktif.
      Versi lama membuat lingkaran tengah tanpa onclick dan tabindex="-1",
      sehingga peserta mengklik dan tidak terjadi apa-apa.  [fix 1.7]
    - Simpan-otomatis ke sessionStorage. Tes 20 menit tanpa penyimpanan
@@ -161,11 +162,59 @@ var LakonAssessment = (function () {
     perbaruiTombol(idx);
   }
 
-  /* ── Skala 5 titik ──────────────────────────────────
-     Dipakai untuk item Watak, Minat, dan attention check.
-     Ketiganya tampil identik; hanya nilai yang disimpan berbeda.
+  /* ── Pilihan berpasangan bertingkat, untuk item Watak ──────
+     Dua pernyataan ditampilkan bersamaan, empat titik di antaranya.
+     Format ini menggantikan skala setuju v3 yang rentan bias keinginan
+     sosial: selama peserta hanya melihat satu sisi, otaknya menilai
+     "apakah ini terdengar seperti orang yang baik", bukan "apakah ini
+     saya".
+
+     `flip` menukar POSISI TAMPIL saja. Nilai yang disimpan selalu
+     relatif terhadap kutub A, berapa pun urutannya di layar.        */
+  function htmlPasangan(it, nomor) {
+    var skala = (typeof LAKON_SKALA_WATAK !== 'undefined') ? LAKON_SKALA_WATAK : null;
+    if (!skala) return '';
+    var opsi = L() ? skala.id : skala.en;
+    var tanya = L() ? skala.tanya.id : skala.tanya.en;
+
+    var kiri = it.flip ? it.b : it.a;
+    var kanan = it.flip ? it.a : it.b;
+    var sisiKiri = it.flip ? 'b' : 'a';
+
+    var h = '<div class="q-num">' + nomor + '</div>' +
+            '<p class="q-tanya">' + esc(tanya) + '</p>' +
+            '<div class="pasangan">' +
+              '<div class="ps-sisi ps-kiri">' + esc(L() ? kiri.id : kiri.en) + '</div>' +
+              '<div class="ps-sisi ps-kanan">' + esc(L() ? kanan.id : kanan.en) + '</div>' +
+            '</div>' +
+            '<div class="ps-skala" role="radiogroup" aria-label="' + esc(tanya) + '">';
+
+    var urut = opsi.slice();
+    if (sisiKiri === 'b') urut.reverse();
+
+    for (var i = 0; i < urut.length; i++) {
+      var o = urut[i];
+      var dekatKiri = (o.sisi === sisiKiri);
+      var kuat = Math.abs(o.v) === 2;
+      h += '<button type="button" class="ps-btn ps-' + (dekatKiri ? 'ki' : 'ka') +
+           (kuat ? ' ps-kuat' : ' ps-condong') + '"' +
+           ' data-id="' + it.id + '" data-sec="watak" data-v="' + o.v + '"' +
+           ' role="radio" aria-checked="false" tabindex="0">' +
+           '<span class="ps-dot"></span>' +
+           '<span class="ps-lbl">' + esc(o.label) + '</span>' +
+           '</button>';
+    }
+    return h + '</div>';
+  }
+
+  /* ── Skala setuju 5 titik, untuk item Minat ────────────────
+     Bagian Holland tetap memakai format ini dan memang tidak perlu
+     diubah: menyukai mesin tidak lebih mulia daripada menyukai orang,
+     jadi tidak ada kutub yang menang secara norma di sana.
      Titik tengah AKTIF dan berlabel.  [fix 1.7]              */
   function htmlSkala(it, nomor) {
+    if (it.a && it.b) return htmlPasangan(it, nomor);
+
     var teks = L() ? it.id_s : it.en_s;
     var skala = (it.sec === 'watak')
       ? (typeof LAKON_SKALA_WATAK !== 'undefined' ? LAKON_SKALA_WATAK : null)
@@ -255,7 +304,7 @@ var LakonAssessment = (function () {
      ═══════════════════════════════════════════════════ */
   function pasangListener() {
     document.addEventListener('click', function (e) {
-      var sk = e.target.closest ? e.target.closest('.sk-btn') : null;
+      var sk = e.target.closest ? e.target.closest('.sk-btn, .ps-btn') : null;
       if (sk) { pilihSkala(sk); return; }
       var p2 = e.target.closest ? e.target.closest('.p2-opt') : null;
       if (p2) { pilihPick2(p2); return; }
@@ -264,7 +313,7 @@ var LakonAssessment = (function () {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       var t = document.activeElement;
       if (!t || !t.classList) return;
-      if (t.classList.contains('sk-btn')) { e.preventDefault(); pilihSkala(t); }
+      if (t.classList.contains('sk-btn') || t.classList.contains('ps-btn')) { e.preventDefault(); pilihSkala(t); }
       else if (t.classList.contains('p2-opt')) { e.preventDefault(); pilihPick2(t); }
     });
   }
@@ -275,7 +324,7 @@ var LakonAssessment = (function () {
     else if (sec === 'validity') jawaban.validity[id] = v;
     else jawaban.minat[id] = v;
 
-    var grup = btn.parentNode.querySelectorAll('.sk-btn');
+    var grup = btn.parentNode.querySelectorAll('.sk-btn, .ps-btn');
     for (var i = 0; i < grup.length; i++) {
       grup[i].classList.remove('sel');
       grup[i].setAttribute('aria-checked', 'false');
@@ -325,7 +374,8 @@ var LakonAssessment = (function () {
               : (it.sec === 'validity') ? jawaban.validity[it.id]
               : jawaban.minat[it.id];
         if (v === undefined) continue;
-        var b = document.querySelector('.sk-btn[data-id="' + it.id + '"][data-v="' + v + '"]');
+        var b = document.querySelector('.sk-btn[data-id="' + it.id + '"][data-v="' + v + '"], ' +
+                                       '.ps-btn[data-id="' + it.id + '"][data-v="' + v + '"]');
         if (b) { b.classList.add('sel'); b.setAttribute('aria-checked', 'true'); }
       }
     }

@@ -122,6 +122,7 @@ var LAKON_LABEL = {
     grafik:    { id: "Profil Minatmu",         en: "Your Interest Profile" },
     dimensi:   { id: "Empat Sumbu Caramu Bergerak", en: "Four Axes of How You Move" },
     industri:  { id: "Satu Industri, Enam Pintu Masuk", en: "One Industry, Six Ways In" },
+    perpaduan: { id: "Perpaduan Minatmu", en: "Your Interest Blend" },
     peran_tbl: { id: "Contoh Peran dalam Organisasi", en: "Example Roles in an Organisation" },
     langkah:   { id: "Tiga Langkah Berikutnya", en: "Three Next Steps" },
     dual:      { id: "Watak-mu Ada di Antara Dua", en: "Your Watak Sits Between Two" }

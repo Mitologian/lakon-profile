@@ -234,15 +234,17 @@ var LakonReport = (function () {
       sisa: 5
     });
 
-    // C · Peran & Arah
+    // C · Peran & Arah — kini memuat rantai empat tahap
     blokTerkunci.push({
       judul: lbl("paraga", "peran_khas") + " · " + lbl("paraga", "arah_karir"),
       tertutup: [
         bagian(lbl("paraga", "peran_khas"), blok(P.peran_khas)),
-        bagian(lbl("paraga", "arah_karir"), daftar(P.arah_karir)),
+        bagian(L() ? "Perpaduan Minatmu" : "Your Interest Blend", rantaiArah(skor)),
+        bagian(lbl("paraga", "arah_studi"), jurusan(skor)),
+        bagian(lbl("lain", "industri"), industri(skor, pilihIndustri(skor))),
         bagian(lbl("lain", "peran_tbl"), '<div id="rb-peran-slot"></div>')
       ].join(""),
-      sisa: 3
+      sisa: 5
     });
 
     // D · Titik Rawan & Pengembangan
@@ -257,6 +259,143 @@ var LakonReport = (function () {
     });
 
     return blokTerkunci;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     RANTAI ARAH — empat tahap
+       1 Bidang        Kelompok #1          (jangkar, paling stabil)
+       2 Perpaduan     Kelompok #1 × #2     (bisa dua kandidat)
+       3 Bentuk peran  Watak
+       4 Jurusan       dicocokkan dari perpaduan
+
+     Tahap 1 tidak dirender di sini karena sudah tampil di bagian gratis
+     sebagai "Situasi yang Kamu Cari". Mengulangnya membuat pembaca merasa
+     membaca hal yang sama dua kali.
+     ═══════════════════════════════════════════════════════════ */
+  function rantaiArah(skor) {
+    if (typeof LakonArah === "undefined") return "";
+    var r = LakonArah.rantai(skor, L() ? "id" : "en");
+    if (!r || !r.tahap2) return "";
+
+    var h = "";
+
+    function blokPerpaduan(t2, peran, utama) {
+      var x = '<div class="ar-perpaduan' + (utama ? "" : " ar-alt") + '">' +
+        '<div class="ar-kepala"><span class="ar-kode">' +
+          esc(skor.kelompok1) + " + " + esc(t2.kelompok2) + "</span>" +
+          '<span class="ar-label">' + esc(t2.label) + "</span></div>" +
+        '<p class="rb-p">' + esc(t2.apa) + "</p>" +
+        '<div class="ar-sub">' + esc(L() ? "Jenis pekerjaan yang muncul" : "The kind of work that emerges") + "</div>" +
+        '<ul class="rb-poin">';
+      for (var i = 0; i < t2.arah.length; i++) x += "<li>" + esc(t2.arah[i]) + "</li>";
+      x += "</ul>";
+
+      if (peran && peran.length) {
+        x += '<div class="ar-bentuk"><div class="ar-sub">' +
+             esc((L() ? "Bentuknya dengan Watak " : "Its shape with Watak ") + skor.watak) + "</div>" +
+             '<div class="ar-peran">';
+        for (var j = 0; j < peran.length; j++) x += '<span class="ar-chip">' + esc(peran[j]) + "</span>";
+        x += "</div></div>";
+      }
+      return x + "</div>";
+    }
+
+    h += blokPerpaduan(r.tahap2, r.tahap3 && r.tahap3.peran, true);
+
+    /* Dua kandidat saat jarak skor #2 ke #3 di bawah ambang. Pada simulasi
+       ini mengenai 30% peserta. Menampilkan satu perpaduan seolah pasti
+       adalah presisi palsu: perpaduan hanya bertahan 66% pada uji ulang,
+       jauh di bawah Kelompok #1 yang 81%. */
+    if (r.duaKandidat && r.tahap2alt) {
+      h += '<p class="ar-catatan">' + esc(LakonArah.catatanDuaKandidat(r, L() ? "id" : "en")) + "</p>";
+      h += blokPerpaduan(r.tahap2alt, r.tahap3 && r.tahap3.peranAlt, false);
+    }
+    return h;
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     JURUSAN — tiga larik
+     Vokasi diberi lariknya sendiri, bukan diselipkan di akhir daftar S1.
+     Kalau diselipkan, ia terbaca sebagai pilihan kelas dua, padahal
+     segmen ini justru yang paling jarang digarap di Indonesia.
+     ═══════════════════════════════════════════════════════════ */
+  function jurusan(skor) {
+    if (typeof LakonJurusan === "undefined") return "";
+    var j = LakonJurusan.cari(skor, {});
+    if (!j || j.kosong) return "";
+
+    function larik(judul, arr, cls) {
+      if (!arr || !arr.length) return "";
+      var x = '<div class="ju-larik ' + cls + '"><div class="ar-sub">' + esc(judul) + "</div>";
+      for (var i = 0; i < arr.length; i++) {
+        var a = arr[i];
+        x += '<div class="ju-item"><div class="ju-nama">' + esc(a.nama) +
+             '<span class="ju-jenjang">' + esc(a.jenjang) + "</span></div>" +
+             (a.arah ? '<div class="ju-arah">' + esc(a.arah) + "</div>" : "") +
+             (a.catatan ? '<div class="ju-catatan">' + esc(t(a.catatan)) + "</div>" : "") +
+             "</div>";
+      }
+      return x + "</div>";
+    }
+
+    return larik(L() ? "Arah utama" : "Main direction", j.inti, "ju-inti") +
+           larik(L() ? "Lewat minat keduamu" : "Through your second interest", j.nuansa, "ju-nuansa") +
+           larik(L() ? "Jalur vokasi" : "Vocational route", j.vokasi, "ju-vokasi") +
+           '<p class="ju-nota">' + esc(L()
+             ? "Daftar ini cocok dengan minatmu, bukan daftar yang sebaiknya kamu ambil. Biaya, jarak, nilai rapor, dan keadaan keluarga tidak diketahui alat ini, dan keempatnya sering lebih menentukan."
+             : "This list fits your interests; it is not a list of what you should take. Cost, distance, grades, and family circumstances are unknown to this tool, and those often matter more.") + "</p>";
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     MATRIKS INDUSTRI
+     Ditampilkan sebagai CARA MEMBACA, bukan katalog. Pintu peserta
+     ditandai, lima lainnya tetap terlihat, supaya peserta yang
+     industrinya tidak ada di daftar tetap bisa memakai polanya.
+     ═══════════════════════════════════════════════════════════ */
+  function industri(skor, kunci) {
+    if (typeof LAKON_INDUSTRI === "undefined") return "";
+    var ind = LAKON_INDUSTRI[kunci];
+    if (!ind) return "";
+    var KEL = ["Yasa", "Nalar", "Karya", "Bakti", "Karsa", "Tata"];
+
+    var h = '<div class="in-nama">' + esc(t(ind.nama)) + "</div>" +
+            '<p class="rb-p">' + esc(t(ind.pengantar)) + "</p>" +
+            '<div class="in-pintu">';
+
+    for (var i = 0; i < KEL.length; i++) {
+      var k = KEL[i], d = ind.pintu[k];
+      if (!d) continue;
+      var milik = (k === skor.kelompok1), kedua = (k === skor.kelompok2);
+      h += '<div class="in-kolom' + (milik ? " in-milik" : kedua ? " in-kedua" : "") + '">' +
+           '<div class="in-kepala">' + esc(k) +
+             (milik ? '<span class="in-tanda">' + esc(L() ? "pintumu" : "your door") + "</span>" : "") +
+             (kedua ? '<span class="in-tanda in-tanda-2">' + esc(L() ? "nuansa" : "nuance") + "</span>" : "") +
+           "</div>" +
+           '<div class="in-apa">' + esc(t(d.apa)) + "</div>" +
+           (milik || kedua ? '<div class="in-kenapa">' + esc(t(d.kenapa_nyaman)) + "</div>" : "") +
+           '<div class="in-contoh">' + esc(t(d.contoh).slice(0, milik ? 4 : 2).join(" · ")) + "</div>" +
+           "</div>";
+    }
+    h += "</div>";
+
+    if (ind.contoh_watak_dalam_pintu)
+      h += '<p class="in-watak">' + esc(t(ind.contoh_watak_dalam_pintu)) + "</p>";
+
+    h += '<p class="ju-nota">' + esc(L()
+      ? "Pola ini berlaku di industri mana pun. Kalau bidangmu tidak ada di sini, petakan sendiri: setiap industri punya pekerjaan membangun, menelusuri, mencipta, melayani, menggerakkan, dan menata."
+      : "This pattern holds in any industry. If your field is not listed, map it yourself: every industry has work that builds, investigates, creates, serves, drives, and orders.") + "</p>";
+    return h;
+  }
+
+  /* Industri mana yang ditampilkan. Dipilih dari yang pintu utamanya
+     paling sering diisi Kelompok peserta. Ini contoh penerapan, bukan
+     rekomendasi industri; polanya yang harus terbawa pulang. */
+  var PETA_INDUSTRI = {
+    Yasa: "konstruksi", Nalar: "kesehatan", Karya: "media",
+    Bakti: "pendidikan", Karsa: "ritel", Tata: "keuangan"
+  };
+  function pilihIndustri(skor) {
+    return PETA_INDUSTRI[skor.kelompok1] || "kuliner";
   }
 
   function daftar(o) {
@@ -321,6 +460,9 @@ var LakonReport = (function () {
     gratis: gratis,
     gratisLanjutan: gratisLanjutan,
     terkunci: terkunci,
+    rantaiArah: rantaiArah,
+    jurusan: jurusan,
+    industri: industri,
     blok: blok,
     bagian: bagian,
     daftar: daftar,

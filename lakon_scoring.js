@@ -119,7 +119,9 @@ var LakonScoring = (function () {
       v = answers[it.id];
       if (v === undefined || v === null) continue;
       v = Number(v);
-      if (it.reverse) v = -v;
+      /* Format berpasangan: nilai yang dikirim UI SUDAH relatif terhadap
+         kutub A, berapa pun urutan tampilnya. Tidak ada lagi `reverse`;
+         yang membalik posisi adalah UI lewat field `flip`, bukan datanya. */
       acc[it.dim].sum += v;
       acc[it.dim].n += 1;
       if (v === 2) acc[it.dim].extremeA++;
@@ -360,7 +362,29 @@ var LakonScoring = (function () {
      5. KUALITAS RESPONS  (item 1.10)
      Flag internal untuk analis. TIDAK ditampilkan ke peserta.
      ═══════════════════════════════════════════════════════════ */
-  function responseQuality(minatAnswers, validityItems, validityAnswers, meta) {
+  /* Pasangan konsistensi menggantikan attention check yang terlihat.
+     Dua item Watak yang isinya berdekatan ditaruh berjauhan dan ditandai
+     field `pasangan`. Kalau jawabannya bertolak belakang dan sama-sama
+     tegas, itu tanda menjawab asal, tanpa peserta pernah merasa diuji. */
+  function cekPasangan(watakItems, watakAnswers) {
+    var grup = {}, i, it, hasil = { diperiksa: 0, bertentangan: 0 };
+    for (i = 0; i < (watakItems || []).length; i++) {
+      it = watakItems[i];
+      if (!it.pasangan) continue;
+      (grup[it.pasangan] = grup[it.pasangan] || []).push(it.id);
+    }
+    for (var k in grup) {
+      if (!grup.hasOwnProperty(k) || grup[k].length !== 2) continue;
+      var a = Number(watakAnswers[grup[k][0]]), b = Number(watakAnswers[grup[k][1]]);
+      if (isNaN(a) || isNaN(b)) continue;
+      hasil.diperiksa++;
+      // bertentangan hanya kalau keduanya tegas dan berlawanan arah
+      if (a * b < 0 && Math.abs(a) === 2 && Math.abs(b) === 2) hasil.bertentangan++;
+    }
+    return hasil;
+  }
+
+  function responseQuality(minatAnswers, validityItems, validityAnswers, meta, watakItems, watakAnswers) {
     var flags = [], vals = [], k, i;
 
     for (k in minatAnswers) {
@@ -379,13 +403,10 @@ var LakonScoring = (function () {
     }
     if (maxRun >= CONFIG.QUALITY.maxRunLength) flags.push("long_run_" + maxRun);
 
-    // attention check
-    var failed = 0;
-    for (i = 0; i < (validityItems || []).length; i++) {
-      var vi = validityItems[i];
-      if (Number((validityAnswers || {})[vi.id]) !== Number(vi.expected)) failed++;
-    }
-    if (failed > 0) flags.push("attention_failed_" + failed);
+    // pasangan konsistensi di bank Watak
+    var pas = cekPasangan(watakItems, watakAnswers || {});
+    var failed = pas.bertentangan;
+    if (failed > 0) flags.push("pasangan_bertentangan_" + failed);
 
     // durasi
     var dur = (meta && meta.durationSec) || null;
@@ -397,6 +418,7 @@ var LakonScoring = (function () {
       sdLikert: round3(s),
       maxRun: maxRun,
       attentionFailed: failed,
+      pasanganDiperiksa: pas.diperiksa,
       durationSec: dur
     };
   }
@@ -408,7 +430,8 @@ var LakonScoring = (function () {
     var w  = scoreWatak(bank.watak, answers.watak || {});
     var m  = scoreMinat(bank.minat, answers.minat || {});
     var p2 = scorePick2(answers.pick2 || {});
-    var q  = responseQuality(answers.minat || {}, bank.validity, answers.validity || {}, answers.meta);
+    var q  = responseQuality(answers.minat || {}, bank.validity, answers.validity || {},
+                             answers.meta, bank.watak, answers.watak || {});
 
     // Urutkan Kelompok berdasarkan skor NORMATIF
     var order = CONFIG.KELOMPOK.slice().sort(function (a, b) {

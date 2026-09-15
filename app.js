@@ -37,7 +37,7 @@
    belakangan, setelah penyambungan terbukti jalan.
 ═══════════════════════════════════════════════════════════════════════════ */
 
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7SA2XRFwzda99-MaRgVWkzDqun86BmwKxlYZvGz5H9YWTVQkMjsKxgFA0zVXFLRck/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ4Yez1bc5K-COQCgCnqZWJGwHm6vx2n9tmyd25kBO9PcjqG6y1orDVxbRh64vysFv/exec";
 var URL_BATCH = new URLSearchParams(window.location.search).get("batch") || "General";
 var WA_LINK = "https://wa.me/6282126373601";
 
@@ -324,6 +324,29 @@ function htmlTerkunci(skor) {
    FIT_LABEL kini dwibahasa. Legenda hanya menampilkan tingkat yang
    benar-benar muncul; versi lama selalu memuat "Bisa" padahal
    blendPeran() membuangnya setiap kali ada Nuansa.                */
+function susunPratinjau(rows, batas) {
+  var out = [], dipakai = {}, i;
+
+  function ambil(uji) {
+    for (var j = 0; j < rows.length; j++) {
+      if (dipakai[j]) continue;
+      if (!uji(rows[j])) continue;
+      dipakai[j] = true; out.push(rows[j]); return true;
+    }
+    return false;
+  }
+
+  ambil(function (r) { return !r.isNuansa && r.fit === "ideal"; });
+  ambil(function (r) { return r.isNuansa; });
+  ambil(function (r) { return !r.isNuansa && r.fit === "cocok"; });
+
+  // lengkapi kalau salah satu jenis tidak tersedia
+  for (i = 0; i < rows.length && out.length < batas; i++)
+    if (!dipakai[i]) { dipakai[i] = true; out.push(rows[i]); }
+
+  return out.slice(0, batas);
+}
+
 var FIT_LABEL = {
   ideal: { id: "Ideal", en: "Ideal",    cls: "peran-ideal" },
   cocok: { id: "Cocok", en: "Strong",   cls: "peran-cocok" },
@@ -340,7 +363,17 @@ function htmlPeran(skor) {
     ? LakonNuansa.blendPeran(pd.posisi, nuPd.posisi, skor.kelompok2, lang)
     : { rows: pd.posisi.slice(), label: "" };
 
-  var tampil = blend.rows.slice(0, PERAN_PREVIEW);
+  /* Pratinjau TIDAK diambil dari tiga baris teratas begitu saja.
+     blendPeran() menaruh baris nuansa di posisi 7 dan 8, jadi memotong
+     tiga teratas membuat seluruh kerja mesin Nuansa tidak pernah terlihat
+     peserta, dan legendanya cuma memuat satu tingkat karena ketiganya
+     sama-sama "Ideal".
+
+     Pratinjau disusun sengaja: satu peran utama, satu peran nuansa yang
+     bertanda, dan satu peran bertingkat "Cocok". Dengan begitu peserta
+     melihat bahwa minat keduanya benar-benar mengubah daftar, dan melihat
+     bahwa tingkat kecocokan memang bergradasi. */
+  var tampil = susunPratinjau(blend.rows, PERAN_PREVIEW);
   var sisa = Math.max(0, blend.rows.length - tampil.length);
   var munculFit = {};
 
