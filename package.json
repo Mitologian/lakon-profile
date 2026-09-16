@@ -1,0 +1,9 @@
+{
+  "name": "lakon-profile",
+  "private": true,
+  "description": "Situs Lakon Career Profile. Proses build: terbitkan.sh (hanya berkas gratis ke dist/) lalu wrangler deploy.",
+  "scripts": {
+    "build": "bash terbitkan.sh",
+    "deploy": "npx wrangler deploy"
+  }
+}
