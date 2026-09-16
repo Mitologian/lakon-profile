@@ -27,6 +27,8 @@ lakon_watak_penuh.js lakon_paraga.js lakon_jurusan.js lakon_jurusan_match.js lak
 lakon_arah.js lakon_kelompok_content.js lakon_watak_content.js"
 
 echo "== LAKON terbitkan situs =="
+# pemicu build Cloudflare (16 Sep 2026)
+
 rm -rf "$KELUARAN"
 mkdir -p "$KELUARAN"
 
