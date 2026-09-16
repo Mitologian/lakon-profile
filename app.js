@@ -37,7 +37,7 @@
    belakangan, setelah penyambungan terbukti jalan.
 ═══════════════════════════════════════════════════════════════════════════ */
 
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQW18oeOwTvO541DIO32cSzQf31LEA72-Ui57q5Pp9vOCbIQO7Ky7o98xN2mZggocz/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ4Yez1bc5K-COQCgCnqZWJGwHm6vx2n9tmyd25kBO9PcjqG6y1orDVxbRh64vysFv/exec";
 var URL_BATCH = new URLSearchParams(window.location.search).get("batch") || "General";
 var WA_LINK = "https://wa.me/6282126373601";
 
@@ -82,7 +82,7 @@ function showResult(skor, dariServer) {
   set("rb-dimensi", htmlDimensi(skor));
   set("rb-tengah", LakonReport.gratisLanjutan(skor));
   set("r-langkah", htmlLangkah(skor));
-  set("rb-terkunci", htmlTerkunci(skor));
+  set("rb-terkunci", htmlLaporanLengkap(skor));
 
   if (typeof mountResultCard === "function") mountResultCard(skor.kelompok1, skor.watak);
   if (typeof mountRating === "function") mountRating(skor.kelompok1, skor.watak, dariServer);
@@ -136,14 +136,31 @@ function isiHero(skor) {
    padahal rentang normatifnya 40,4 poin.                        */
 function isiGrafik(skor) {
   var bar = skor.urutanKelompok.map(function (k, i) {
-    var w = Math.max(4, skor.indeksTampilan[k]);
+    /* Lebar isi = SKOR NORMATIF, bukan indeks tampilan.
+       Versi sebelumnya memakai indeksTampilan, yang memaksa skor tertinggi
+       jadi 100% sehingga bar teratas SELALU penuh berapa pun skornya.
+       Akibatnya peserta dengan skor puncak 52 dan yang 92 melihat bar yang
+       sama panjang, dan yang tersisa cuma peringkat, bukan tingkatnya.
+
+       Sekarang skor 87,5 mengisi 87,5% dari jalur, dan jalurnya selalu
+       selebar penuh supaya perbandingannya terbaca. */
+    var w = Math.max(3, Math.min(100, skor.skorNormatif[k]));
     var col = (typeof KELOMPOK_COLORS !== "undefined" && KELOMPOK_COLORS[k]) || { bar: "#888" };
     var nama = (typeof KELOMPOK_LABELS !== "undefined" && KELOMPOK_LABELS[k]) ? T(KELOMPOK_LABELS[k]) : k;
     var badge = i === 0 ? '<span class="graph-badge best">Best Fit</span>'
               : i === 1 ? '<span class="graph-badge good">Good Fit</span>' : "";
+    /* Skor terkoreksi: jarak dari rata-rata peserta itu sendiri.
+       Ini yang membuat perbedaannya terasa setajam latihan pick-2 di kelas,
+       tanpa merusak keabsahan skor normatifnya. Latihan kelas bersifat
+       ipsatif (zero-sum, satu bidang bisa nol), dan skornya tidak sah
+       dibandingkan antar orang; skor normatif di kiri yang sah. */
+    var c = skor.skorCentered ? skor.skorCentered[k] : null;
+    var ctxt = (c === null || c === undefined) ? "" :
+      '<span class="graph-centered">' + (c > 0 ? "+" : "") + c + "</span>";
+
     return '<div class="graph-row"><div class="graph-label">' + esc(nama) + " " + badge + "</div>" +
       '<div class="graph-track"><div class="graph-fill" style="width:' + w + "%;background:" + col.bar + '"></div></div>' +
-      '<div class="graph-pct" style="color:' + col.bar + '">' + skor.skorNormatif[k] + "</div></div>";
+      '<div class="graph-pct" style="color:' + col.bar + '">' + skor.skorNormatif[k] + ctxt + "</div></div>";
   }).join("");
 
   var d = skor.diferensiasi || { label: "Sedang" };
@@ -168,8 +185,8 @@ function isiGrafik(skor) {
   set("r-kelompok-graph",
     '<h3 class="rb-judul">' + esc(LBL("lain", "grafik")) + "</h3>" + hex +
     '<p class="graph-howto">' + (L()
-      ? "Angka di kanan adalah skor 0\u2013100 untuk tiap bidang, dihitung terpisah. Keenamnya tidak dibagi rata, jadi kamu bisa punya beberapa skor tinggi sekaligus."
-      : "The number on the right is a 0\u2013100 score for each field, computed independently. The six are not divided between them, so several can be high at once.") + "</p>" +
+      ? "Angka besar adalah skor 0\u2013100 untuk tiap bidang, dihitung terpisah, dan panjang bar mengikutinya. Keenamnya tidak dibagi rata, jadi kamu bisa punya beberapa skor tinggi sekaligus. Angka kecil di bawahnya menunjukkan jarak bidang itu dari rata-ratamu sendiri."
+      : "The large number is a 0\u2013100 score for each field, computed independently, and the bar length follows it. The six are not divided between them, so several can be high at once. The small number below shows how far that field sits from your own average.") + "</p>" +
     '<div class="graph-bars">' + bar + "</div>" +
     '<div class="graph-diff"><strong>' + (L() ? "Sebaran minat: " : "Interest spread: ") +
     esc(d.label) + "</strong><br>" + narasi + "</div>");
@@ -285,42 +302,124 @@ function htmlLangkah(skor) {
 }
 
 
-/* ── EMPAT BLOK TERKUNCI ──────────────────────────────────────
-   Blok A setengah terbuka: satu bagian tampil utuh sebagai bukti.
-   Tabel Peran Ideal disisipkan ke blok C, tiga baris tampil.
-   Sembilan blok tertutup rapat terbaca sebagai dinding; bukti
-   nyata lebih meyakinkan daripada rasa penasaran.                */
-function htmlTerkunci(skor) {
-  var blok = LakonReport.terkunci(skor);
-  if (!blok || !blok.length) return "";
+/* ── APA YANG ADA DI LAPORAN LENGKAP ────────────────────────
+   MENGGANTIKAN sistem blur sepenuhnya.
 
-  /* Tabel Peran disisipkan ke slot yang disediakan LakonReport, bukan
-     lewat pencocokan judul. Pencocokan judul rapuh: begitu labelnya
-     disunting di lakon_label.js, tabelnya hilang tanpa error apa pun. */
-  var slot = '<div id="rb-peran-slot"></div>';
-  if (blok[2].tertutup.indexOf(slot) >= 0)
-    blok[2].tertutup = blok[2].tertutup.replace(slot, htmlPeran(skor));
-  else console.warn("Slot tabel Peran tidak ditemukan di blok terkunci C.");
+   Blur itu palsu: isinya tetap dikirim ke browser dan bisa dibaca
+   siapa pun lewat Inspect Element atau View Source, tanpa perlu Ctrl+P.
+   Menyembunyikannya dengan CSS berarti mengaku sudah memberikannya.
 
-  var h = '<div class="locked-intro no-print"><div class="locked-intro-line"></div><span>' +
-    (L() ? "Empat bagian berikut ada di laporan lengkap" : "Four more sections are in the full report") +
-    '</span><div class="locked-intro-line"></div></div>';
+   Sekarang halaman peserta TIDAK MERENDER isi berbayar sama sekali.
+   Yang tampil hanya daftar apa yang ada di dalamnya. Dasbor analis yang
+   merendernya utuh, dan PDF berbayar dibuat dari sana.
 
-  for (var i = 0; i < blok.length; i++) {
-    var b = blok[i];
-    h += '<div class="rb-kunci' + (b.terbuka ? " rb-kunci-separuh" : "") + '">' +
-      '<div class="rb-kunci-h">' + esc(b.judul) + "</div>" +
-      (b.terbuka || "") +
-      '<div class="rb-kunci-isi">' + b.tertutup + "</div>" +
-      '<div class="rb-kunci-lock no-print"><span class="lock-icon">\ud83d\udd12</span> ' +
-      (L() ? b.sisa + " bagian lagi di laporan lengkap" : b.sisa + " more sections in the full report") +
+   Daftarnya sengaja SPESIFIK KE HASIL ORANGNYA, bukan kalimat umum.
+   "12 jurusan yang cocok dengan perpaduan Bakti dan Karya" membuat orang
+   penasaran; "dapatkan wawasan lebih mendalam" tidak membuat siapa pun
+   penasaran karena tidak menjanjikan apa pun yang bisa diperiksa.       */
+function htmlLaporanLengkap(skor) {
+  var kunci = skor.kelompok1 + "|" + skor.watak;
+  var P = (typeof LAKON_PARAGA_CONTENT !== "undefined") ? LAKON_PARAGA_CONTENT[kunci] : null;
+  var K = (typeof LAKON_KELOMPOK_CONTENT !== "undefined") ? LAKON_KELOMPOK_CONTENT[skor.kelompok1] : null;
+  var W = (typeof LAKON_WATAK_CONTENT !== "undefined") ? LAKON_WATAK_CONTENT[skor.watak] : null;
+
+  /* Angka nyata dari hasilnya sendiri.
+
+     LakonJurusan dan LakonArah TIDAK dimuat halaman peserta, karena isinya
+     berbayar. Jadi di sini keduanya selalu tidak terdefinisi dan angkanya
+     dilewati. Cabang ini tetap ada supaya fungsi yang sama bisa dipakai
+     dasbor analis, yang memuat keduanya.
+
+     Angka tidak pernah dikarang: kalau mesinnya tidak ada, kalimatnya
+     berubah jadi bentuk tanpa angka. */
+  var jml = { jurusan: 0, vokasi: 0, peran: 0 };
+  if (typeof LakonJurusan !== "undefined") {
+    var ju = LakonJurusan.cari(skor, {});
+    jml.jurusan = ju.inti.length + ju.nuansa.length;
+    jml.vokasi = ju.vokasi.length;
+  }
+  var perpaduan = null;
+  if (typeof LakonArah !== "undefined") {
+    var ar = LakonArah.rantai(skor, lang);
+    if (ar && ar.tahap2) {
+      perpaduan = ar.tahap2.label;
+      jml.peran = (ar.tahap3 && ar.tahap3.peran ? ar.tahap3.peran.length : 0) +
+                  (ar.tahap3 && ar.tahap3.peranAlt ? ar.tahap3.peranAlt.length : 0);
+    }
+  }
+
+  var isi = [
+    { judul: esc(skor.kelompok1) + " \u00b7 " + (L() ? "Bidang yang Menarikmu" : "The Field That Draws You"),
+      apa: L()
+        ? "Lima bagian tentang apa yang kamu nikmati, di mana kamu betah, apa yang mengisi energimu, cara kamu belajar, dan apa yang perlahan hilang kalau kamu bekerja di luar bidang ini."
+        : "Five sections on what you enjoy, where you are at home, what refills you, how you learn, and what slowly fades if you work outside this field.",
+      cuil: K && K.cuilan ? T(K.cuilan) : "" },
+
+    { judul: esc(skor.watak) + " \u00b7 " + (L() ? "Cara Kamu Bergerak" : "How You Operate"),
+      apa: L()
+        ? "Lima bagian tentang caramu mendekati pekerjaan, apa yang kamu bawa ke dalam tim, apa yang paling sering disalahpahami orang tentangmu, polamu saat tertekan, dan apa yang benar-benar mengembangkanmu."
+        : "Five sections on how you approach work, what you bring to a team, what people most often get wrong about you, your pattern under pressure, and what actually develops you.",
+      cuil: W && W.cuilan ? T(W.cuilan) : "" },
+
+    { judul: L() ? "Arah Karir & Studi" : "Career & Study Directions",
+      apa: (L() ? "Rantai penafsiran arah" : "The interpretive chain") +
+           (perpaduan ? (L() ? ", mulai dari perpaduan " : ", starting from the blend ") +
+             '<strong>' + esc(skor.kelompok1) + " + " + esc(skor.kelompok2) + "</strong>" : "") +
+           (L()
+             ? ", lalu bentuk perannya menurut Watak-mu, " +
+               (jml.jurusan ? "<strong>" + jml.jurusan + " jurusan</strong> yang cocok dengan perpaduan itu" : "daftar jurusan yang cocok") +
+               (jml.vokasi ? " ditambah <strong>" + jml.vokasi + " jalur vokasi</strong>" : "") +
+               ", dan satu industri dipetakan jadi enam pintu masuk."
+             : ", then the shape of the role for your Watak, " +
+               (jml.jurusan ? "<strong>" + jml.jurusan + " study programmes</strong> matching that blend" : "matching study programmes") +
+               (jml.vokasi ? " plus <strong>" + jml.vokasi + " vocational routes</strong>" : "") +
+               ", and one industry mapped into six ways in."),
+      /* Cuilan ini TIDAK memakai isi berbayar: nama kedua Kelompok sudah
+         tampil di grafik minat yang gratis. Yang dijanjikan adalah apa
+         yang muncul dari pertemuan keduanya, dan itu yang dibayar. */
+      cuil: (L()
+        ? "Perpaduan " + skor.kelompok1 + " dan " + skor.kelompok2 +
+          " menghasilkan jenis pekerjaan tersendiri, berbeda dari " +
+          skor.kelompok1 + " yang berpadu dengan bidang lain."
+        : "The blend of " + skor.kelompok1 + " and " + skor.kelompok2 +
+          " produces its own kind of work, different from " + skor.kelompok1 +
+          " blended with any other field.") },
+
+    { judul: L() ? "Titik Rawan & Langkah Pengembangan" : "Blind Spots & Development Steps",
+      apa: L()
+        ? "Peran yang terlihat cocok untukmu tapi sebenarnya tidak, kebiasaan yang menghambatmu, dan <strong>enam langkah</strong> yang bisa kamu mulai minggu depan. Bukan saran umum seperti tingkatkan kepercayaan diri, melainkan perilaku yang jelas bentuknya."
+        : "Roles that look right for you but are not, the habit holding you back, and <strong>six steps</strong> you can start next week. Not generic advice like build your confidence, but behaviour with a clear shape.",
+      cuil: P && P.cuilan ? T(P.cuilan) : "" }
+  ];
+
+  var h = '<div class="ll-wrap">' +
+    '<div class="ll-kepala">' +
+      '<div class="ll-judul">' + (L() ? "Yang ada di laporan lengkap" : "What the full report contains") + "</div>" +
+      '<p class="ll-lead">' + (L()
+        ? "Bagian di atas sudah cukup untuk mengenali dirimu. Empat bagian berikut untuk memutuskan langkah berikutnya."
+        : "What you read above is enough to recognise yourself. The four sections below are for deciding what to do next.") + "</p>" +
+    "</div>";
+
+  for (var i = 0; i < isi.length; i++) {
+    h += '<div class="ll-blok">' +
+      '<div class="ll-nomor">' + (i + 1) + "</div>" +
+      '<div class="ll-isi">' +
+        '<div class="ll-h">' + isi[i].judul + "</div>" +
+        '<p class="ll-apa">' + isi[i].apa + "</p>" +
+        (isi[i].cuil ? '<div class="ll-cuil">\u201c' + esc(isi[i].cuil) + '\u201d</div>' : "") +
       "</div></div>";
   }
-  return h;
+
+  return h + "</div>";
 }
 
-
 /* ── TABEL PERAN IDEAL ────────────────────────────────────────
+   TIDAK DIPAKAI halaman peserta: PERAN_IDEAL sudah pindah ke
+   lakon_peran_penuh.js yang hanya dimuat analyst.html. Fungsinya
+   dipertahankan karena dasbor analis memanggilnya lewat LakonReport.
+   Pada halaman peserta, PERAN_IDEAL tidak terdefinisi dan fungsinya
+   mengembalikan string kosong.
+
    FIT_LABEL kini dwibahasa. Legenda hanya menampilkan tingkat yang
    benar-benar muncul; versi lama selalu memuat "Bisa" padahal
    blendPeran() membuangnya setiap kali ada Nuansa.                */

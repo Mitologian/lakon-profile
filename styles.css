@@ -932,28 +932,11 @@ ul, ol { list-style: none; }
   font-weight: 800; flex-shrink: 0; margin-top: 1px;
 }
 
-/* Blur / lock */
-.result-blurred { position: relative; }
-.result-blurred .result-text {
-  filter: blur(5px); user-select: none; pointer-events: none;
-}
-.blur-lock {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  gap: 8px;
-  background: linear-gradient(
-    to bottom, rgba(250,247,242,0) 0%,
-    rgba(250,247,242,.88) 35%,
-    rgba(250,247,242,1) 70%
-  );
-}
-.lock-icon { font-size: 20px; }
-.lock-text {
-  font-size: 14px; font-weight: 600;
-  color: var(--mid); text-align: center;
-  max-width: 280px; line-height: 1.45;
-}
+/* Sistem blur versi pertama (.result-blurred, .blur-lock) DIHAPUS.
+   Sudah tidak dirujuk sejak halaman hasil v4, dan membiarkannya berarti
+   menyimpan cara menyembunyikan isi secara visual sementara isinya tetap
+   ada di DOM. Penggantinya .ll-* : isi berbayar tidak dirender sama
+   sekali di halaman peserta. */
 
 /* Upsell */
 .upsell-section {
@@ -1708,22 +1691,7 @@ ul, ol { list-style: none; }
    Bagian terkunci ikut dicetak sebagai teaser, tapi navigasi dan
    ajakan beli dibuang supaya hasil cetak terbaca sebagai dokumen,
    bukan sebagai halaman jualan.                                   */
-@media print {
-  .no-print, .nav, .upsell-section, .blur-lock, .halfopen-lock,
-  .locked-intro, .dual-watak-cta { display: none !important; }
 
-  body { background: #fff; }
-  .screen { display: none !important; }
-  #screen-result { display: block !important; }
-
-  .result-section, .result-graph, .result-next {
-    break-inside: avoid; page-break-inside: avoid;
-    background: #fff !important; border: none !important;
-  }
-  .result-blurred { filter: none !important; opacity: .55; }
-  .result-hero { background: #fff !important; color: #000 !important; }
-  a[href]::after { content: ""; }
-}
 
 /* ═══════════════════════════════════════════════════════════════════════════
    TAMBAHAN v4 — PERENDER TIGA LAPIS
@@ -1852,29 +1820,15 @@ ul, ol { list-style: none; }
 }
 .rb-langkah-p { font-size: 13.5px; line-height: 1.6; color: var(--mid); }
 
-/* ── Blok terkunci ───────────────────────────────────────────
-   Empat blok, bukan sembilan. Yang pertama setengah terbuka:
-   satu bagian tampil utuh sebagai bukti. Sembilan blok tertutup
-   rapat terbaca sebagai dinding, bukan sebagai rasa penasaran. */
-.rb-kunci {
-  position: relative; margin-bottom: 22px;
-  border: 1px solid var(--border); border-radius: 16px;
-  padding: 20px 18px 0; overflow: hidden;
-}
-.rb-kunci-h {
-  font-size: 15px; font-weight: 700; color: var(--ink); margin-bottom: 16px;
-}
-.rb-kunci-isi {
-  filter: blur(4.5px); opacity: .5; pointer-events: none;
-  user-select: none; max-height: 260px; overflow: hidden;
-}
-.rb-kunci-separuh .rb-kunci-isi { max-height: 200px; }
-.rb-kunci-lock {
-  position: relative; margin: -46px -18px 0; padding: 26px 18px 18px;
-  background: linear-gradient(to bottom, rgba(255,255,255,0), var(--white) 55%);
-  text-align: center; font-size: 13px; font-weight: 600; color: var(--mid);
-}
-.rb-kunci-lock .lock-icon { margin-right: 5px; }
+/* ── Blok terkunci: DIHAPUS ───────────────────────────────────
+   Sistem blur dibuang seluruhnya. Blur itu palsu: isinya tetap
+   dikirim ke browser dan bisa dibaca lewat Inspect Element atau
+   View Source, tanpa perlu Ctrl+P. Menyembunyikannya dengan CSS
+   sama saja mengaku sudah memberikannya.
+
+   Penggantinya .ll-* di bawah: halaman peserta tidak merender isi
+   berbayar sama sekali, hanya daftar apa yang ada di dalamnya.
+   Lihat blok "APA YANG ADA DI LAPORAN LENGKAP" di akhir berkas.  */
 
 /* ── Ponsel ──────────────────────────────────────────────────── */
 @media (max-width: 420px) {
@@ -1885,11 +1839,7 @@ ul, ol { list-style: none; }
 }
 
 /* ── Cetak ───────────────────────────────────────────────────── */
-@media print {
-  .rb-kunci-isi { filter: none; opacity: .55; max-height: none; }
-  .rb-kunci-lock { display: none !important; }
-  .rb-bagian, .rb-kunci { break-inside: avoid; page-break-inside: avoid; }
-}
+
 
 /* ═══════════════════════════════════════════════════════════════════════════
    HEKSAGON RIASEC
@@ -1943,7 +1893,7 @@ ul, ol { list-style: none; }
 .hex-ket strong { color: var(--ink); }
 
 @media (max-width: 420px) { .hex-wrap { max-width: 260px; } }
-@media print { .hex-area { fill-opacity: .1; } }
+
 
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -2139,4 +2089,199 @@ ul, ol { list-style: none; }
   .in-pintu { grid-template-columns: 1fr 1fr; }
   .ar-label { font-size: 15px; }
   .ar-chip { font-size: 12.5px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GRAFIK MINAT — PENYESUAIAN v4.1
+
+   Panjang bar kini mengikuti SKOR NORMATIF, bukan indeks tampilan.
+   Versi sebelumnya memaksa skor tertinggi jadi 100%, sehingga bar teratas
+   selalu penuh berapa pun skornya: peserta dengan puncak 52 dan yang 92
+   melihat bar yang sama panjang. Yang tersisa cuma peringkat, bukan tingkat.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Jalur selalu selebar penuh supaya isian bisa dibandingkan antar baris. */
+.graph-track { width: 100%; }
+
+/* Skor terkoreksi: jarak bidang itu dari rata-rata peserta sendiri.
+   Ditaruh kecil di bawah angka utama, karena ini bacaan kedua, bukan
+   angka yang harus dibandingkan antar orang. */
+.graph-centered {
+  display: block; font-size: 10.5px; font-weight: 600;
+  color: var(--light); margin-top: 1px; letter-spacing: -.01em;
+}
+.graph-pct { line-height: 1.15; text-align: right; min-width: 46px; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CETAK / PDF
+   Menggantikan tiga blok @media print yang terpisah sebelumnya.
+
+   ⚠ KEBOCORAN YANG DIPERBAIKI DI SINI
+   Aturan lama memuat  .rb-kunci-isi { filter: none; opacity: .55 }  di dalam
+   @media print. Artinya siapa pun bisa menekan Ctrl+P di halaman gratis dan
+   mendapat SELURUH bagian berbayar sebagai PDF. Seluruh paywall bisa dilewati
+   dengan satu pintasan papan ketik.
+
+   Sekarang bagian terkunci DISEMBUNYIKAN saat mencetak, kecuali body punya
+   kelas `laporan-penuh`. Kelas itu dipasang dasbor analis, jadi PDF lengkap
+   dibuat dari sisi Dedy dan dikirim ke pembeli, bukan diunduh sendiri oleh
+   peserta yang belum membayar.
+
+   KENAPA print-color-adjust WAJIB
+   Browser membuang warna latar saat mencetak secara bawaan. Seluruh laporan
+   ini bergantung pada blok berwarna: kotak amber untuk kalimat sorot, hijau
+   untuk "menumbuhkan", linen untuk "melayukan", arsiran heksagon, dan bar
+   grafik minat. Tanpa aturan ini, PDF-nya keluar putih abu-abu dan terlihat
+   seperti dokumen mentah, bukan laporan yang dibayar.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@page {
+  size: A4 portrait;
+  margin: 16mm 14mm 18mm;
+}
+
+@media print {
+
+  /* ── Warna dipertahankan ──────────────────────────────────── */
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html, body { background: #fff !important; font-size: 10.5pt; }
+
+  /* ── Yang tidak ikut tercetak ─────────────────────────────── */
+  .no-print, .nav, .upsell-section, .locked-intro,
+  .dual-watak-cta, .toast,
+  button, .lang-toggle, .rating-block { display: none !important; }
+
+  .screen { display: none !important; }
+  #screen-result { display: block !important; }
+
+  /* ── Isi berbayar ──────────────────────────────────────────
+     Tidak perlu disembunyikan di sini lagi: halaman peserta memang
+     TIDAK MERENDERNYA. Yang ada cuma daftar .ll-*, dan itu memang
+     boleh ikut tercetak sebagai ajakan.
+
+     Dasbor analis merender isi lengkapnya dan memasang kelas
+     `laporan-penuh` saat mencetak, sehingga PDF berbayar dibuat dari
+     sana lalu dikirim ke pembeli. */
+  body.laporan-penuh .rb-kunci-h {
+    font-size: 13pt; padding-bottom: 6pt; margin-bottom: 10pt;
+    border-bottom: 1.5pt solid var(--amber);
+  }
+  body.laporan-penuh .ll-wrap { display: none !important; }
+
+  /* ── Sampul ───────────────────────────────────────────────
+     Hero jadi halaman sampul yang berdiri sendiri. Tanpa ini,
+     nama Paraga berdesakan dengan grafik di halaman pertama. */
+  .result-hero {
+    background: #fff !important; color: var(--ink) !important;
+    padding: 26mm 0 0 !important; text-align: left;
+    break-after: page; page-break-after: always;
+    border-bottom: none !important;
+  }
+  .result-hero-inner { display: block !important; }
+  .result-illus { display: none !important; }
+  .result-eyebrow { font-size: 10pt; letter-spacing: .12em; }
+  .result-name { font-size: 34pt !important; line-height: 1.05; margin: 4mm 0 2mm; }
+  .result-sub  { font-size: 14pt !important; }
+  .result-hero::after {
+    content: "Lakon™ Career Profile · Mitologi Inspira";
+    display: block; margin-top: 40mm;
+    font-size: 9pt; color: var(--light); letter-spacing: .06em;
+  }
+
+  /* ── Pemenggalan halaman ──────────────────────────────────
+     Yang tidak boleh terpotong: satu bagian utuh, satu kartu
+     perpaduan, satu baris tabel, satu langkah pengembangan. */
+  .rb-bagian, .rb-lapis, .result-graph, .result-next,
+  .ar-perpaduan, .ju-item, .in-kolom, .dim2-block,
+  .langkah-item, .rb-langkah li, .peran-row, .rb-dua, .rb-sub {
+    break-inside: avoid; page-break-inside: avoid;
+  }
+  .rb-lapis { break-before: page; page-break-before: always; }
+  .rb-lapis:first-of-type { break-before: auto; page-break-before: auto; }
+  .rb-judul { break-after: avoid; page-break-after: avoid; }
+
+  /* ── Penyesuaian elemen ───────────────────────────────────── */
+  .result-body { max-width: none; padding: 0; }
+  .graph-track { border: .5pt solid var(--border); }
+  .hex-wrap { max-width: 68mm; margin: 0 auto 6mm; }
+  .hex-area { fill-opacity: .16; }
+  .peran-table-wrap { overflow: visible; }
+  .rb-kunci-isi { overflow: visible; }
+
+  /* Tautan tidak perlu mencetak alamatnya; laporan ini dibaca
+     di atas kertas, bukan diklik. */
+  a[href]::after { content: "" !important; }
+  a { color: var(--ink) !important; text-decoration: none !important; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   APA YANG ADA DI LAPORAN LENGKAP
+   Menggantikan sistem blur sepenuhnya.
+
+   KENAPA BUKAN BLUR
+   Blur menyembunyikan secara visual, bukan secara nyata: isinya tetap dikirim
+   ke browser dan bisa dibaca lewat Inspect Element, View Source, atau Ctrl+P.
+   Selain bocor, blur juga terbaca murah — seperti menunjukkan sesuatu sambil
+   menutupinya dengan tangan.
+
+   Sekarang halaman peserta tidak merender isi berbayar sama sekali. Yang
+   tampil daftar isinya, dan daftarnya SPESIFIK ke hasil orangnya: nama
+   perpaduannya, jumlah jurusan yang cocok, dan satu kalimat cuilan dari tiap
+   bagian. Yang membuat penasaran adalah janji yang bisa diperiksa, bukan
+   kalimat seperti "dapatkan wawasan lebih mendalam".
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ll-wrap {
+  margin-top: 34px; padding: 26px 22px 24px;
+  background: var(--linen); border-radius: 18px;
+}
+.ll-kepala { margin-bottom: 20px; }
+.ll-judul { font-size: 19px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+.ll-lead {
+  font-size: 14px; line-height: 1.65; color: var(--mid);
+  margin: 0; max-width: 56ch;
+}
+
+.ll-blok { display: flex; gap: 13px; margin-bottom: 18px; }
+.ll-blok:last-child { margin-bottom: 0; }
+.ll-nomor {
+  flex: none; width: 26px; height: 26px; border-radius: 50%;
+  background: var(--amber); color: var(--white);
+  font-size: 12.5px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; margin-top: 1px;
+}
+.ll-isi { flex: 1; min-width: 0; }
+.ll-h { font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 5px; }
+.ll-apa {
+  font-size: 13.5px; line-height: 1.65; color: var(--ink-2);
+  margin: 0; max-width: 60ch;
+}
+.ll-apa strong { color: var(--amber-dk); font-weight: 700; }
+
+/* Cuilan: satu kalimat asli dari bagian yang terkunci. Satu kalimat cukup
+   membuat penasaran; lebih dari itu sudah memberikan bagiannya. */
+.ll-cuil {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 14px; line-height: 1.6; color: var(--ink);
+  margin-top: 9px; padding: 10px 13px;
+  background: var(--white); border-radius: 11px;
+  border-left: 3px solid var(--amber); max-width: 58ch;
+}
+
+@media (max-width: 420px) {
+  .ll-wrap { padding: 20px 16px; }
+  .ll-blok { gap: 10px; }
+  .ll-judul { font-size: 17px; }
+  .ll-h { font-size: 14.5px; }
+}
+
+/* Daftar ini BOLEH ikut tercetak: ia ajakan, bukan isi berbayar.
+   Disembunyikan hanya pada PDF lengkap yang dicetak dasbor analis. */
+@media print {
+  .ll-wrap { background: none; border: 1pt solid var(--border); break-inside: avoid; }
+  .ll-cuil { background: var(--linen); }
 }

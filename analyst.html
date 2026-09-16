@@ -129,6 +129,17 @@
     background: #fff; border-radius: 18px; max-width: 760px; width: 100%;
     padding: 26px 24px 34px; position: relative;
   }
+  .an-cetak {
+    position: absolute; top: 16px; right: 52px;
+    padding: 7px 14px; font-size: 12.5px; font-weight: 600; font-family: inherit;
+    background: var(--amber, #C17A3C); color: #fff;
+    border: none; border-radius: 9px; cursor: pointer;
+  }
+  @media print {
+    .an-modal { position: static; background: none; padding: 0; display: block !important; }
+    .an-modal-box { box-shadow: none; padding: 0; max-width: none; }
+    .an-cetak, .an-modal-x, .an-top, .an-stats, .an-filter, .an-tabel-wrap { display: none !important; }
+  }
   .an-modal-x {
     position: absolute; top: 16px; right: 18px; border: none; background: none;
     font-size: 24px; color: var(--light,#9A9086); cursor: pointer; line-height: 1;
@@ -202,6 +213,7 @@
 <div class="an-modal" id="an-modal" onclick="if(event.target===this)tutupModal()">
   <div class="an-modal-box">
     <button class="an-modal-x" onclick="tutupModal()">&times;</button>
+    <button class="an-cetak" onclick="cetakPenuh()">Cetak PDF lengkap</button>
     <div id="an-modal-isi"></div>
   </div>
 </div>
@@ -212,9 +224,17 @@
 -->
 <script src="lakon_label.js"></script>
 <script src="lakon_content.js"></script>
-<script src="lakon_kelompok_content.js"></script>
-<script src="lakon_watak_content.js"></script>
-<script src="lakon_paraga.js"></script>
+
+<!-- Gratis lebih dulu, lalu _penuh menempelkan field berbayarnya.
+     Urutan ini menentukan: berkas _penuh menolak jalan kalau pasangan
+     gratisnya belum dimuat. -->
+<script src="lakon_kelompok_gratis.js"></script>
+<script src="lakon_watak_gratis.js"></script>
+<script src="lakon_paraga_gratis.js"></script>
+<script src="lakon_kelompok_penuh.js"></script>
+<script src="lakon_watak_penuh.js"></script>
+<script src="lakon_paraga_penuh.js"></script>
+<script src="lakon_peran_penuh.js"></script>
 <script src="lakon_nuansa.js"></script>
 <script src="lakon_jurusan.js"></script>
 <script src="lakon_jurusan_match.js"></script>
@@ -231,7 +251,7 @@
    aksi publik dari aksi istimewa dan menolak semua aksi istimewa
    tanpa token yang sah.
    ═══════════════════════════════════════════════════════════ */
-var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzQW18oeOwTvO541DIO32cSzQf31LEA72-Ui57q5Pp9vOCbIQO7Ky7o98xN2mZggocz/exec";
+var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZ4Yez1bc5K-COQCgCnqZWJGwHm6vx2n9tmyd25kBO9PcjqG6y1orDVxbRh64vysFv/exec";
 
 var lang = "id";                 // dibutuhkan LakonReport
 var TOKEN = null;                // token sesi, di memori saja
@@ -490,6 +510,19 @@ function bukaDetail(i) {
     isiNaskah;
 
   el("an-modal").classList.add("on");
+}
+
+/* Cetak laporan LENGKAP, termasuk bagian yang terkunci bagi peserta.
+   Kelas `laporan-penuh` pada <body> yang membukanya; tanpa kelas itu,
+   aturan @media print menyembunyikan seluruh bagian terkunci.
+
+   PDF berbayar dibuat dari sisi analis dan dikirim ke pembeli, bukan
+   diunduh sendiri oleh peserta. Versi lama membiarkan siapa pun menekan
+   Ctrl+P di halaman gratis dan mendapat seluruh isi berbayar. */
+function cetakPenuh() {
+  document.body.classList.add("laporan-penuh");
+  window.print();
+  setTimeout(function () { document.body.classList.remove("laporan-penuh"); }, 800);
 }
 
 function tutupModal() { el("an-modal").classList.remove("on"); }

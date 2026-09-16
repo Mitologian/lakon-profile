@@ -95,9 +95,9 @@
           </svg>
         </button>
         <span class="hero-meta"
-          data-id="Gratis · Tanpa pendaftaran · ~20 menit"
-          data-en="Free · No sign-up · ~20 minutes">
-          Gratis · Tanpa pendaftaran · ~20 menit
+          data-id="Gratis · Tanpa pendaftaran · ~18 menit"
+          data-en="Free · No sign-up · ~18 minutes">
+          Gratis · Tanpa pendaftaran · ~18 menit
         </span>
       </div>
       <!-- Hero image: mix-blend-mode removes black bg, white lineart shows on orange -->
@@ -114,7 +114,7 @@
           <div class="hero-stat-l" data-id="Pertanyaan" data-en="Questions">Pertanyaan</div>
         </div>
         <div class="hero-stat">
-          <div class="hero-stat-n">~20</div>
+          <div class="hero-stat-n">~18</div>
           <div class="hero-stat-l" data-id="Menit" data-en="Minutes">Menit</div>
         </div>
         <div class="hero-stat">
@@ -419,7 +419,7 @@
         </svg>
       </span>
     </button>
-    <span class="cta-note" data-id="Gratis · ~20 menit · 24 Paraga" data-en="Free · ~20 minutes · 24 Profiles">Gratis · ~20 menit · 24 Paraga</span>
+    <span class="cta-note" data-id="Gratis · ~18 menit · 24 Paraga" data-en="Free · ~18 minutes · 24 Profiles">Gratis · ~18 menit · 24 Paraga</span>
     <p class="cta-pricing-note"
       data-id="Hasil dasar dan profil Paraga-mu gratis selamanya. Laporan lengkap tersedia berbayar, dan kamu bisa memutuskan setelah melihat hasilnya."
       data-en="Your baseline result and Paraga profile are free forever. A full report is available paid, and you decide only after seeing your result.">
@@ -628,6 +628,17 @@ function handleUpsell(type, channel) {
 </script>
 
 <!--
+  ⚠ HALAMAN PESERTA HANYA MEMUAT BERKAS GRATIS.
+
+  Berkas berbayar (_penuh, lakon_arah, lakon_jurusan, lakon_industri,
+  lakon_peran_penuh) TIDAK dimuat di sini dan tidak boleh ditambahkan.
+  Selama sebuah berkas dimuat halaman ini, isinya bisa diunduh siapa pun
+  lewat namasitus.pages.dev/nama_berkas.js — blur maupun tidak-merender
+  di DOM keduanya tidak menghalangi itu.
+
+  Laporan berbayar dirender analyst.html, yang memuat kedua kelompok
+  berkas, lalu dicetak jadi PDF dan dikirim ke pembeli.
+
   URUTAN MUAT MENENTUKAN.
 
   1. lakon_label.js lebih dulu: dibaca lakon_report.js dan app.js.
@@ -642,9 +653,9 @@ function handleUpsell(type, channel) {
 <script src="lakon_label.js"></script>
 
 <script src="lakon_content.js"></script>
-<script src="lakon_kelompok_content.js"></script>
-<script src="lakon_watak_content.js"></script>
-<script src="lakon_paraga.js"></script>
+<script src="lakon_kelompok_gratis.js"></script>
+<script src="lakon_watak_gratis.js"></script>
+<script src="lakon_paraga_gratis.js"></script>
 
 <script src="lakon_items_watak.js"></script>
 <script src="lakon_items_minat.js"></script>
@@ -654,10 +665,6 @@ function handleUpsell(type, channel) {
 <script src="lakon_assessment.js"></script>
 
 <script src="lakon_nuansa.js"></script>
-<script src="lakon_jurusan.js"></script>
-<script src="lakon_jurusan_match.js"></script>
-<script src="lakon_industri.js"></script>
-<script src="lakon_arah.js"></script>
 <script src="lakon_hexagon.js"></script>
 <script src="lakon_report.js"></script>
 
