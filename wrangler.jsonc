@@ -1,0 +1,9 @@
+{
+  // Konfigurasi terbit Lakon Career Profile di Cloudflare.
+  // Nama WAJIB sama dengan nama proyek di Cloudflare, kalau tidak akan terbentuk proyek kedua.
+  "name": "lakon-profile",
+  "compatibility_date": "2026-09-01",
+  // Hanya folder hasil terbit (dibuat oleh terbitkan.sh) yang dilayani publik.
+  // Berkas isi berbayar dan analyst.html tidak pernah masuk ke folder itu.
+  "assets": { "directory": "dist" }
+}
