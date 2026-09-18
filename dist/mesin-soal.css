@@ -1,0 +1,175 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MESIN SOAL — penyambung antara mesin asesmen dan desain asesmen Lakon
+   Dipasang Lapis, 18 Sep 2026.
+
+   Mengapa berkas ini ada: mesin asesmen (lakon_assessment.js) menghasilkan
+   penanda sendiri (.q-text, .skala5, .sk-btn, .pasangan, .p2-opt). Berkas ini
+   memberi penanda itu tampilan yang sama dengan desain (aset krem, kartu
+   membulat, aksen clay), tanpa mengubah mesin maupun asesmen.css.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Layar: hanya satu yang tampil (dipakai app.js) ─────────────────────── */
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* ── Nomor & pertanyaan ─────────────────────────────────────────────────── */
+.q-container { max-width: 780px; margin: 0 auto; }
+.q-block + .q-block { margin-top: 40px; padding-top: 34px; border-top: 1px solid var(--garis-halus); }
+.q-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 34px; height: 34px; padding: 0 10px; margin-bottom: 14px;
+  border-radius: 999px; background: var(--clay-muda); color: var(--clay-gelap);
+  font: 600 15px/1 var(--sans); letter-spacing: .02em;
+}
+.q-text, .q-tanya {
+  font-family: var(--serif); font-size: clamp(1.35rem, 2.6vw, 1.9rem);
+  line-height: 1.32; color: var(--tinta); margin: 0 0 26px;
+}
+.q-tanya { font-size: clamp(1.15rem, 2vw, 1.45rem); color: var(--teks); margin-bottom: 20px; }
+
+/* ── Format A · lima titik (skala) ──────────────────────────────────────── */
+.skala5 { display: grid; gap: 12px; grid-template-columns: minmax(0, 1fr); }
+.sk-btn {
+  display: flex; align-items: center; gap: 16px; width: 100%; text-align: left;
+  background: var(--krem-terang); border: 2px solid var(--garis); border-radius: 16px;
+  padding: 18px 22px; font: 400 17px/1.45 var(--sans); color: var(--tinta);
+  cursor: pointer; transition: background-color .15s ease, border-color .15s ease, transform .1s ease;
+  min-height: 60px;
+}
+.sk-btn:hover { border-color: var(--garis-tebal); }
+.sk-btn:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+.sk-btn.sel, .ps-btn.sel { background: var(--clay-muda); border-color: var(--clay); font-weight: 500; }
+.sk-btn .sk-dot {
+  width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%;
+  border: 2px solid var(--garis-tebal); background: transparent; transition: all .15s ease;
+}
+.sk-btn.sel .sk-dot { border-color: var(--clay); background: var(--clay); box-shadow: inset 0 0 0 3px var(--krem-terang); }
+@media (min-width: 720px) { .skala5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .sk-btn { flex-direction: column; align-items: flex-start; gap: 10px; font-size: 15px; } }
+
+/* ── Format B · pasangan: dua pernyataan + lima titik kecenderungan ─────── */
+.pasangan { display: grid; gap: 14px; }
+@media (min-width: 720px) { .pasangan { grid-template-columns: 1fr 1fr; } }
+.ps-sisi {
+  background: var(--krem-terang); border: 2px solid var(--garis); border-radius: 16px;
+  padding: 22px; font: 400 17px/1.5 var(--sans); color: var(--tinta);
+  min-height: 96px; display: flex; align-items: center;
+}
+.ps-skala { display: grid; gap: 10px; margin-top: 18px; }
+@media (min-width: 720px) { .ps-skala { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+.ps-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+  background: var(--krem-terang); border: 2px solid var(--garis); border-radius: 14px;
+  padding: 14px 16px; font: 400 15px/1.4 var(--sans); color: var(--tinta);
+  cursor: pointer; min-height: 56px; transition: background-color .15s ease, border-color .15s ease;
+}
+.ps-btn:hover { border-color: var(--garis-tebal); }
+.ps-btn:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+.ps-btn .ps-dot {
+  width: 16px; height: 16px; flex-shrink: 0; border-radius: 50%;
+  border: 2px solid var(--garis-tebal); transition: all .15s ease;
+}
+.ps-btn.ps-kuat .ps-dot { border-width: 3px; }
+.ps-btn.sel .ps-dot { border-color: var(--clay); background: var(--clay); box-shadow: inset 0 0 0 3px var(--krem-terang); }
+
+/* ── Format C · pilih dua kegiatan ──────────────────────────────────────── */
+.pick2-grid { display: grid; gap: 12px; }
+@media (min-width: 720px) { .pick2-grid { grid-template-columns: 1fr 1fr; } }
+.p2-opt {
+  text-align: left; background: var(--krem-terang); border: 2px solid var(--garis);
+  border-radius: 16px; padding: 18px 20px; font: 400 16px/1.45 var(--sans); color: var(--tinta);
+  cursor: pointer; min-height: 64px; transition: background-color .15s ease, border-color .15s ease;
+}
+.p2-opt:hover { border-color: var(--garis-tebal); }
+.p2-opt:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
+.p2-opt.sel { background: var(--clay-muda); border-color: var(--clay); font-weight: 500; }
+.pick2-counter { margin-top: 14px; font: 500 14px/1 var(--sans); color: var(--clay-teks); }
+
+/* ── Gerbang data (dibuat mesin saat semua soal selesai) ────────────────── */
+.userinfo-wrap { max-width: 620px; margin: 0 auto; background: var(--krem-terang);
+  border: 1px solid var(--garis); border-radius: var(--r-besar); padding: 34px; }
+.userinfo-h { font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2rem); margin: 0 0 8px; color: var(--tinta); }
+.userinfo-sub { color: var(--teks); margin: 0 0 24px; }
+.field-group { margin-bottom: 16px; }
+.field-label { display: block; font: 600 14px/1 var(--sans); color: var(--teks); margin-bottom: 7px; }
+.field-input {
+  width: 100%; padding: 13px 15px; border: 2px solid var(--garis); border-radius: 12px;
+  font: 400 16px/1.4 var(--sans); background: #fff; color: var(--tinta);
+}
+.field-input:focus { outline: 3px solid var(--clay); outline-offset: 1px; border-color: var(--clay); }
+.btn-submit {
+  margin-top: 18px; width: 100%; padding: 16px 20px; border: 0; border-radius: 14px;
+  background: var(--clay); color: #fff; font: 600 17px/1 var(--sans); cursor: pointer;
+  min-height: 56px; transition: background-color .15s ease;
+}
+.btn-submit:hover { background: var(--clay-gelap); }
+.btn-submit[disabled] { opacity: .6; cursor: progress; }
+
+/* ═══ Tambahan pengalaman (keputusan Lapis 18 Sep 2026) ════════════════════ */
+
+/* Maju otomatis: bilah kecil untuk membatalkan */
+.batal-maju {
+  position: fixed; left: 50%; bottom: 92px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px; z-index: 40;
+  background: var(--tinta); color: #fff; padding: 10px 14px; border-radius: 999px;
+  font: 500 14px/1 var(--sans); box-shadow: 0 10px 28px rgba(34, 31, 26, .28);
+  opacity: 0; pointer-events: none; transition: opacity .18s ease;
+}
+.batal-maju.tampil { opacity: 1; pointer-events: auto; }
+.batal-maju button {
+  border: 0; border-radius: 999px; background: rgba(255, 255, 255, .16); color: #fff;
+  padding: 7px 12px; font: 600 13px/1 var(--sans); cursor: pointer;
+}
+.batal-maju__isi { width: 74px; height: 4px; border-radius: 999px; background: rgba(255,255,255,.3); overflow: hidden; }
+.batal-maju__isi i { display: block; height: 100%; background: var(--clay-muda); width: 0; }
+
+/* Bilah melekat bawah: simpan, bantuan, mode ringkas */
+.bilah-alat {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 35;
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center;
+  padding: 10px 14px; background: rgba(252, 250, 245, .94);
+  border-top: 1px solid var(--garis); backdrop-filter: blur(6px);
+}
+.bilah-alat button, .bilah-alat a {
+  border: 1px solid var(--garis-kuat); background: #fff; color: var(--clay-teks);
+  border-radius: 999px; padding: 9px 14px; font: 500 13px/1 var(--sans); cursor: pointer;
+  text-decoration: none;
+}
+.bilah-alat button:hover, .bilah-alat a:hover { border-color: var(--clay); color: var(--clay); }
+body { padding-bottom: 84px; }
+
+/* Bantuan soal */
+.bantuan {
+  margin-top: 18px; padding: 16px 18px; border-radius: 14px;
+  background: var(--sage-muda); border: 1px solid var(--sage-garis);
+  font: 400 15px/1.6 var(--sans); color: var(--sage-teks);
+}
+
+/* Panel tinjau jawaban */
+.tinjau { position: fixed; inset: 0; z-index: 60; display: none; }
+.tinjau.tampil { display: block; }
+.tinjau__tirai { position: absolute; inset: 0; background: rgba(34, 31, 26, .55); }
+.tinjau__kotak {
+  position: absolute; right: 0; top: 0; bottom: 0; width: min(520px, 100%);
+  background: var(--krem-terang); padding: 26px; overflow-y: auto;
+  box-shadow: -18px 0 40px rgba(34, 31, 26, .18);
+}
+.tinjau__judul { font-family: var(--serif); font-size: 1.4rem; margin: 0 0 6px; }
+.tinjau__catatan { color: var(--teks); font-size: .95rem; margin-bottom: 18px; }
+.tinjau__daftar { list-style: none; margin: 0; padding: 0; }
+.tinjau__daftar li { border-bottom: 1px solid var(--garis-halus); padding: 11px 0; font-size: .95rem; }
+.tinjau__daftar li button {
+  width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer;
+  font: inherit; color: var(--tinta); display: flex; justify-content: space-between; gap: 14px;
+}
+.tinjau__daftar li button:hover { color: var(--clay); }
+.tinjau__kosong { color: var(--kabur); font-style: italic; }
+.tinjau__tutup { position: absolute; right: 22px; top: 22px; border: 0; background: none; font-size: 22px; cursor: pointer; color: var(--teks); }
+
+/* Layar jeda antar bagian */
+.jeda { text-align: center; padding: 40px 0 10px; }
+.jeda__bukit { width: 100%; height: auto; display: block; }
+.jeda h1 { font-family: var(--serif); font-size: clamp(1.6rem, 3.4vw, 2.4rem); margin: 18px 0 10px; }
+.jeda p { color: var(--teks); max-width: 560px; margin: 0 auto 26px; }
+
+/* daftar tahap di bilah kemajuan: jangan sampai melipat dua baris */
+.tahap li { white-space: nowrap; }

@@ -52,7 +52,11 @@ var LakonAssessment = (function () {
 
   var KUNCI_SIMPAN = 'lakon_progres_v3';
 
-  var PER_HALAMAN = { skala: 5, pick2: 2 };
+  /* Satu soal per layar (keputusan 18 Sep 2026).
+     Alasan: lima soal bertumpuk membuat orang menjawab menurut kolom, bukan menurut isi
+     soal, dan itu memperbanyak jawaban yang ditandai asal oleh pemeriksa mutu.
+     Mode ringkas (lima sekaligus) tetap tersedia lewat setMode(true) untuk yang memilihnya. */
+  var PER_HALAMAN = { skala: 1, pick2: 1 };
 
   var LABEL_BAGIAN = {
     watak:    { id: 'Cara Kamu Bergerak',        en: 'How You Operate' },
@@ -624,7 +628,24 @@ var LakonAssessment = (function () {
     hapusProgres: hapusProgres,
     totalItem: function () { return urutan.length; },
     totalHalaman: function () { return halaman.length; },
-    jawaban: function () { return jawaban; }
+    jawaban: function () { return jawaban; },
+    /* Mode ringkas: lima soal sekaligus, untuk yang memilih mengerjakan dari komputer. */
+    setMode: function (ringkas) {
+      PER_HALAMAN = ringkas ? { skala: 5, pick2: 2 } : { skala: 1, pick2: 1 };
+      var nomorItem = halaman.length ? (itemSebelum(halamanKini) + 1) : 1;
+      susunHalaman();
+      halamanKini = 0;
+      var sisa = nomorItem - 1;
+      for (var i = 0; i < halaman.length; i++) {
+        if (sisa < halaman[i].items.length) { halamanKini = i; break; }
+        sisa -= halaman[i].items.length;
+      }
+      render(halamanKini);
+      return PER_HALAMAN;
+    },
+    modeRingkas: function () { return PER_HALAMAN.skala > 1; },
+    lompatKe: lompatKe,
+    itemBelumDijawab: itemBelumDijawab
   };
 })();
 
