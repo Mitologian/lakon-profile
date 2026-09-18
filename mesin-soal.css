@@ -144,27 +144,6 @@ body { padding-bottom: 84px; }
   font: 400 15px/1.6 var(--sans); color: var(--sage-teks);
 }
 
-/* Panel tinjau jawaban */
-.tinjau { position: fixed; inset: 0; z-index: 60; display: none; }
-.tinjau.tampil { display: block; }
-.tinjau__tirai { position: absolute; inset: 0; background: rgba(34, 31, 26, .55); }
-.tinjau__kotak {
-  position: absolute; right: 0; top: 0; bottom: 0; width: min(520px, 100%);
-  background: var(--krem-terang); padding: 26px; overflow-y: auto;
-  box-shadow: -18px 0 40px rgba(34, 31, 26, .18);
-}
-.tinjau__judul { font-family: var(--serif); font-size: 1.4rem; margin: 0 0 6px; }
-.tinjau__catatan { color: var(--teks); font-size: .95rem; margin-bottom: 18px; }
-.tinjau__daftar { list-style: none; margin: 0; padding: 0; }
-.tinjau__daftar li { border-bottom: 1px solid var(--garis-halus); padding: 11px 0; font-size: .95rem; }
-.tinjau__daftar li button {
-  width: 100%; text-align: left; background: none; border: 0; padding: 0; cursor: pointer;
-  font: inherit; color: var(--tinta); display: flex; justify-content: space-between; gap: 14px;
-}
-.tinjau__daftar li button:hover { color: var(--clay); }
-.tinjau__kosong { color: var(--kabur); font-style: italic; }
-.tinjau__tutup { position: absolute; right: 22px; top: 22px; border: 0; background: none; font-size: 22px; cursor: pointer; color: var(--teks); }
-
 /* Layar jeda antar bagian */
 .jeda { text-align: center; padding: 40px 0 10px; }
 .jeda__bukit { width: 100%; height: auto; display: block; }

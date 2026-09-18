@@ -4,14 +4,13 @@
 
    Mesin asesmen (lakon_assessment.js) tetap yang mengurus soal, jawaban,
    penilaian, dan pengiriman. Berkas ini menambah: maju otomatis, pintasan
-   papan tik, panel tinjau jawaban, bantuan soal, mode ringkas, layar jeda
+   papan tik, bantuan soal, mode ringkas, layar jeda
    antar bagian, tautan lanjutkan, dan pengalihan ke halaman hasil baru.
    ═══════════════════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
   var KUNCI_MODE = 'lakon_mode_ringkas';
-  var KUNCI_TINJAU = 'lakon_tinjau_dibuka';
   var JEDA_MAJU = 520;               // milidetik sebelum maju sendiri
   var keadaan = { jedaTimer: null, bagianTerakhir: '', siap: false };
 
@@ -179,66 +178,6 @@
     });
   }
 
-  /* ── 5. Panel tinjau jawaban ──────────────────────────────────────────── */
-  function bukaTinjau() {
-    var panel = $('tinjau');
-    if (!panel) return;
-    var daftar = panel.querySelector('.tinjau__daftar');
-    var jawaban = (typeof LakonAssessment !== 'undefined') ? LakonAssessment.jawaban() : null;
-    var isi = [];
-    function labelSkala(sec, nilai) {
-      var tabel = (sec === 'watak') ? window.LAKON_SKALA_WATAK : window.LAKON_SKALA_MINAT;
-      if (!tabel) return String(nilai);
-      var opsi = tabel.id || [];
-      for (var i = 0; i < opsi.length; i++) if (String(opsi[i].v) === String(nilai)) return opsi[i].label;
-      return String(nilai);
-    }
-    if (jawaban) {
-      var semua = [];
-      (jawaban.watak || []).forEach(function (x) { semua.push({ sec: 'watak', x: x }); });
-      (jawaban.minat || []).forEach(function (x) { semua.push({ sec: 'minat', x: x }); });
-      (jawaban.pick2 || []).forEach(function (x) { semua.push({ sec: 'pick2', x: x }); });
-      semua.forEach(function (b, i) {
-        var isiJawab = '';
-        if (b.sec === 'pick2') isiJawab = Array.isArray(b.x.v) ? b.x.v.join(', ') : (b.x.v || b.x.t || '');
-        else if (typeof b.x.v !== 'undefined' && b.x.v !== null) isiJawab = labelSkala(b.sec, b.x.v);
-        else if (b.x.a || b.x.b) isiJawab = (b.x.a ? 'A' : 'B');
-        if (isiJawab) isi.push('<li><button type="button" data-id="' + b.x.id + '"><span>Soal ' + (i + 1) + '</span><span>' + isiJawab + '</span></button></li>');
-      });
-    }
-    daftar.innerHTML = isi.length ? isi.join('') :
-      '<li class="tinjau__kosong">Belum ada jawaban yang tercatat.</li>';
-    if (isi.length && typeof LakonAssessment.lompatKe === 'function') {
-      daftar.querySelectorAll('button').forEach(function (b) {
-        b.addEventListener('click', function () {
-          panel.classList.remove('tampil');
-          LakonAssessment.lompatKe(b.getAttribute('data-id'));
-        });
-      });
-    }
-    panel.classList.add('tampil');
-    panel.setAttribute('aria-hidden', 'false');
-  }
-
-  function pasangTinjau() {
-    var tomb = $('btn-tinjau');
-    if (!tomb) return;
-    if (!$('tinjau')) {
-      var p = document.createElement('div');
-      p.className = 'tinjau'; p.id = 'tinjau'; p.setAttribute('aria-hidden', 'true');
-      p.innerHTML = '<div class="tinjau__tirai"></div><div class="tinjau__kotak">' +
-        '<button type="button" class="tinjau__tutup" aria-label="Tutup">×</button>' +
-        '<h2 class="tinjau__judul">Jawaban kamu</h2>' +
-        '<p class="tinjau__catatan">Tekan satu baris untuk kembali ke soal itu.</p>' +
-        '<ul class="tinjau__daftar"></ul></div>';
-      document.body.appendChild(p);
-      p.querySelector('.tinjau__tirai').addEventListener('click', function () { p.classList.remove('tampil'); });
-      p.querySelector('.tinjau__tutup').addEventListener('click', function () { p.classList.remove('tampil'); });
-      document.addEventListener('keydown', function (e) { if (e.key === 'Escape') p.classList.remove('tampil'); });
-    }
-    tomb.addEventListener('click', bukaTinjau);
-  }
-
   /* ── 6. Mode ringkas (lima soal sekaligus) ────────────────────────────── */
   function pasangModeRingkas() {
     var tomb = $('btn-ringkas');
@@ -374,7 +313,6 @@
     });
 
     pasangBantuan();
-    pasangTinjau();
     pasangModeRingkas();
     pasangPintasan();
     pasangTautanLanjut();
