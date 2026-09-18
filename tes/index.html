@@ -1,959 +1,678 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Lakon™ Career Profile — Assessment karir yang menggabungkan cara kamu bergerak dengan bidang yang benar-benar menarik bagimu.">
+<meta name="theme-color" content="#C17A3C">
+<title>Lakon™ — Career Profile Assessment</title>
+<link rel="icon" type="image/png" href="/images/lakon-favicon.png">
+<link rel="apple-touch-icon" href="/images/lakon-favicon.png">
 
-<!-- ═══════════ SEO ═══════════ -->
-<title>Tes Minat Bakat dan Penjurusan Pelajar — Temukan Peranmu | Lakon</title>
-<meta name="description" content="Tes minat bakat 15 menit untuk pelajar, mahasiswa, dan pencari karier. Lakon memetakan minat dan cara kerjamu menjadi satu dari 24 Paraga, lengkap dengan 8 peran ideal dan jurusan yang sejalan. Profil dasar gratis.">
-<link rel="canonical" href="https://lakonprofile.com/tes/">
-
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Lakon">
-<meta property="og:title" content="Tes Minat Bakat dan Penjurusan Pelajar — Temukan Peranmu | Lakon">
-<meta property="og:description" content="Bukan label kepribadian, tapi peta peran. Tes 15 menit, profil dasar gratis.">
-<meta property="og:url" content="https://lakonprofile.com/">
-<!-- GANTI: gambar share 1200×630 -->
-<meta property="og:image" content="https://lakonprofile.com/images/og-lakon.jpg">
-<meta name="twitter:card" content="summary_large_image">
-
-<link rel="icon" href="/images/lakon-favicon.png" type="image/svg+xml">
-
-<!-- ═══════════ FONT ═══════════ -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=DM+Sans:wght@400;500;700&family=Caveat:wght@600&display=swap">
-
-<link rel="stylesheet" href="/beranda.css">
-
-<style>
-  /* formulir lead institusi — dipasang Lapis 18 Sep 2026 */
-  .lf { margin-top: 28px; border: 1px solid rgba(158, 80, 41, .18); border-radius: 14px; padding: 22px; background: #fff; }
-  .lf__judul { font-family: "Playfair Display", serif; font-size: 1.25rem; margin: 0 0 6px; }
-  .lf__catatan { font-size: .9rem; opacity: .75; margin: 0 0 16px; }
-  .lf__kisi { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
-  .lf__penuh { grid-column: 1 / -1; }
-  .lf label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: 4px; }
-  .lf input, .lf select { width: 100%; padding: 10px 12px; border: 1px solid #ddd3c8; border-radius: 8px; font: inherit; background: #fdfbf9; }
-  .lf input:focus, .lf select:focus { outline: 2px solid #9E5029; outline-offset: 1px; }
-  .lf__kirim { margin-top: 16px; width: 100%; padding: 13px 18px; border: 0; border-radius: 8px; background: #9E5029; color: #fff; font: inherit; font-weight: 600; cursor: pointer; }
-  .lf__kirim[disabled] { opacity: .6; cursor: progress; }
-  .lf__pesan { margin-top: 12px; font-size: .9rem; display: none; }
-  .lf__pesan.tampil { display: block; }
-  .lf__pesan--sukses { color: #1D9E75; }
-  .lf__pesan--galat { color: #b3261e; }
-  @media (max-width: 640px) { .lf__kisi { grid-template-columns: 1fr; } }
-</style>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "Lakon", "url": "https://lakonprofile.com/", "inLanguage": "id"}</script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800&family=Lora:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
 </head>
-
 <body>
-<a class="lewati" href="#utama">Lompat ke konten</a>
 
-<!-- ════════════════════════════════════════════════════════
-     NAVBAR
-     ════════════════════════════════════════════════════════ -->
-<header class="bar" id="beranda">
-  <div class="bar__isi">
-    <a class="logo" href="/">
-      <svg width="30" height="30" viewBox="0 0 30 30" fill="none" aria-hidden="true">
-        <path d="M15 27C15 27 6 22 6 13C6 8 10 4 15 4C20 4 24 8 24 13C24 22 15 27 15 27Z" stroke="currentColor" stroke-width="1.6"/>
-        <path d="M15 26V9" stroke="currentColor" stroke-width="1.6"/>
-        <path d="M15 15C15 15 11 14 9 11" stroke="currentColor" stroke-width="1.6"/>
-        <path d="M15 19C15 19 19 18 21 15" stroke="currentColor" stroke-width="1.6"/>
-      </svg>
-      <span>Lakon</span>
-    </a>
+<!--
+  ═══════════════════════════════════════════════════════════════════════════
+  LAKON™ CAREER PROFILE — index.html  v4
+  BERKAS UTUH SIAP TIMPA.
 
-    <nav class="nav" id="nav-utama" aria-label="Navigasi utama">
-      <a href="#beranda" class="is-aktif">Beranda</a>
-      <a href="#cara-kerja">Cara Kerja</a>
-      <a href="#paraga">24 Paraga</a>
-      <a href="#harga">Harga</a>
-      <a href="#institusi">Institusi</a>
-      <a href="#faq">FAQ</a>
-      <a href="https://wa.me/6282126373601?text=Halo%20Lakon%2C%20saya%20mau%20tanya%20soal%20tes%20minat%20bakat%20dan%20laporannya." target="_blank" rel="noopener">WhatsApp</a>
-      <a href="/tes/" class="nav__cta">Mulai Tes</a>
-    </nav>
+  PERUBAHAN DARI v3
+  Bagian hasil tidak lagi berisi sembilan .result-section yang teksnya
+  ditulis di HTML. Isinya kini datang dari tiga lapis data dan dirender
+  LakonReport, jadi HTML hanya menyediakan TITIK PASANG.
 
-    <p class="bar__slogan">Kenali peranmu,<br>rancang masa depanmu</p>
+  Alasannya: isi laporan sekarang 18 bagian dari tiga lapis, dwibahasa,
+  dan berubah bentuk mengikuti hasil (dua kandidat Watak, sebaran minat,
+  konsistensi heksagon). Menulis itu sebagai atribut data-id/data-en di
+  HTML sudah tidak mungkin dijaga.
 
-    <button class="burger" type="button" aria-label="Buka menu" aria-expanded="false" aria-controls="nav-utama">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</header>
+  TITIK PASANG DI BAGIAN HASIL
+    #r-name #r-sub #r-tags #r-good-fit   hero
+    #rb-atas          Pertemuan Identitasmu + Kekuatan Utamamu
+    #r-kelompok-graph Profil Minatmu
+    #rb-dimensi       Empat Sumbu + dua kandidat Watak
+    #rb-tengah        Situasi yang Kamu Cari + Yang Terlihat pada Caramu
+    #r-langkah        Tiga Langkah Berikutnya
+    #rb-terkunci      empat blok terkunci + tabel Peran Ideal
 
-<main id="utama">
+  URUTAN BAGIAN GRATIS
+    Narasi lebih dulu, angka belakangan. Versi lama menaruh grafik tepat
+    di bawah hero, sehingga peserta bertemu "25%" sebelum tahu artinya.
 
-<!-- ════════════════════════════════════════════════════════
-     01 · HERO
-     ════════════════════════════════════════════════════════ -->
-<section class="hero">
-  <div class="wadah hero__isi">
+  BAGIAN "NUANSA WATAK" DIHAPUS
+    Isinya hanya menayangkan ulang dua dari empat sumbu yang sudah gratis,
+    jadi peserta diminta membayar untuk data yang sudah dilihatnya.
+  ═══════════════════════════════════════════════════════════════════════════
+-->
 
-    <div class="hero__teks">
-      <p class="mata">Profil Peminatan, Potensi, dan Peran</p>
-      <h1>Temukan peranmu,<br>sebelum memilih<br>kariermu.</h1>
-      <p class="hero__sub">Lakon memetakan minatmu dan caramu bergerak menjadi satu dari 24 Paraga. Bukan label kepribadian, tapi peta peran: di mana kamu tumbuh, di mana kamu layu, dan posisi kerja apa yang benar-benar cocok.</p>
+<div id="screen-landing" class="screen active">
 
-      <div class="hero__aksi">
-        <a class="tbl tbl--utama" href="/tes/">
-          Mulai Tes Gratis
-          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </a>
-        <a class="tautan-garis" href="#paraga">Lihat 24 Paraga</a>
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-logo">Lakon<em>™</em></div>
+    <div class="nav-links">
+      <a class="nav-link" href="#apa-lakon">Apa itu Lakon?</a>
+      <a class="nav-link" href="#cara-kerja">Cara Kerja</a>
+      <a class="nav-link" href="#paraga">24 Paraga</a>
+    </div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn on" onclick="setLang('id')">ID</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
       </div>
-
-      <p class="hero__mikro">±15 menit · Hasil langsung · Profil dasar gratis selamanya</p>
+      <button class="nav-cta" onclick="goToAssessment()"
+        data-id="Mulai Test" data-en="Take the Test">Mulai Test</button>
     </div>
+  </nav>
 
-    <div class="hero__visual">
-      <svg class="hero__lanskap" viewBox="0 0 560 500" fill="none" aria-hidden="true" preserveAspectRatio="xMidYMax meet">
-        <circle cx="330" cy="168" r="148" fill="#F7DFD0"/>
-        <path d="M0 500V352c74-30 128-8 192 14 76 26 124-20 208-36 68-13 120 6 160 26v144H0Z" fill="#DFE6D6"/>
-        <path d="M84 500v-96c66-24 122-2 184 10 66 13 134-10 202-20 36-5 66-2 90 4v102H84Z" fill="#CBD8BC"/>
-        <path d="M232 500c0-48 36-66 54-88 20-24 12-46 34-60" stroke="#F7F2E9" stroke-width="13" stroke-linecap="round"/>
-        <path d="M462 356s8-26 24-34c-6 18-12 26-24 34Z" fill="#9FB08C"/>
-        <path d="M462 356s-14-18-30-20c10 14 18 18 30 20Z" fill="#9FB08C"/>
-        <path d="M462 354v32" stroke="#9FB08C" stroke-width="3" stroke-linecap="round"/>
-        <path d="M74 434s10-30 28-38c-6 20-14 30-28 38Z" fill="#B2C0A1"/>
-        <path d="M74 434v28" stroke="#B2C0A1" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-
-      <!-- ┌─ GANTI dengan ilustrasi asli ────────────────────────────
-           Hapus div.slot di bawah, lalu aktifkan baris ini:
-           <img class="hero__figur" src="/images/hero-karakter.svg" alt="" width="296" height="386">
-           └────────────────────────────────────────────────────────── -->
-    </div>
-
-  </div>
-
-  <!-- trust strip -->
-  <div class="pita">
-    <div class="wadah pita__isi">
-      <div class="pita__item">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M11 20s-7-4-7-10.5C4 5.9 7 3 11 3s7 2.9 7 6.5C18 16 11 20 11 20Z" stroke="currentColor" stroke-width="1.5"/><path d="M11 19V7" stroke="currentColor" stroke-width="1.5"/></svg>
-        <span>Kerangka RIASEC &amp; Temperamen Keirsey</span>
-      </div>
-      <div class="pita__item">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><circle cx="11" cy="8" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M4 19c0-4 3-6 7-6s7 2 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <span>Praktisi MBTI tersertifikasi &amp; coach ICF</span>
-      </div>
-      <div class="pita__item">
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M11 6.5V11l3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        <span>Bayar sekali, tanpa langganan</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     02 · MASALAH
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian">
-  <div class="wadah">
-    <p class="mata">Masalahnya</p>
-    <div class="belah">
-      <h2 class="judul">Kebanyakan orang tidak salah pilih bidang. Mereka salah pilih peran.</h2>
-      <p class="belah__teks">Dua orang bisa sama-sama menyukai dunia desain. Yang satu paling hidup saat merancang sistem visual yang dipakai bertahun-tahun. Yang satu mati gaya kalau tidak mengeksekusi suatu kreativitas yang baru tiap minggu. Bidangnya sama, perannya berbeda jauh. Dan yang membuat orang bertahan atau menyerah di sebuah pekerjaan hampir selalu perannya, bukan bidangnya.</p>
-    </div>
-
-    <div class="kisi kisi--3 jarak-atas">
-      <article class="kartu kartu--pasir">
-        <h3>“Rekomendasi kariernya terlalu umum.”</h3>
-        <p>Daftar tiga puluh profesi tanpa alasan tidak pernah membantu siapa pun mengambil keputusan.</p>
-      </article>
-      <article class="kartu kartu--blush">
-        <h3>“Jurusan saya benar, tapi kerjanya terasa salah.”</h3>
-        <p>Kamu masuk bidang yang kamu suka, lalu menemukan bahwa cara kerjanya menguras habis.</p>
-      </article>
-      <article class="kartu kartu--sage">
-        <h3>“Tes kepribadian cuma bilang saya siapa.”</h3>
-        <p>Tipe-tipean memang menarik dibicarakan, tapi berhenti di situ. Tidak ada terjemahan ke posisi kerja nyata.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     03 · CARA KERJA
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian bagian--terang" id="cara-kerja">
-  <div class="wadah">
-    <div class="kepala">
-      <div>
-        <p class="mata">Cara Kerja</p>
-        <h2 class="judul">Tiga langkah, satu peta peran.</h2>
-      </div>
-      <p class="tulis-tangan">Langkah 2 gratis, selamanya.</p>
-    </div>
-
-    <ol class="kisi kisi--3 langkah jarak-atas">
-      <li class="kartu kartu--garis">
-        <span class="nomor">1</span>
-        <h3>Jawab 48 pasang pilihan</h3>
-        <p>Sekitar 15 menit. Formatnya bukan setuju atau tidak setuju, tapi memilih antara dua hal yang sama-sama masuk akal. Ini menutup celah menjawab sesuai citra diri yang ingin ditampilkan.</p>
-      </li>
-      <li class="kartu kartu--sage kartu--tandai">
-        <span class="lencana lencana--sage">GRATIS</span>
-        <span class="nomor nomor--sage">2</span>
-        <h3>Lihat Paraga-mu</h3>
-        <p>Minat kerja (Kelompok) dipadukan dengan cara bergerak (Watak). Hasilnya satu dari 24 Paraga, lengkap dengan profil, kekuatan utama, dan 4 Dimensi personalmu.</p>
-      </li>
-      <li class="kartu kartu--garis">
-        <span class="nomor">3</span>
-        <h3>Buka peta perannya</h3>
-        <p>Laporan lengkap berisi delapan posisi kerja dengan tingkat kecocokannya, jurusan yang sejalan, serta lingkungan yang menumbuhkan dan yang melayukanmu.</p>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     04 · KERANGKA
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian">
-  <div class="wadah">
-    <p class="mata">Kerangkanya</p>
-    <h2 class="judul judul--lebar">Dua pertanyaan yang jarang ditanyakan bersamaan.</h2>
-    <p class="intro">Kebanyakan tes hanya mengukur satu dari dua sumbu ini. Yang menentukan kecocokan kerjamu justru persimpangannya.</p>
-
-    <div class="sumbu jarak-atas">
-      <article class="kartu kartu--garis">
-        <p class="mata mata--kecil">Kelompok</p>
-        <h3 class="sumbu__judul">Apa yang menarikmu</h3>
-        <p>Enam bidang minat kerja, dibangun di atas RIASEC, model minat kerja yang dipakai konselor karier di seluruh dunia sejak 1959.</p>
-        <ul class="pil pil--sage">
-          <li>Yasa</li><li>Nalar</li><li>Karya</li><li>Bakti</li><li>Karsa</li><li>Tata</li>
-        </ul>
-      </article>
-
-      <div class="sumbu__kali" aria-hidden="true">×</div>
-
-      <article class="kartu kartu--garis">
-        <p class="mata mata--kecil">Watak</p>
-        <h3 class="sumbu__judul">Bagaimana kamu bergerak</h3>
-        <p>Empat cara bekerja, berbasis temperamen Keirsey. Akar yang sama dengan tipe 16 huruf yang mungkin sudah kamu kenal.</p>
-        <ul class="pil pil--blush">
-          <li>Reka</li><li>Logika</li><li>Jaga</li><li>Guna</li>
-        </ul>
-      </article>
-    </div>
-
-    <div class="rumus jarak-atas">
-      <p class="rumus__angka">6 × 4 = 24 Paraga</p>
-      <p class="rumus__teks">Bakti Reka dan Bakti Guna sama-sama ingin membantu orang. Satu lewat pendampingan jangka panjang, satu lewat tindakan langsung di lapangan. Peran keduanya nyaris tidak beririsan.</p>
-    </div>
-
-    <div class="kepala jarak-atas">
-      <h3 class="judul judul--kecil">Empat Watak, empat cara bergerak</h3>
-      <a class="tautan-garis" href="/tes/">Pelajari tiap Watak</a>
-    </div>
-
-    <div class="kisi kisi--4 jarak-kecil">
-      <article class="watak watak--blush">
-        <svg viewBox="0 0 78 78" fill="none" aria-hidden="true"><circle cx="39" cy="39" r="39" fill="#FCFAF5"/><circle cx="39" cy="39" r="17" stroke="currentColor" stroke-width="2"/><path d="M39 8v12m0 38v12M8 39h12m38 0h12M17 17l8 8m28 28 8 8m0-36-8 8m-28 28-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <h4>Reka</h4>
-        <p class="watak__tag">Penerang Makna</p>
-        <p>Bergerak dari makna dan kemungkinan. Melihat potensi orang sebelum mereka melihatnya sendiri.</p>
-      </article>
-      <article class="watak watak--sage">
-        <svg viewBox="0 0 78 78" fill="none" aria-hidden="true"><circle cx="39" cy="39" r="39" fill="#FCFAF5"/><rect x="20" y="20" width="16" height="16" stroke="currentColor" stroke-width="2"/><rect x="42" y="20" width="16" height="16" stroke="currentColor" stroke-width="2"/><rect x="20" y="42" width="16" height="16" stroke="currentColor" stroke-width="2"/><rect x="42" y="42" width="16" height="16" stroke="currentColor" stroke-width="2"/><path d="M36 28h6m-6 22h6M28 36v6m22-6v6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <h4>Logika</h4>
-        <p class="watak__tag">Pemikir Sistem</p>
-        <p>Bergerak dari sistem dan sebab akibat. Melihat inefisiensi yang tidak disadari orang lain.</p>
-      </article>
-      <article class="watak watak--pasir">
-        <svg viewBox="0 0 78 78" fill="none" aria-hidden="true"><circle cx="39" cy="39" r="39" fill="#FCFAF5"/><path d="M39 18l19 7v15c0 10-9 17-19 21-10-4-19-11-19-21V25l19-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m31 39 6 6 11-12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <h4>Jaga</h4>
-        <p class="watak__tag">Penjaga Keandalan</p>
-        <p>Bergerak dari standar dan tanggung jawab. Menyelesaikan apa yang sudah dimulai.</p>
-      </article>
-      <article class="watak watak--kabut">
-        <svg viewBox="0 0 78 78" fill="none" aria-hidden="true"><circle cx="39" cy="39" r="39" fill="#FCFAF5"/><path d="M44 16 24 43h14l-4 19 20-27H40l4-19Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
-        <h4>Guna</h4>
-        <p class="watak__tag">Penggerak Nyata</p>
-        <p>Bergerak dari situasi nyata di depan mata. Sudah bertindak saat yang lain masih berdiskusi.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     05 · MATRIKS 24 PARAGA
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian bagian--terang" id="paraga">
-  <div class="wadah">
-    <div class="kepala">
-      <div class="kepala__kiri">
-        <p class="mata">Jelajahi</p>
-        <h2 class="judul">24 Paraga. Tidak ada yang lebih unggul dari yang lain.</h2>
-        <p class="intro">Setiap Paraga punya tempat di mana ia paling dibutuhkan. Jelajahi semuanya, atau ikut tes untuk tahu kamu yang mana.</p>
-      </div>
-      <a class="tbl tbl--utama" href="/tes/">
-        Cari tahu Paraga-ku
-        <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-      </a>
-    </div>
-
-    <div class="matriks-gulir jarak-atas">
-      <div class="matriks">
-        <div class="matriks__sudut" aria-hidden="true"></div>
-        <div class="matriks__kolom"><strong>Reka</strong><span>Penerang Makna</span></div>
-        <div class="matriks__kolom"><strong>Logika</strong><span>Pemikir Sistem</span></div>
-        <div class="matriks__kolom"><strong>Jaga</strong><span>Penjaga Keandalan</span></div>
-        <div class="matriks__kolom"><strong>Guna</strong><span>Penggerak Nyata</span></div>
-
-        <div class="matriks__baris"><strong>Yasa</strong><span>Membangun</span></div>
-        <div class="sel sel--blush"><strong>Yasa Reka</strong><span>The Visionary Maker</span></div>
-        <div class="sel sel--blush"><strong>Yasa Logika</strong><span>The Systems Engineer</span></div>
-        <div class="sel sel--blush"><strong>Yasa Jaga</strong><span>The Master Craftsperson</span></div>
-        <div class="sel sel--blush"><strong>Yasa Guna</strong><span>The Field Expert</span></div>
-
-        <div class="matriks__baris"><strong>Nalar</strong><span>Meneliti</span></div>
-        <div class="sel sel--sage"><strong>Nalar Reka</strong><span>The Meaning-Seeker</span></div>
-        <div class="sel sel--sage"><strong>Nalar Logika</strong><span>The Pure Analyst</span></div>
-        <div class="sel sel--sage"><strong>Nalar Jaga</strong><span>The Methodical Investigator</span></div>
-        <div class="sel sel--sage"><strong>Nalar Guna</strong><span>The Applied Problem-Solver</span></div>
-
-        <div class="matriks__baris"><strong>Karya</strong><span>Mencipta</span></div>
-        <div class="sel sel--pasir"><strong>Karya Reka</strong><span>The Visionary Storyteller</span></div>
-        <div class="sel sel--pasir"><strong>Karya Logika</strong><span>The Creative Architect</span></div>
-        <div class="sel sel--pasir"><strong>Karya Jaga</strong><span>The Master of Craft</span></div>
-        <div class="sel sel--pasir"><strong>Karya Guna</strong><span>The Spontaneous Creator</span></div>
-
-        <div class="matriks__baris"><strong>Bakti</strong><span>Menumbuhkan</span></div>
-        <div class="sel sel--mawar"><strong>Bakti Reka</strong><span>The Human Developer</span></div>
-        <div class="sel sel--mawar"><strong>Bakti Logika</strong><span>The System of People</span></div>
-        <div class="sel sel--mawar"><strong>Bakti Jaga</strong><span>The Reliable Guardian</span></div>
-        <div class="sel sel--mawar"><strong>Bakti Guna</strong><span>The Hands-On Helper</span></div>
-
-        <div class="matriks__baris"><strong>Karsa</strong><span>Menggerakkan</span></div>
-        <div class="sel sel--kabut"><strong>Karsa Reka</strong><span>The Vision-Led Entrepreneur</span></div>
-        <div class="sel sel--kabut"><strong>Karsa Logika</strong><span>The Strategic Operator</span></div>
-        <div class="sel sel--kabut"><strong>Karsa Jaga</strong><span>The Institution Builder</span></div>
-        <div class="sel sel--kabut"><strong>Karsa Guna</strong><span>The Relationship Driver</span></div>
-
-        <div class="matriks__baris"><strong>Tata</strong><span>Menata</span></div>
-        <div class="sel sel--gading"><strong>Tata Reka</strong><span>The Purpose-Driven Organizer</span></div>
-        <div class="sel sel--gading"><strong>Tata Logika</strong><span>The Systems Innovator</span></div>
-        <div class="sel sel--gading"><strong>Tata Jaga</strong><span>The Reliable Foundation</span></div>
-        <div class="sel sel--gading"><strong>Tata Guna</strong><span>The Pragmatic Executor</span></div>
-      </div>
-    </div>
-
-    <p class="catatan-tengah">Klik satu Paraga untuk membaca profil lengkapnya, tanpa perlu ikut tes dulu.</p>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     06 · ISI LAPORAN
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian" id="laporan">
-  <div class="wadah">
-    <p class="mata">Isi Laporan</p>
-    <h2 class="judul judul--lebar">Yang kamu dapat, bukan yang kami janjikan.</h2>
-
-    <div class="laporan jarak-atas">
-
-      <!-- pratinjau laporan -->
-      <div class="pratinjau">
-        <div class="pratinjau__kepala">
-          <div>
-            <p class="pratinjau__nama">Bakti Guna</p>
-            <p class="pratinjau__sub">The Hands-On Helper · dengan Nuansa Karya</p>
-          </div>
-          <svg class="pratinjau__heks" viewBox="0 0 92 92" fill="none" aria-hidden="true">
-            <path d="M46 6 80 26v40L46 86 12 66V26L46 6Z" stroke="#CBBFA9" stroke-width="1.5"/>
-            <path d="M46 26 63 36v20L46 66 29 56V36L46 26Z" stroke="#CBBFA9" stroke-width="1.5"/>
-            <path d="M46 10 74 47 46 62 24 51l6-24L46 10Z" fill="#DFE6D6" stroke="#9FB08C" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- HERO -->
+  <div class="hero-bg">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <div class="hero-overline">
+          <div class="hero-overline-line"></div>
+          Lakon™ Career Profile
+        </div>
+        <h1 class="hero-h">
+          <span data-id="Bangun ceritamu" data-en="Build your story">Bangun ceritamu</span><br>
+          <span data-id="dengan kenali" data-en="by discovering">dengan kenali</span><br>
+          <span class="lakon-word">Lakon</span> –mu
+        </h1>
+        <p class="hero-sub"
+          data-id="Temukan gambaran utuh diri sebagai landasan keputusan studi, karir, dan peranmu dalam 20 menit."
+          data-en="Discover a complete picture of yourself as the foundation for your study, career, and role decisions — in 20 minutes.">
+          Temukan gambaran utuh diri sebagai landasan keputusan studi, karir, dan peranmu dalam 20 menit.
+        </p>
+        <button class="hero-btn" onclick="goToAssessment()">
+          <span data-id="Mulai Test" data-en="Take the Test">Mulai Test</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 7h10M8 3l4 4-4 4"/>
           </svg>
-        </div>
-
-        <hr class="garis">
-
-        <p class="pratinjau__label">4 Dimensi</p>
-        <ul class="dimensi">
-          <li><span>Arus</span><span class="rel"><span class="rel__isi" style="width:68%"></span></span><b>Luar</b></li>
-          <li><span>Pandang</span><span class="rel"><span class="rel__isi" style="width:74%"></span></span><b>Nyata</b></li>
-          <li><span>Timbang</span><span class="rel"><span class="rel__isi" style="width:61%"></span></span><b>Rasa</b></li>
-          <li><span>Irama</span><span class="rel"><span class="rel__isi" style="width:57%"></span></span><b>Bebas</b></li>
-        </ul>
-
-        <div class="pratinjau__labelbaris">
-          <p class="pratinjau__label">8 Peran Ideal</p>
-          <span class="lencana lencana--sage">PALING DIPAKAI</span>
-        </div>
-        <ul class="peran">
-          <li class="peran--ideal"><span class="tanda tanda--ideal">IDEAL</span><b>Community Outreach Officer</b><span class="peran__ket">Turun langsung, merespons tanpa birokrasi.</span></li>
-          <li class="peran--ideal"><span class="tanda tanda--ideal">IDEAL</span><b>Paramedic / Perawat Lapangan</b><span class="peran__ket">Tenang dan cepat saat situasi genting.</span></li>
-          <li class="peran--cocok"><span class="tanda tanda--cocok">COCOK</span><b>Trainer / Fasilitator</b><span class="peran__ket">Nuansa Karya menguatkan sisi panggung.</span></li>
-        </ul>
-
-        <div class="kunci">
-          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><rect x="4" y="9.5" width="14" height="9" rx="2" stroke="currentColor" stroke-width="1.6"/><path d="M7.5 9.5V7a3.5 3.5 0 0 1 7 0v2.5" stroke="currentColor" stroke-width="1.6"/></svg>
-          <p><b>5 baris lagi di laporan lengkap,</b> plus 14 jurusan yang sejalan, lingkungan yang menumbuhkan dan melayukan, serta PDF siap cetak.</p>
-        </div>
+        </button>
+        <span class="hero-meta"
+          data-id="Gratis · Tanpa pendaftaran · ~18 menit"
+          data-en="Free · No sign-up · ~18 minutes">
+          Gratis · Tanpa pendaftaran · ~18 menit
+        </span>
       </div>
-
-      <!-- daftar isi -->
-      <div class="laporan__daftar">
-        <h3 class="judul judul--kecil">Isinya format nyata, bukan daftar janji.</h3>
-        <ul class="titik">
-          <li><b>Kartu Paraga + Nuansa.</b> Paraga utamamu, ditambah minat tertinggi kedua yang memperhalus arah karier.</li>
-          <li><b>Heksagon 6 Kelompok.</b> Peta minat kerjamu dalam satu gambar.</li>
-          <li><b>4 Dimensi.</b> Arus, Pandang, Timbang, Irama.</li>
-          <li><b>Tabel 8 Peran Ideal.</b> Delapan posisi kerja nyata dengan label Ideal, Cocok, atau Bisa, plus alasannya.</li>
-          <li><b>Menumbuhkan &amp; Melayukan.</b> Lingkungan tempat kamu berkembang, dan yang menguras tanpa kamu sadari.</li>
-          <li><b>Jurusan yang sejalan.</b> Dicocokkan dengan perpaduan minatmu, bukan sekadar daftar umum.</li>
-        </ul>
-        <a class="tbl tbl--garis" href="https://wa.me/6282126373601?text=Halo%20Lakon%2C%20saya%20ingin%20melihat%20contoh%20laporan%20lengkap." target="_blank" rel="noopener">Lihat contoh laporan penuh</a>
+      <!-- Hero image: mix-blend-mode removes black bg, white lineart shows on orange -->
+      <div class="hero-illus">
+        <img class="hero-img" src="/images/hero-image.png" alt="Lakon wayang maskot">
       </div>
-
     </div>
-  </div>
 
-  <!-- pita manfaat -->
-  <div class="manfaat">
-    <div class="wadah manfaat__isi">
-      <div class="manfaat__ajak">
-        <h3>Lebih dari sekadar tes. Sebuah peta keputusan.</h3>
-        <a class="tbl tbl--utama" href="/tes/">
-          Mulai Tes Gratis
-          <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-        </a>
-      </div>
-      <div class="manfaat__kisi">
-        <div class="manfaat__item">
-          <svg viewBox="0 0 42 42" fill="none" aria-hidden="true"><circle cx="21" cy="21" r="20" fill="#FCFAF5"/><path d="m21 10 3 8 8 3-8 3-3 8-3-8-8-3 8-3 3-8Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
-          <h4>Laporan personal</h4>
-          <p>Ditulis untuk hasilmu, bukan template satu ukuran.</p>
+    <!-- Stats bar -->
+    <div class="hero-stats">
+      <div class="hero-stats-inner">
+        <div class="hero-stat">
+          <div class="hero-stat-n" id="hero-stat-n">106</div>
+          <div class="hero-stat-l" data-id="Pertanyaan" data-en="Questions">Pertanyaan</div>
         </div>
-        <div class="manfaat__item">
-          <svg viewBox="0 0 42 42" fill="none" aria-hidden="true"><circle cx="21" cy="21" r="20" fill="#FCFAF5"/><path d="m11 30 8-10 6 6 7-12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <h4>Arah karier</h4>
-          <p>Posisi kerja nyata, dengan alasan kenapa cocok.</p>
+        <div class="hero-stat">
+          <div class="hero-stat-n">~18</div>
+          <div class="hero-stat-l" data-id="Menit" data-en="Minutes">Menit</div>
         </div>
-        <div class="manfaat__item">
-          <svg viewBox="0 0 42 42" fill="none" aria-hidden="true"><circle cx="21" cy="21" r="20" fill="#FCFAF5"/><circle cx="21" cy="21" r="11" stroke="currentColor" stroke-width="1.6"/><path d="M21 11v10l6 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <h4>Keputusan lebih cepat</h4>
-          <p>Menyempitkan pilihan, bukan menambah kebingungan.</p>
-        </div>
-        <div class="manfaat__item">
-          <svg viewBox="0 0 42 42" fill="none" aria-hidden="true"><circle cx="21" cy="21" r="20" fill="#FCFAF5"/><path d="M14 31V12l14 4-14 4" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
-          <h4>Bahasa bersama</h4>
-          <p>Bisa dibawa ke guru BK, atasan, atau tim.</p>
+        <div class="hero-stat">
+          <div class="hero-stat-n">24</div>
+          <div class="hero-stat-l" data-id="Paraga" data-en="Profiles">Paraga</div>
         </div>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- ════════════════════════════════════════════════════════
-     07 · METODOLOGI
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian bagian--terang" id="metodologi">
-  <div class="wadah">
-    <div class="kepala">
+    <!-- Wave amber → cream: SVG directly on hero-bg so no white gaps at edges -->
+    <svg style="display:block;width:100%;background:var(--amber);margin-bottom:-1px" viewBox="0 0 1440 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 35 C360 70 1080 0 1440 35 L1440 70 L0 70 Z" fill="#FAF7F2"/>
+    </svg>
+  </div>
+
+  <!-- APA ITU LAKON -->
+  <section class="apa-section" id="apa-lakon">
+    <div class="apa-inner">
+      <div class="apa-grid">
+        <div class="apa-lore">
+          <p><strong>Lakon</strong> <span data-id="adalah kata multimakna." data-en="is a word of many meanings.">adalah kata multimakna.</span></p>
+          <p data-id="Lakon menggambarkan peran, cerita, dan peristiwa yang dijalani seseorang dalam hidupnya. Unik, namun memiliki pola. Lakon adalah perjalanan hidup kamu, dan peran yang kamu miliki di dalamnya."
+             data-en="Lakon describes the role, story, and events a person lives through. Unique, yet patterned. Lakon is your life journey, and the role you hold within it.">
+            Lakon menggambarkan peran, cerita, dan peristiwa yang dijalani seseorang dalam hidupnya. Unik, namun memiliki pola. Lakon adalah perjalanan hidup kamu, dan peran yang kamu miliki di dalamnya.
+          </p>
+          <p><strong>Lakon™ Profile</strong> <span
+            data-id="adalah assessment untuk Peminatan, Potensi, dan Peran — membantu kamu memetakan studi, profesi, dan role dalam karir yang paling tepat untukmu. Peran dan cerita yang cocok memberikan kepuasan hati, dan potensi terbesar untuk sukses."
+            data-en="is an assessment for Interests, Potential, and Role — helping you map the study, profession, and career role that fits you best. The right role and story bring fulfillment and the greatest potential for success.">
+            adalah assessment untuk Peminatan, Potensi, dan Peran — membantu kamu memetakan studi, profesi, dan role dalam karir yang paling tepat untukmu. Peran dan cerita yang cocok memberikan kepuasan hati, dan potensi terbesar untuk sukses.
+          </span></p>
+        </div>
+        <div class="apa-heading-col">
+          <h2 class="apa-heading">
+            <span data-id="Apa Itu" data-en="What Is">Apa Itu</span>
+            <em> Lakon?</em>
+          </h2>
+          <p class="apa-heading-sub"
+            data-id="Assessment karir yang berakar pada pemahaman diri yang mendalam."
+            data-en="A career assessment rooted in deep self-understanding.">
+            Assessment karir yang berakar pada pemahaman diri yang mendalam.
+          </p>
+        </div>
+      </div>
+
+      <div class="apa-cards">
+        <div class="apa-card">
+          <div class="apa-card-tag" data-id="Pengembangan" data-en="Development">Pengembangan</div>
+          <div class="apa-card-title">
+            <span data-id="Pribadi" data-en="Personal">Pribadi</span>
+            <svg class="apa-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="11" r="5"/>
+              <path d="M8 30c0-5.52 4.48-10 10-10s10 4.48 10 10"/>
+            </svg>
+          </div>
+          <div class="apa-card-body"
+            data-id="Lakon membantu kamu memahami dan merencanakan jalur studi, karir, bidang industri pilihan, dan peran yang kamu ambil dalam menjalani aktivitas dalam industri yang kamu pilih itu."
+            data-en="Lakon helps you understand and plan your study path, career, chosen industry, and the role you take within the industry you choose.">
+            Lakon membantu kamu memahami dan merencanakan jalur studi, karir, bidang industri pilihan, dan peran yang kamu ambil dalam menjalani aktivitas dalam industri yang kamu pilih itu.
+          </div>
+        </div>
+        <div class="apa-card">
+          <div class="apa-card-tag" data-id="Pengembangan" data-en="Development">Pengembangan</div>
+          <div class="apa-card-title">
+            <span data-id="Tim Organisasi" data-en="Team & Organisation">Tim Organisasi</span>
+            <svg class="apa-icon" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="13" cy="11" r="4"/>
+              <circle cx="23" cy="11" r="4"/>
+              <path d="M5 30c0-4.42 3.58-8 8-8"/>
+              <path d="M23 22c4.42 0 8 3.58 8 8"/>
+              <path d="M13 22c2.76 0 5 2.24 5 5"/>
+            </svg>
+          </div>
+          <div class="apa-card-body"
+            data-id="Lakon membantu memahami keunikan setiap individu, menyesuaikan peran dan posisi kerja yang ideal untuk setiap anggota tim, memastikan pembagian tugas yang lebih sesuai dengan kekuatan setiap orang."
+            data-en="Lakon helps understand each individual's uniqueness, match ideal roles for every team member, and ensure task distribution that aligns with each person's strengths.">
+            Lakon membantu memahami keunikan setiap individu, menyesuaikan peran dan posisi kerja yang ideal untuk setiap anggota tim, memastikan pembagian tugas yang lebih sesuai dengan kekuatan setiap orang.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <svg style="display:block;width:100%;background:var(--cream);margin-top:5rem;margin-bottom:-1px" viewBox="0 0 1440 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 0 C480 70 960 70 1440 0 L1440 70 L0 70 Z" fill="#F0EBE0"/>
+    </svg>
+  </section>
+
+  <!-- CARA KERJA + 24 PARAGA -->
+  <section class="cara-section" id="cara-kerja">
+    <div class="cara-inner">
+      <div class="section-overline" data-id="Cara Kerja" data-en="How It Works">Cara Kerja</div>
+      <h2 class="section-h" data-id="Bagaimana Cara Kerjanya?" data-en="How Does It Work?">Bagaimana Cara Kerjanya?</h2>
+      <p class="section-body"
+        data-id="Lakon™ dibangun di atas dua kerangka yang sudah lama dipakai di dunia karir dan kepribadian: RIASEC dari John Holland untuk memetakan minat, dan tipologi temperamen Keirsey untuk memetakan cara bergerak. Yang Lakon lakukan adalah menyatukan dua pemetaan yang selama ini berjalan terpisah."
+        data-en="Lakon™ is built on two frameworks long used in career and personality work: RIASEC from John Holland for mapping interests, and Keirsey temperament typology for mapping how a person operates. What Lakon does is bring together two maps that have long run separately.">
+        Lakon™ dibangun di atas dua kerangka yang sudah lama dipakai di dunia karir dan kepribadian: RIASEC dari John Holland untuk memetakan minat, dan tipologi temperamen Keirsey untuk memetakan cara bergerak. Yang Lakon lakukan adalah menyatukan dua pemetaan yang selama ini berjalan terpisah.
+      </p>
+
+      <div class="big-num-wrap">
+        <div class="big-num">24</div>
+        <div class="big-num-label">Paraga</div>
+      </div>
+      <p class="cara-tagline">
+        <strong data-id="6 Kelompok Peran" data-en="6 Interest Groups">6 Kelompok Peran</strong>
+        <span data-id=" atas peminatan, bertemu " data-en=" based on interests, meet "> atas peminatan, bertemu </span>
+        <strong data-id="4 Watak" data-en="4 Character Types">4 Watak</strong>
+        <span data-id=" penentu proses kerja dan sikap, menghasilkan " data-en=" that determine work process and attitude, producing "> penentu proses kerja dan sikap, menghasilkan </span>
+        <strong>24 Paraga</strong>
+        <span data-id=" — tipe karakter unik dengan kekuatan, tantangan, ketertarikan, dan kecocokan perannya sendiri-sendiri." data-en=" — unique character types with their own strengths, challenges, interests, and role fit."> — tipe karakter unik dengan kekuatan, tantangan, ketertarikan, dan kecocokan perannya sendiri-sendiri.</span>
+      </p>
+
+      <!-- 6 Kelompok row 1 -->
+      <div class="kel-grid" id="paraga">
+        <div class="kel-card k-yasa">
+          <div class="kel-head">
+            <svg class="kel-icon" viewBox="0 0 36 36" fill="none" stroke="var(--yasa)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 28V18l-4 2V12l10-6 10 6v8l-4-2v10"/><rect x="14" y="20" width="8" height="8" rx="1"/>
+            </svg>
+            <div>
+              <div class="kel-name">Yasa</div>
+              <div class="kel-sub kel-sub-yasa" data-id="Kelompok · Membangun" data-en="Group · Building">Kelompok · Membangun</div>
+            </div>
+          </div>
+          <div class="kel-desc"
+            data-id="Bergerak di dunia yang nyata dan konkret. Menghasilkan sesuatu yang bisa dilihat, dipegang, dan dirasakan hasilnya — dengan keahlian dan ketekunan."
+            data-en="Moves in the real and concrete world. Produces something that can be seen, held, and felt — with skill and dedication.">
+            Bergerak di dunia yang nyata dan konkret. Menghasilkan sesuatu yang bisa dilihat, dipegang, dan dirasakan hasilnya — dengan keahlian dan ketekunan.
+          </div>
+        </div>
+        <div class="kel-card k-nalar">
+          <div class="kel-head">
+            <svg class="kel-icon" viewBox="0 0 36 36" fill="none" stroke="var(--nalar)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="15" r="7"/><path d="M18 22v6M14 26h8"/><path d="M15 12l2 2 4-4"/>
+            </svg>
+            <div>
+              <div class="kel-name">Nalar</div>
+              <div class="kel-sub kel-sub-nalar" data-id="Kelompok · Meneliti" data-en="Group · Investigating">Kelompok · Meneliti</div>
+            </div>
+          </div>
+          <div class="kel-desc"
+            data-id="Bergerak dengan rasa ingin tahu yang mendalam. Menganalisis, menyelidiki, dan menemukan jawaban dari pertanyaan yang paling kompleks sekalipun."
+            data-en="Moves with deep curiosity. Analyzes, investigates, and finds answers to even the most complex questions.">
+            Bergerak dengan rasa ingin tahu yang mendalam. Menganalisis, menyelidiki, dan menemukan jawaban dari pertanyaan yang paling kompleks sekalipun.
+          </div>
+        </div>
+        <div class="kel-card k-karya">
+          <div class="kel-head">
+            <svg class="kel-icon" viewBox="0 0 36 36" fill="none" stroke="var(--karya)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 26l4-2 12-12a2.83 2.83 0 00-4-4L8 20l-2 4z"/><path d="M20 10l4 4"/><circle cx="26" cy="10" r="2"/>
+            </svg>
+            <div>
+              <div class="kel-name">Karya</div>
+              <div class="kel-sub kel-sub-karya" data-id="Kelompok · Mencipta" data-en="Group · Creating">Kelompok · Mencipta</div>
+            </div>
+          </div>
+          <div class="kel-desc"
+            data-id="Bergerak melalui ekspresi dan orisinalitas. Menciptakan sesuatu yang bermakna, estetis, dan menggerakkan orang — dalam medium apapun."
+            data-en="Moves through expression and originality. Creates something meaningful, aesthetic, and moving — in any medium.">
+            Bergerak melalui ekspresi dan orisinalitas. Menciptakan sesuatu yang bermakna, estetis, dan menggerakkan orang — dalam medium apapun.
+          </div>
+        </div>
+      </div>
+
+      <!-- 6 Kelompok row 2 -->
+      <div class="kel-grid">
+        <div class="kel-card k-bakti">
+          <div class="kel-head">
+            <svg class="kel-icon" viewBox="0 0 36 36" fill="none" stroke="var(--bakti)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 28s-10-6-10-13a7 7 0 0114 0 7 7 0 0114 0c0 7-10 13-10 13"/><path d="M14 18l3 3 5-5"/>
+            </svg>
+            <div>
+              <div class="kel-name">Bakti</div>
+              <div class="kel-sub kel-sub-bakti" data-id="Kelompok · Melayani" data-en="Group · Serving">Kelompok · Melayani</div>
+            </div>
+          </div>
+          <div class="kel-desc"
+            data-id="Bergerak karena kepedulian pada orang lain. Mendampingi, membimbing, dan mengembangkan seseorang menjadi versi terbaik dirinya."
+            data-en="Moves through care for others. Accompanies, guides, and develops someone into their best self.">
+            Bergerak karena kepedulian pada orang lain. Mendampingi, membimbing, dan mengembangkan seseorang menjadi versi terbaik dirinya.
+          </div>
+        </div>
+        <div class="kel-card k-karsa">
+          <div class="kel-head">
+            <svg class="kel-icon" viewBox="0 0 36 36" fill="none" stroke="var(--karsa)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="18,6 22,15 32,15 24,21 27,30 18,24 9,30 12,21 4,15 14,15"/>
+            </svg>
+            <div>
+              <div class="kel-name">Karsa</div>
+              <div class="kel-sub kel-sub-karsa" data-id="Kelompok · Memimpin" data-en="Group · Leading">Kelompok · Memimpin</div>
+            </div>
+          </div>
+          <div class="kel-desc"
+            data-id="Bergerak untuk mempengaruhi dan menggerakkan. Memimpin orang, mengelola arah, dan memastikan sesuatu yang besar bisa terwujud."
+            data-en="Moves to influence and drive. Leads people, manages direction, and ensures great things come to fruition.">
+            Bergerak untuk mempengaruhi dan menggerakkan. Memimpin orang, mengelola arah, dan memastikan sesuatu yang besar bisa terwujud.
+          </div>
+        </div>
+        <div class="kel-card k-tata">
+          <div class="kel-head">
+            <svg class="kel-icon" viewBox="0 0 36 36" fill="none" stroke="var(--tata)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="8" width="24" height="3" rx="1.5"/><rect x="6" y="16" width="18" height="3" rx="1.5"/><rect x="6" y="24" width="21" height="3" rx="1.5"/>
+            </svg>
+            <div>
+              <div class="kel-name">Tata</div>
+              <div class="kel-sub kel-sub-tata" data-id="Kelompok · Menata" data-en="Group · Organising">Kelompok · Menata</div>
+            </div>
+          </div>
+          <div class="kel-desc"
+            data-id="Bergerak melalui keteraturan dan presisi. Membangun sistem yang membuat segalanya berjalan dengan andal, tertib, dan konsisten."
+            data-en="Moves through order and precision. Builds systems that make everything run reliably, neatly, and consistently.">
+            Bergerak melalui keteraturan dan presisi. Membangun sistem yang membuat segalanya berjalan dengan andal, tertib, dan konsisten.
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Watak -->
+      <div class="watak-wrap">
+        <div class="watak-label" data-id="4 Watak" data-en="4 Character Types">4 Watak</div>
+        <div class="watak-grid">
+          <div class="watak-card">
+            <div class="watak-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="var(--amber)" stroke-width="1.7" stroke-linecap="round">
+                <circle cx="13" cy="10" r="5"/>
+                <line x1="13" y1="3" x2="13" y2="1"/><line x1="19" y1="5" x2="20.5" y2="3.5"/>
+                <line x1="7" y1="5" x2="5.5" y2="3.5"/><line x1="21" y1="10" x2="23" y2="10"/><line x1="5" y1="10" x2="3" y2="10"/>
+                <path d="M10 15 Q13 22 16 15"/>
+              </svg>
+            </div>
+            <div class="watak-name">Reka</div>
+            <span class="watak-tagline" data-id="Penerang Makna" data-en="Meaning Illuminator">Penerang Makna</span>
+            <div class="watak-desc" data-id="Bergerak berdasarkan nilai dan visi. Melihat potensi di mana orang lain melihat keterbatasan." data-en="Moves based on values and vision. Sees potential where others see limitation.">Bergerak berdasarkan nilai dan visi. Melihat potensi di mana orang lain melihat keterbatasan.</div>
+          </div>
+          <div class="watak-card">
+            <div class="watak-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="var(--nalar)" stroke-width="1.7" stroke-linecap="round">
+                <circle cx="13" cy="13" r="4"/>
+                <path d="M13 3v3M13 20v3M3 13h3M20 13h3M5.5 5.5l2.1 2.1M18.4 18.4l2.1 2.1M20.5 5.5l-2.1 2.1M7.6 18.4l-2.1 2.1"/>
+              </svg>
+            </div>
+            <div class="watak-name">Logika</div>
+            <span class="watak-tagline" data-id="Pemikir Sistem" data-en="Systems Thinker">Pemikir Sistem</span>
+            <div class="watak-desc" data-id="Bergerak berdasarkan sistem dan analisis. Efisien, strategis, dan selalu mencari cara yang lebih baik." data-en="Moves based on systems and analysis. Efficient, strategic, and always seeking a better way.">Bergerak berdasarkan sistem dan analisis. Efisien, strategis, dan selalu mencari cara yang lebih baik.</div>
+          </div>
+          <div class="watak-card">
+            <div class="watak-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="var(--bakti)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 3L21 7v7c0 4.5-3.5 8-8 9-4.5-1-8-4.5-8-9V7z"/><path d="M9 13l3 3 5-5"/>
+              </svg>
+            </div>
+            <div class="watak-name">Jaga</div>
+            <span class="watak-tagline" data-id="Penjaga Keandalan" data-en="Reliability Guardian">Penjaga Keandalan</span>
+            <div class="watak-desc" data-id="Bergerak berdasarkan tanggung jawab dan kepastian. Andal, konsisten, dan bisa dipercaya." data-en="Moves based on responsibility and certainty. Reliable, consistent, and trustworthy.">Bergerak berdasarkan tanggung jawab dan kepastian. Andal, konsisten, dan bisa dipercaya.</div>
+          </div>
+          <div class="watak-card">
+            <div class="watak-icon">
+              <svg width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="var(--karsa)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3l-5 10h4l-3 10 9-12h-5z"/>
+              </svg>
+            </div>
+            <div class="watak-name">Guna</div>
+            <span class="watak-tagline" data-id="Penggerak Nyata" data-en="Real-World Mover">Penggerak Nyata</span>
+            <div class="watak-desc" data-id="Bergerak berdasarkan situasi dan tindakan nyata. Adaptif, spontan, dan langsung ke inti masalah." data-en="Moves based on real situations and action. Adaptive, spontaneous, and straight to the core.">Bergerak berdasarkan situasi dan tindakan nyata. Adaptif, spontan, dan langsung ke inti masalah.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Nuance block -->
+      <div class="nuance-block">
+        <div>
+          <div class="nuance-text">
+            <span data-id="Setiap Paraga memiliki " data-en="Every Paraga has ">Setiap Paraga memiliki </span>
+            <em data-id="Nuansa Kelompok" data-en="Group Nuance">Nuansa Kelompok</em>
+            <span data-id=" dan " data-en=" and "> dan </span>
+            <em data-id="Nuansa Watak" data-en="Character Nuance">Nuansa Watak</em>
+            <span data-id=" yang membuatnya benar-benar unik — bukan hanya satu dari 24." data-en=" that make it truly unique — not just one of 24."> yang membuatnya benar-benar unik — bukan hanya satu dari 24.</span>
+          </div>
+          <div class="nuance-sub" data-id="Kombinasi nuansa menghasilkan ratusan variasi yang personal untukmu." data-en="Nuance combinations produce hundreds of variations that are personal to you.">Kombinasi nuansa menghasilkan ratusan variasi yang personal untukmu.</div>
+        </div>
+        <div class="nuance-stat">
+          <div class="nuance-stat-num">960+</div>
+          <div class="nuance-stat-lbl" data-id="variasi unik" data-en="unique variations">variasi unik</div>
+        </div>
+      </div>
+    </div>
+
+    <svg style="display:block;width:100%;background:var(--linen);margin-top:5rem;margin-bottom:-1px" viewBox="0 0 1440 70" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0 35 C360 0 1080 70 1440 35 L1440 70 L0 70 Z" fill="#4A7C6B"/>
+    </svg>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-section">
+    <h2 class="cta-h">
+      <span data-id="Kenali " data-en="Discover your ">Kenali </span>
+      <em>Lakon</em>
+      <span data-id=" –mu sekarang" data-en=" now"> –mu sekarang</span>
+    </h2>
+    <button class="cta-btn" onclick="goToAssessment()">
+      <span data-id="Mulai Test" data-en="Take the Test">Mulai Test</span>
+      <span class="cta-btn-arrow">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 7h10M8 3l4 4-4 4"/>
+        </svg>
+      </span>
+    </button>
+    <span class="cta-note" data-id="Gratis · ~18 menit · 24 Paraga" data-en="Free · ~18 minutes · 24 Profiles">Gratis · ~18 menit · 24 Paraga</span>
+    <p class="cta-pricing-note"
+      data-id="Hasil dasar dan profil Paraga-mu gratis selamanya. Laporan lengkap tersedia berbayar, dan kamu bisa memutuskan setelah melihat hasilnya."
+      data-en="Your baseline result and Paraga profile are free forever. A full report is available paid, and you decide only after seeing your result.">
+      Hasil dasar dan profil Paraga-mu gratis selamanya. Laporan lengkap tersedia berbayar, dan kamu bisa memutuskan setelah melihat hasilnya.
+    </p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <span>© 2026 Mitologi Inspira</span>
+    <a href="mailto:sales@mitologiinspira.com">sales@mitologiinspira.com</a>
+  </footer>
+
+</div><!-- /screen-landing --><div id="screen-assessment" class="screen">
+
+  <nav class="nav">
+    <div class="nav-logo">Lakon<em>™</em></div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn on" onclick="setLang('id')">ID</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="progress-bar">
+    <div class="progress-fill" id="prog-fill"></div>
+  </div>
+  <div class="progress-meta">
+    <span id="prog-section-label"></span>
+    <strong id="prog-pct">0%</strong>
+  </div>
+
+  <!-- Soal disuntikkan oleh lakon_assessment.js -->
+  <div id="q-mount"></div>
+
+  <div class="q-nav">
+    <div class="q-nav-inner">
+      <button class="btn-back" id="btn-back" onclick="prevPage()" disabled>
+        ← <span data-id="Kembali" data-en="Back">Kembali</span>
+      </button>
+      <button class="btn-fwd" id="btn-fwd" onclick="nextPage()">
+        <span id="btn-fwd-lbl" data-id="Lanjut" data-en="Next">Lanjut</span> →
+      </button>
+    </div>
+  </div>
+
+</div><!-- /screen-assessment -->
+
+<!-- ═══════════════════════════════════════════════════
+     SCREEN 3 — RESULT
+     Seluruh isi diisi app.js + LakonReport. Jangan menulis
+     teks laporan di sini; tempatnya di berkas isi lapis.
+═══════════════════════════════════════════════════ -->
+<div id="screen-result" class="screen">
+
+  <nav class="nav no-print">
+    <div class="nav-logo">Lakon<em>™</em></div>
+    <div class="nav-right">
+      <div class="lang-toggle">
+        <button class="lang-btn on" onclick="setLang('id')">ID</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <button class="nav-cta nav-cta-ghost" onclick="cetakHasil()"
+        data-id="Simpan PDF" data-en="Save PDF">Simpan PDF</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="result-hero">
+    <div class="result-hero-inner">
+      <div class="result-illus">
+        <div style="font-size:32px;opacity:.15">✦</div>
+        <!-- Ilustrasi 24 Paraga masih placeholder. Lihat butir M-12. -->
+        <div class="result-illus-placeholder" data-id="Ilustrasi Paraga" data-en="Paraga Illustration">Ilustrasi Paraga</div>
+      </div>
       <div>
-        <p class="mata">Metodologi</p>
-        <h2 class="judul">Kenapa hasilnya bisa dipercaya.</h2>
-      </div>
-      <a class="tautan-garis" href="#faq">Baca yang sering ditanyakan</a>
-    </div>
-
-    <div class="kisi kisi--2 jarak-atas">
-      <article class="kartu kartu--garis metode">
-        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><rect x="3" y="7" width="12" height="20" rx="3" stroke="currentColor" stroke-width="1.7"/><rect x="19" y="7" width="12" height="20" rx="3" stroke="currentColor" stroke-width="1.7"/><path d="M15 17h4" stroke="currentColor" stroke-width="1.7"/></svg>
-        <div>
-          <h3>Pilihan berpasangan, bukan skala setuju</h3>
-          <p>Menjawab “sangat setuju” untuk semua pernyataan positif adalah masalah nyata di tes kepribadian. Formatnya kami ubah supaya kamu harus memilih, bukan menyetujui.</p>
-        </div>
-      </article>
-      <article class="kartu kartu--garis metode">
-        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M4 28v-8m8 8V12m8 16V16m8 12V6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
-        <div>
-          <h3>Skor normatif, bukan sekadar peringkat</h3>
-          <p>Skor 0 sampai 100 per dimensi, dengan koreksi kecenderungan menjawab, supaya hasilmu bisa dibandingkan secara wajar.</p>
-        </div>
-      </article>
-      <article class="kartu kartu--garis metode">
-        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><circle cx="17" cy="17" r="13" stroke="currentColor" stroke-width="1.7"/><path d="M17 10v8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="23" r="1.5" fill="currentColor"/></svg>
-        <div>
-          <h3>Kalau hasilmu tidak tegas, kami bilang tidak tegas</h3>
-          <p>Ada zona kejelasan. Skor yang berdekatan ditandai sebagai samar, bukan dipaksakan menjadi satu label.</p>
-        </div>
-      </article>
-      <article class="kartu kartu--sage metode metode--sage">
-        <svg viewBox="0 0 34 34" fill="none" aria-hidden="true"><path d="M17 4v26M6 12h22M8 12l-4 9a5 5 0 0 0 10 0l-4-9m18 0-4 9a5 5 0 0 0 10 0l-4-9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        <div>
-          <h3>Semua Paraga ditulis dengan bobot setara</h3>
-          <p>Tidak ada tipe yang digambarkan lebih langka atau lebih layak memimpin. Itu keputusan desain, bukan kebetulan.</p>
-        </div>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     08 · MOMEN TIPOGRAFI
-     ════════════════════════════════════════════════════════ -->
-<section class="momen">
-  <svg class="momen__hias momen__hias--kiri" viewBox="0 0 220 220" fill="none" aria-hidden="true"><circle cx="110" cy="110" r="109" stroke="#DFE6D6" stroke-width="1.4"/><circle cx="110" cy="110" r="72" stroke="#DFE6D6" stroke-width="1.4"/><circle cx="110" cy="110" r="36" stroke="#DFE6D6" stroke-width="1.4"/></svg>
-  <svg class="momen__hias momen__hias--kanan" viewBox="0 0 180 180" fill="none" aria-hidden="true"><path d="M90 4 165 47v86L90 176 15 133V47L90 4Z" stroke="#F7E2D5" stroke-width="1.4"/></svg>
-  <p class="momen__tulis">Lakon</p>
-  <p class="momen__kalimat">Lakon berarti peran yang dimainkan. Pertanyaannya bukan kamu orang seperti apa, tapi peran apa yang membuatmu hidup.</p>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     09 · TESTIMONI
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian" id="testimoni">
-  <div class="wadah">
-    <p class="mata">Kata Mereka</p>
-    <h2 class="judul judul--lebar">Bukan “akurat banget”. Tapi keputusan yang akhirnya diambil.</h2>
-
-    <div class="kisi kisi--3 jarak-atas">
-      <!-- GANTI: kutipan asli, nama, konteks -->
-      <figure class="testi">
-        <svg class="testi__kutip" viewBox="0 0 28 22" fill="none" aria-hidden="true"><path d="M0 22V12C0 5 4 1 11 0v4C7 5 5 7 5 11h6v11H0Zm17 0V12c0-7 4-11 11-12v4c-4 1-6 3-6 7h6v11H17Z" fill="currentColor"/></svg>
-        <blockquote>[TESTIMONI SISWA — ganti dengan kutipan asli. Bentuk yang dicari: keputusan konkret yang berubah setelah membaca bagian Peran Ideal.]</blockquote>
-        <hr class="garis">
-        <figcaption>
-          <span class="avatar avatar--blush">A</span>
-          <span><b>[Nama]</b><small>Siswa kelas 12 · [Kota]</small></span>
-        </figcaption>
-      </figure>
-
-      <figure class="testi">
-        <svg class="testi__kutip" viewBox="0 0 28 22" fill="none" aria-hidden="true"><path d="M0 22V12C0 5 4 1 11 0v4C7 5 5 7 5 11h6v11H0Zm17 0V12c0-7 4-11 11-12v4c-4 1-6 3-6 7h6v11H17Z" fill="currentColor"/></svg>
-        <blockquote>[TESTIMONI PROFESIONAL PINDAH JALUR — ganti dengan kutipan asli. Bentuk yang dicari: apa yang akhirnya ia lakukan berbeda di tempat kerjanya.]</blockquote>
-        <hr class="garis">
-        <figcaption>
-          <span class="avatar avatar--sage">B</span>
-          <span><b>[Nama]</b><small>[Jabatan] · [Perusahaan]</small></span>
-        </figcaption>
-      </figure>
-
-      <figure class="testi">
-        <svg class="testi__kutip" viewBox="0 0 28 22" fill="none" aria-hidden="true"><path d="M0 22V12C0 5 4 1 11 0v4C7 5 5 7 5 11h6v11H0Zm17 0V12c0-7 4-11 11-12v4c-4 1-6 3-6 7h6v11H17Z" fill="currentColor"/></svg>
-        <blockquote>[TESTIMONI GURU BK / HR — ganti dengan kutipan asli. Bentuk yang dicari: bagaimana laporannya dipakai dalam percakapan dengan siswa atau tim.]</blockquote>
-        <hr class="garis">
-        <figcaption>
-          <span class="avatar avatar--kabut">C</span>
-          <span><b>[Nama]</b><small>[Peran] · [Institusi]</small></span>
-        </figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     10 · HARGA
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian bagian--terang" id="harga">
-  <div class="wadah">
-    <div class="tengah">
-      <p class="mata">Harga</p>
-      <h2 class="judul judul--lebar">Profil dasar gratis. Laporan lengkap sekali bayar.</h2>
-    </div>
-
-    <div class="kisi kisi--3 harga jarak-atas">
-
-      <article class="paket">
-        <h3>Profil Dasar</h3>
-        <p class="paket__harga"><span class="paket__angka">Gratis</span></p>
-        <hr class="garis">
-        <ul class="daftar">
-          <li>Paraga-mu dan arketipenya</li>
-          <li>Profil narasi</li>
-          <li>Kekuatan utama</li>
-          <li>4 Dimensi personal</li>
-          <li>Heksagon minat kerja</li>
-        </ul>
-        <a class="tbl tbl--garis tbl--penuh" href="/tes/">Mulai Tes</a>
-      </article>
-
-      <article class="paket paket--gelap">
-        <span class="lencana lencana--puncak">PALING DIPILIH</span>
-        <h3>Laporan Lengkap</h3>
-        <!-- GANTI: harga final -->
-        <p class="paket__harga"><span class="paket__rp">Rp</span><span class="paket__angka">[199.000]</span></p>
-        <hr class="garis garis--gelap">
-        <ul class="daftar">
-          <li>Semua yang ada di Profil Dasar</li>
-          <li>Nuansa: minat tertinggi keduamu</li>
-          <li>Tabel 8 Peran Ideal + alasannya</li>
-          <li>Jurusan yang sejalan</li>
-          <li>Menumbuhkan &amp; Melayukan</li>
-          <li>PDF lengkap siap cetak</li>
-        </ul>
-        <a class="tbl tbl--utama tbl--penuh" href="/tes/">Ambil Laporan Lengkap</a>
-      </article>
-
-      <article class="paket paket--sage">
-        <h3>Laporan + Konsultasi</h3>
-        <p class="paket__harga"><span class="paket__rp">Rp</span><span class="paket__angka">599.000</span></p>
-        <hr class="garis garis--sage">
-        <ul class="daftar">
-          <li>Semua isi Laporan Lengkap</li>
-          <li>Sesi 60 menit dengan praktisi tersertifikasi</li>
-          <li>Menerjemahkan hasil jadi langkah nyata</li>
-          <li>Ringkasan tindak lanjut setelah sesi</li>
-        </ul>
-        <a class="tbl tbl--sage tbl--penuh" href="https://wa.me/6282126373601">Jadwalkan Sesi</a>
-      </article>
-
-    </div>
-
-    <p class="catatan-tengah">Bayar sekali. Tanpa langganan, tanpa perpanjangan otomatis, tanpa biaya tersembunyi.</p>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     11 · INSTITUSI
-     ════════════════════════════════════════════════════════ -->
-<section class="institusi" id="institusi">
-  <div class="wadah">
-    <div class="kepala">
-      <div>
-        <p class="mata mata--kabut">Untuk Institusi</p>
-        <h2 class="judul">Untuk sekolah dan perusahaan.</h2>
-      </div>
-      <div class="institusi__aksi">
-        <a class="tbl tbl--gelap" href="https://wa.me/6282126373601?text=Halo%20Lakon%2C%20saya%20ingin%20menjadwalkan%20demo%20Lakon%20untuk%20institusi%20saya." target="_blank" rel="noopener">Jadwalkan Demo</a>
-        <a class="tbl tbl--garis-gelap" href="https://wa.me/6282126373601">WhatsApp</a>
+        <div class="result-eyebrow" data-id="Paraga-mu" data-en="Your Paraga">Paraga-mu</div>
+        <div class="result-name" id="r-name">—</div>
+        <div class="result-sub" id="r-sub">—</div>
+        <div class="result-tags" id="r-tags"></div>
+        <div class="good-fit-wrap" id="r-good-fit"></div>
       </div>
     </div>
-
-    <div class="kisi kisi--2 jarak-atas">
-      <article class="kartu kartu--putih">
-        <h3 class="sumbu__judul">Untuk sekolah</h3>
-        <p>Pemetaan minat dan peran satu angkatan sekaligus. Guru BK mendapat laporan per siswa dan gambaran distribusi kelas, untuk percakapan penjurusan yang berbasis data, bukan tebakan.</p>
-      </article>
-      <article class="kartu kartu--putih">
-        <h3 class="sumbu__judul">Untuk perusahaan</h3>
-        <p>Pemetaan peran tim untuk keputusan penempatan, pengembangan, dan komposisi tim. Setiap laporan menunjukkan kontribusi spesifik seseorang, bukan label yang sulit ditindaklanjuti.</p>
-      </article>
-    </div>
   </div>
 
-    <!-- Penangkap lead institusi (sekolah/perusahaan) — Lapis, 18 Sep 2026 -->
-    <form class="lf" id="form-institusi" novalidate>
-      <h3 class="lf__judul">Minta penawaran untuk sekolah atau perusahaan</h3>
-      <p class="lf__catatan">Isi tiga kolom pertama, tim kami menghubungi lewat WhatsApp. Atau langsung
-        <a href="https://wa.me/6282126373601?text=Halo%20Lakon%2C%20saya%20mau%20tanya%20penawaran%20untuk%20institusi." target="_blank" rel="noopener">chat WhatsApp</a>.</p>
-      <div class="lf__kisi">
-        <div>
-          <label for="lf-nama">Nama Anda *</label>
-          <input id="lf-nama" name="nama" type="text" autocomplete="name" required>
+  <div class="result-body">
+
+    <!-- GRATIS 1–2 · Pertemuan Identitasmu + Kekuatan Utamamu -->
+    <div id="rb-atas"></div>
+
+    <!-- GRATIS 3 · Profil Minatmu
+         Ditempatkan SETELAH narasi, bukan sebelum. -->
+    <div class="result-graph" id="r-kelompok-graph"></div>
+
+    <!-- GRATIS 4 · Empat Sumbu + dua kandidat Watak -->
+    <div id="rb-dimensi"></div>
+
+    <!-- GRATIS 5–6 · Situasi yang Kamu Cari + Yang Terlihat pada Caramu
+         Keduanya sengaja GRATIS: ini alat baca yang bisa langsung dipakai
+         peserta dan paling enak dibagikan. Yang terkunci kedalamannya,
+         bukan alatnya. -->
+    <div id="rb-tengah"></div>
+
+    <!-- GRATIS 7 · Tiga Langkah Berikutnya -->
+    <div class="result-section result-next" id="r-langkah"></div>
+
+    <!-- TERKUNCI · empat blok, yang pertama setengah terbuka -->
+    <div id="rb-terkunci"></div>
+
+  </div><!-- /result-body -->
+  <!-- Upsell -->
+  <div class="upsell-section no-print">
+    <div class="upsell-inner">
+      <h2 class="upsell-h" data-id="Dapatkan gambaran lengkap tentang Lakon-mu." data-en="Get the full picture of your Lakon.">Dapatkan gambaran lengkap tentang Lakon-mu.</h2>
+      <p class="upsell-sub" data-id="Buka laporan penuh atau sesi konsultasi langsung dengan konsultan kami." data-en="Unlock the full report or a live consultation session with our consultants.">Buka laporan penuh atau sesi konsultasi langsung dengan konsultan kami.</p>
+
+      <div class="upsell-grid">
+        <div class="upsell-card">
+          <div class="upsell-card-header">
+            <div class="upsell-card-name">Lakon Career Report™</div>
+            <div class="upsell-card-sub" data-id="Laporan PDF lengkap · Dikirim ke email" data-en="Full PDF report · Delivered to your email">Laporan PDF lengkap · Dikirim ke email</div>
+          </div>
+          <div class="upsell-card-body">
+            <ul class="upsell-features">
+              <li class="upsell-feature" data-id="Arah karir & jalur studi spesifik, termasuk vokasi" data-en="Specific career &amp; study paths, vocational included">Arah karir &amp; jalur studi spesifik, termasuk vokasi</li>
+              <li class="upsell-feature" data-id="Tabel peran ideal lengkap, 8 posisi" data-en="Full ideal-role table, 8 positions">Tabel peran ideal lengkap, 8 posisi</li>
+              <li class="upsell-feature" data-id="Dalam memimpin & dalam bersosialisasi" data-en="In leadership &amp; in social settings">Dalam memimpin &amp; dalam bersosialisasi</li>
+              <li class="upsell-feature" data-id="Titik rawan & area pengembangan" data-en="Blind spots &amp; growth areas">Titik rawan &amp; area pengembangan</li>
+              <li class="upsell-feature" data-id="Enam keterampilan prioritas untuk Paraga-mu" data-en="Six priority skills for your Paraga">Enam keterampilan prioritas untuk Paraga-mu</li>
+            </ul>
+            <!-- HARGA DIKUNCI. Samakan dengan var HARGA.reportPromo di Code.gs. -->
+            <div class="upsell-price">Rp 199.000 <span data-id="/ laporan" data-en="/ report">/ laporan</span></div>
+            <div class="upsell-btn-group">
+              <button class="btn-upsell outline" onclick="handleUpsell('report','email')">
+                <span>✉</span> <span data-id="Email" data-en="Email">Email</span>
+              </button>
+              <button class="btn-upsell outline wa" onclick="handleUpsell('report','wa')">
+                <span>💬</span> <span>WhatsApp</span>
+              </button>
+            </div>
+          </div>
         </div>
-        <div>
-          <label for="lf-institusi">Nama sekolah / perusahaan *</label>
-          <input id="lf-institusi" name="institusi" type="text" autocomplete="organization" required>
-        </div>
-        <div>
-          <label for="lf-wa">Nomor WhatsApp *</label>
-          <input id="lf-wa" name="wa" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx" required>
-        </div>
-        <div>
-          <label for="lf-peserta">Perkiraan jumlah peserta</label>
-          <input id="lf-peserta" name="peserta" type="number" min="1" step="1" placeholder="misal 120">
-        </div>
-        <div>
-          <label for="lf-jenis">Jenis institusi</label>
-          <select id="lf-jenis" name="jenis">
-            <option value="Sekolah / kampus">Sekolah / kampus</option>
-            <option value="Perusahaan">Perusahaan</option>
-            <option value="Komunitas / lainnya">Komunitas / lainnya</option>
-          </select>
-        </div>
-        <div>
-          <label for="lf-minat">Yang dibutuhkan</label>
-          <select id="lf-minat" name="minat">
-            <option value="Belum tahu, minta saran">Belum tahu, minta saran</option>
-            <option value="Seminar / webinar">Seminar / webinar</option>
-            <option value="Laporan asesmen">Laporan asesmen</option>
-            <option value="Coaching">Coaching</option>
-            <option value="Training Synergy">Training Synergy</option>
-          </select>
-        </div>
-        <div class="lf__penuh">
-          <label for="lf-catatan">Catatan (opsional)</label>
-          <input id="lf-catatan" name="catatan" type="text" placeholder="misal: untuk kelas 12, rencana bulan depan">
+
+        <div class="upsell-card featured">
+          <div class="upsell-card-header">
+            <div class="upsell-card-name" data-id="Report + Sesi Konsultasi" data-en="Report + Consultation Session">Report + Sesi Konsultasi</div>
+            <div class="upsell-card-sub" data-id="Paling lengkap · Rekomendasi personal" data-en="Most complete · Personal recommendations">Paling lengkap · Rekomendasi personal</div>
+          </div>
+          <div class="upsell-card-body">
+            <ul class="upsell-features">
+              <li class="upsell-feature" data-id="Semua yang ada di Career Report" data-en="Everything in Career Report">Semua yang ada di Career Report</li>
+              <li class="upsell-feature" data-id="Sesi 60 menit dengan konsultan Lakon" data-en="60-minute session with a Lakon consultant">Sesi 60 menit dengan konsultan Lakon</li>
+              <li class="upsell-feature" data-id="Action plan karir yang dipersonalisasi" data-en="Personalized career action plan">Action plan karir yang dipersonalisasi</li>
+              <li class="upsell-feature" data-id="Follow-up 30 hari via email" data-en="30-day follow-up via email">Follow-up 30 hari via email</li>
+            </ul>
+            <!-- HARGA DIKUNCI. Samakan dengan var HARGA.konsultasi di Code.gs. -->
+            <div class="upsell-price">Rp 599.000 <span data-id="/ paket" data-en="/ package">/ paket</span></div>
+            <div class="upsell-btn-group">
+              <button class="btn-upsell" onclick="handleUpsell('bundle','email')">
+                <span>✉</span> <span data-id="Email" data-en="Email">Email</span>
+              </button>
+              <button class="btn-upsell wa" onclick="handleUpsell('bundle','wa')">
+                <span>💬</span> <span>WhatsApp</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-      <button class="lf__kirim" type="submit">Kirim permintaan</button>
-      <p class="lf__pesan" id="lf-pesan" role="status" aria-live="polite"></p>
-    </form>
-</section>
 
-<!-- ════════════════════════════════════════════════════════
-     12 · FAQ
-     ════════════════════════════════════════════════════════ -->
-<section class="bagian" id="faq">
-  <div class="wadah faq">
-    <div class="faq__kiri">
-      <p class="mata">FAQ</p>
-      <h2 class="judul judul--kecil">Pertanyaan yang sering muncul</h2>
-      <p>Belum terjawab? Kirim pertanyaanmu lewat <a href="https://wa.me/6282126373601">WhatsApp</a>, dijawab langsung oleh tim.</p>
-    </div>
-
-    <div class="faq__kanan">
-      <details open>
-        <summary>Apa bedanya Lakon dengan tes 16 tipe yang gratis di internet?</summary>
-        <p>Tes 16 tipe hanya mengukur cara bergerakmu. Lakon memadukannya dengan minat kerjamu, lalu menerjemahkan keduanya menjadi posisi kerja dan jurusan yang spesifik, bukan berhenti di label.</p>
-      </details>
-      <details>
-        <summary>Apakah tesnya benar-benar gratis?</summary>
-        <p>Ya. Kamu mengerjakan seluruh tes dan langsung melihat Paraga-mu, profil narasi, kekuatan utama, dan 4 Dimensi tanpa membayar apa pun. Yang berbayar hanya laporan lengkapnya.</p>
-      </details>
-      <details>
-        <summary>Apakah hasilnya berubah kalau saya tes lagi tahun depan?</summary>
-        <p>Minat dan cara bergerak cenderung stabil, tapi bukan beku. Perubahan besar biasanya muncul kalau pengalaman kerjamu bergeser jauh. Kalau skormu berada di zona samar, hasil tes ulang memang lebih mungkin berpindah, dan laporanmu akan menandai itu.</p>
-      </details>
-      <details>
-        <summary>Apakah cocok untuk siswa SMA?</summary>
-        <p>Cocok, terutama menjelang penjurusan atau pemilihan program studi. Bagian Jurusan yang Sejalan dirancang khusus untuk percakapan ini bersama orang tua atau guru BK.</p>
-      </details>
-      <details>
-        <summary>Apakah Lakon menentukan saya harus kerja apa?</summary>
-        <p>Tidak, dan memang tidak seharusnya. Tidak ada asesmen yang bisa memutuskan itu untukmu. Lakon menyempitkan ruang pilihan dan menjelaskan alasannya, supaya keputusanmu berbasis pemahaman, bukan tebakan.</p>
-      </details>
-      <details>
-        <summary>Bagaimana data saya disimpan dan digunakan?</summary>
-        <p>Jawabanmu dipakai hanya untuk menghasilkan laporanmu. <!-- GANTI: ringkas kebijakan sebenarnya --> Detailnya ada di <a href="/privasi/">Kebijakan Privasi</a>.</p>
-      </details>
-      <details>
-        <summary>Bagaimana kalau saya merasa hasilnya tidak cocok?</summary>
-        <p>Hubungi kami lewat WhatsApp. <!-- GANTI: kebijakan pengembalian dana yang sebenarnya --></p>
-      </details>
-    </div>
-  </div>
-</section>
-
-<!-- ════════════════════════════════════════════════════════
-     13 · CTA PENUTUP
-     ════════════════════════════════════════════════════════ -->
-<section class="penutup">
-  <svg class="penutup__bukit penutup__bukit--kiri" viewBox="0 0 300 120" fill="none" aria-hidden="true"><path d="M0 120V78c46-20 86-2 132 12 44 13 90-4 140-14 12-2 22-2 28-1v45H0Z" fill="#EFCDBA"/></svg>
-  <svg class="penutup__bukit penutup__bukit--kanan" viewBox="0 0 300 120" fill="none" aria-hidden="true"><path d="M300 120V78c-46-20-86-2-132 12-44 13-90-4-140-14-12-2-22-2-28-1v45h300Z" fill="#EFCDBA"/></svg>
-  <div class="wadah penutup__isi">
-    <h2 class="judul">Lima belas menit sekarang, untuk keputusan yang kamu bawa bertahun-tahun.</h2>
-    <a class="tbl tbl--utama tbl--besar" href="/tes/">
-      Mulai Tes Gratis
-      <svg width="18" height="14" viewBox="0 0 18 14" fill="none" aria-hidden="true"><path d="M1 7h15m0 0-5.5-5.5M16 7l-5.5 5.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-    </a>
-    <p class="penutup__mikro">Tanpa akun, tanpa kartu kredit.</p>
-  </div>
-</section>
-
-</main>
-
-<!-- ════════════════════════════════════════════════════════
-     14 · FOOTER
-     ════════════════════════════════════════════════════════ -->
-<footer class="kaki">
-  <div class="wadah">
-    <div class="kaki__atas">
-      <div class="kaki__brand">
-        <a class="logo logo--terang" href="/">
-          <svg width="26" height="26" viewBox="0 0 30 30" fill="none" aria-hidden="true"><path d="M15 27C15 27 6 22 6 13C6 8 10 4 15 4C20 4 24 8 24 13C24 22 15 27 15 27Z" stroke="currentColor" stroke-width="1.6"/><path d="M15 26V9" stroke="currentColor" stroke-width="1.6"/></svg>
-          <span>Lakon</span>
-        </a>
-        <p>Asesmen profil karier dan peran dari Mitologi Inspira.<br>
-          WhatsApp <a href="https://wa.me/6282126373601">+62 821 2637 3601</a> · <a href="mailto:sales@mitologiinspira.com">sales@mitologiinspira.com</a></p>
+      <div class="upsell-footer">
+        <span data-id="Pertanyaan? " data-en="Questions? ">Pertanyaan? </span>
+        <a href="mailto:sales@mitologiinspira.com">sales@mitologiinspira.com</a>
+        <span class="upsell-footer-sep">·</span>
+        <a href="https://wa.me/6282126373601" target="_blank" rel="noopener">WhatsApp</a>
       </div>
-
-      <nav class="kaki__kisi" aria-label="Navigasi footer">
-        <div>
-          <h2>Produk</h2>
-          <a href="#cara-kerja">Cara Kerja</a>
-          <a href="#paraga">24 Paraga</a>
-          <a href="#harga">Harga</a>
-        </div>
-        <div>
-          <h2>Jelajahi</h2>
-          <a href="#paraga">24 Paraga</a>
-          <a href="#paraga">Empat Watak</a>
-          <a href="#paraga">Jurusan yang sejalan</a>
-        </div>
-        <div>
-          <h2>Institusi</h2>
-          <a href="#institusi">Untuk Sekolah</a>
-          <a href="#institusi">Untuk Perusahaan</a>
-          <a href="https://wa.me/6282126373601?text=Halo%20Lakon%2C%20saya%20ingin%20menjadwalkan%20demo%20Lakon%20untuk%20institusi%20saya." target="_blank" rel="noopener">Jadwalkan Demo</a>
-        </div>
-        <div>
-          <h2>Perusahaan</h2>
-          <a href="https://wa.me/6282126373601?text=Halo%20Lakon%2C%20saya%20mau%20bertanya." target="_blank" rel="noopener">Kontak</a>
-          <a href="/privasi/">Kebijakan Privasi</a>
-          <a href="/syarat/">Syarat &amp; Ketentuan</a>
-        </div>
-      </nav>
-    </div>
-
-    <div class="kaki__bawah">
-      <p>© <span id="tahun">2026</span> Mitologi Inspira · PT Ansarmedia Edukreasi Semesta</p>
-      <p>lakonprofile.com</p>
     </div>
   </div>
-</footer>
 
-<!-- CTA menempel di mobile -->
-<div class="cta-lengket">
-  <a class="tbl tbl--utama tbl--penuh" href="/tes/">Mulai Tes Gratis · ±15 menit</a>
-</div>
 
-<!-- ═══════════ SCHEMA ═══════════ -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://lakonprofile.com/#organisasi",
-      "name": "Lakon",
-      "url": "https://lakonprofile.com/",
-      "parentOrganization": { "@type": "Organization", "name": "Mitologi Inspira", "url": "https://mitologiinspira.com/" },
-      "email": "sales@mitologiinspira.com"
-    },
-    {
-      "@type": "Product",
-      "name": "Lakon Career Profile",
-      "description": "Asesmen profil karier yang memetakan minat kerja dan cara bergerak menjadi satu dari 24 Paraga.",
-      "brand": { "@id": "https://lakonprofile.com/#organisasi" },
-      "offers": [
-        { "@type": "Offer", "name": "Profil Dasar", "price": "0", "priceCurrency": "IDR", "availability": "https://schema.org/InStock" },
-        { "@type": "Offer", "name": "Laporan Lengkap", "price": "199000", "priceCurrency": "IDR", "availability": "https://schema.org/InStock" },
-        { "@type": "Offer", "name": "Laporan + Konsultasi", "price": "599000", "priceCurrency": "IDR", "availability": "https://schema.org/InStock" }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        { "@type": "Question", "name": "Apa bedanya Lakon dengan tes 16 tipe yang gratis di internet?", "acceptedAnswer": { "@type": "Answer", "text": "Tes 16 tipe hanya mengukur cara bergerakmu. Lakon memadukannya dengan minat kerjamu, lalu menerjemahkan keduanya menjadi posisi kerja dan jurusan yang spesifik." } },
-        { "@type": "Question", "name": "Apakah tes Lakon benar-benar gratis?", "acceptedAnswer": { "@type": "Answer", "text": "Ya. Seluruh tes dan profil dasar gratis. Yang berbayar hanya laporan lengkapnya." } },
-        { "@type": "Question", "name": "Apakah Lakon cocok untuk siswa SMA?", "acceptedAnswer": { "@type": "Answer", "text": "Cocok, terutama menjelang penjurusan atau pemilihan program studi." } },
-        { "@type": "Question", "name": "Apakah Lakon menentukan saya harus kerja apa?", "acceptedAnswer": { "@type": "Answer", "text": "Tidak. Lakon menyempitkan ruang pilihan dan menjelaskan alasannya, supaya keputusan berbasis pemahaman." } }
-      ]
-    }
-  ]
+</div><!-- /screen-result -->
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── Pemesanan via email / WhatsApp ─────────────────────────── */
+function handleUpsell(type, channel) {
+  var el = document.getElementById('r-name');
+  var paraga = el ? el.textContent : '';
+  var info = (paraga && paraga !== '—') ? ' Paraga saya: ' + paraga + '.' : '';
+  var subjects = { report: 'Lakon Career Report', bundle: 'Lakon Report + Sesi Konsultasi' };
+  var bodies = {
+    report: 'Halo, saya tertarik untuk membeli Lakon Career Report.' + info,
+    bundle: 'Halo, saya tertarik untuk memesan paket Report + Sesi Konsultasi.' + info
+  };
+  if (channel === 'wa') {
+    window.open('https://wa.me/6282126373601?text=' +
+      encodeURIComponent(bodies[type] || bodies.report), '_blank');
+  } else {
+    window.location.href = 'mailto:sales@mitologiinspira.com?subject=' +
+      encodeURIComponent(subjects[type] || subjects.report) +
+      '&body=' + encodeURIComponent(bodies[type] || bodies.report);
+  }
 }
 </script>
 
-<script>
-(function () {
-  // tahun otomatis
-  var t = document.getElementById('tahun');
-  if (t) { t.textContent = new Date().getFullYear(); }
+<!--
+  ⚠ HALAMAN PESERTA HANYA MEMUAT BERKAS GRATIS.
 
-  // menu mobile
-  var burger = document.querySelector('.burger');
-  var nav = document.getElementById('nav-utama');
-  if (burger && nav) {
-    burger.addEventListener('click', function () {
-      var buka = document.body.classList.toggle('menu-buka');
-      burger.setAttribute('aria-expanded', buka ? 'true' : 'false');
-      burger.setAttribute('aria-label', buka ? 'Tutup menu' : 'Buka menu');
-    });
-    nav.addEventListener('click', function (e) {
-      if (e.target.tagName === 'A') {
-        document.body.classList.remove('menu-buka');
-        burger.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
+  Berkas berbayar (_penuh, lakon_arah, lakon_jurusan, lakon_industri,
+  lakon_peran_penuh) TIDAK dimuat di sini dan tidak boleh ditambahkan.
+  Selama sebuah berkas dimuat halaman ini, isinya bisa diunduh siapa pun
+  lewat namasitus.pages.dev/nama_berkas.js — blur maupun tidak-merender
+  di DOM keduanya tidak menghalangi itu.
 
-  // tandai section aktif di navbar
-  var tautan = Array.prototype.slice.call(document.querySelectorAll('.nav a[href^="#"]'));
-  var target = tautan.map(function (a) { return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
-  if ('IntersectionObserver' in window && target.length) {
-    var io = new IntersectionObserver(function (entri) {
-      entri.forEach(function (e) {
-        if (!e.isIntersecting) { return; }
-        tautan.forEach(function (a) {
-          a.classList.toggle('is-aktif', a.getAttribute('href') === '#' + e.target.id);
-        });
-      });
-    }, { rootMargin: '-45% 0px -50% 0px' });
-    target.forEach(function (s) { io.observe(s); });
-  }
-})();
-</script>
+  Laporan berbayar dirender analyst.html, yang memuat kedua kelompok
+  berkas, lalu dicetak jadi PDF dan dikirim ke pembeli.
 
+  URUTAN MUAT MENENTUKAN.
 
-<script>
-/* Penangkap lead institusi Lakon: tulis baris lead ke Growth OS + cadangan WhatsApp */
-(function () {
-  var ENDPOINT = "https://script.google.com/macros/s/AKfycbxQpjFfsSvnRgYRSXMgF8P7HOfG72XGESC0XCE2B8BalIFRC5bNUm8BlMUQZk4BwuSHBw/exec";
-  var TOKEN = "inspira-growth-2026-xK9f2mQz8Lp";
-  var WA = "https://wa.me/6282126373601?text=";
-  var form = document.getElementById("form-institusi");
-  if (!form) return;
-  var pesan = document.getElementById("lf-pesan");
+  1. lakon_label.js lebih dulu: dibaca lakon_report.js dan app.js.
+  2. Berkas isi (content) sebelum lakon_report.js.
+  3. Ketiga berkas item sebelum lakon_bank.js, karena lakon_bank.js
+     mencari bank lewat referensi identifier langsung. Pada runtime V8
+     Apps Script, var tingkat atas TIDAK terdaftar di globalThis, dan
+     pencarian lewat globalThis akan mengembalikan bank kosong tanpa
+     melempar error.
+  4. app.js terakhir.
+-->
+<script src="/lakon_label.js"></script>
 
-  function tampil(teks, jenis) {
-    pesan.textContent = teks;
-    pesan.className = "lf__pesan tampil lf__pesan--" + jenis;
-  }
+<script src="/lakon_content.js"></script>
+<script src="/lakon_kelompok_gratis.js"></script>
+<script src="/lakon_watak_gratis.js"></script>
+<script src="/lakon_paraga_gratis.js"></script>
 
-  form.addEventListener("submit", function (ev) {
-    ev.preventDefault();
-    var d = {
-      nama: form.nama.value.trim(),
-      institusi: form.institusi.value.trim(),
-      wa: form.wa.value.replace(/\D/g, ""),
-      peserta: form.peserta.value.trim(),
-      jenis: form.jenis.value,
-      minat: form.minat.value,
-      catatan: form.catatan.value.trim()
-    };
-    if (d.nama.length < 2 || d.institusi.length < 2 || d.wa.length < 9) {
-      tampil("Nama, nama institusi, dan nomor WhatsApp wajib diisi dengan benar.", "galat");
-      return;
-    }
-    var tombol = form.querySelector(".lf__kirim");
-    tombol.disabled = true;
-    var jumlah = parseInt(d.peserta, 10);
-    var row = {
-      perusahaan: d.institusi,
-      segmen: "D Baru",
-      industri: d.jenis,
-      pemicu: "Permintaan dari beranda Lakon (" + d.minat + ")",
-      pintuMasuk: "Beranda Lakon (web)",
-      faseUsul: "Mitologi Inspira",
-      kontakBni: d.wa,
-      owner: (!isNaN(jumlah) && jumlah >= 100) ? "Intantia" : "Dinar",
-      status: "Baru",
-      catatan: "nama: " + d.nama + " · wa: " + d.wa + " · institusi: " + d.institusi +
-               " · jenis: " + d.jenis + " · peserta: " + (d.peserta || "-") +
-               " · kebutuhan: " + d.minat + (d.catatan ? " · catatan: " + d.catatan : ""),
-      kunci: "lakon-beranda-" + (d.wa || "tanpa-nomor"),
-      kanal: "Inbound Web",
-      jalur: "Lakon - institusi",
-      skor: ""
-    };
-    try {
-      fetch(ENDPOINT, {
-        method: "POST", mode: "no-cors", keepalive: true,
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ token: TOKEN, action: "addTargets", rows: [row] })
-      });
-    } catch (e) {}
-    tampil("Terima kasih, " + d.nama + ". Permintaan Anda sudah masuk, tim Lakon menghubungi lewat WhatsApp. " +
-           "Kalau ingin lebih cepat, buka WhatsApp di bawah ini.", "sukses");
-    tombol.textContent = "Sudah terkirim";
-    var lanjut = document.createElement("p");
-    lanjut.style.marginTop = "10px";
-    lanjut.innerHTML = '<a class="tbl tbl--garis" target="_blank" rel="noopener" href="/' + WA +
-      encodeURIComponent("Halo Lakon, saya " + d.nama + " dari " + d.institusi + ". Barusan saya mengisi formulir di beranda.") +
-      '">Buka WhatsApp sekarang</a>';
-    pesan.parentNode.insertBefore(lanjut, pesan.nextSibling);
-  });
-})();
-</script>
+<script src="/lakon_items_watak.js"></script>
+<script src="/lakon_items_minat.js"></script>
+<script src="/lakon_items_pick2.js"></script>
+<script src="/lakon_bank.js"></script>
+<script src="/lakon_scoring.js"></script>
+<script src="/lakon_assessment.js"></script>
+
+<script src="/lakon_nuansa.js"></script>
+<script src="/lakon_hexagon.js"></script>
+<script src="/lakon_report.js"></script>
+
+<script src="/lakon_paraga_card_content.js"></script>
+<script src="/lakon_paraga_card.js"></script>
+<script src="/lakon_rating.js"></script>
+
+<script src="/app.js"></script>
+
 </body>
 </html>
