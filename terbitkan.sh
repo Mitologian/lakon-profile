@@ -15,7 +15,7 @@ set -eu
 KELUARAN="dist"
 
 # Berkas halaman gratis. Daftar putih, disengaja eksplisit.
-BERKAS="index.html app.js styles.css
+BERKAS="index.html beranda.css app.js styles.css
 lakon_label.js lakon_content.js lakon_kelompok_gratis.js lakon_watak_gratis.js
 lakon_paraga_gratis.js lakon_items_watak.js lakon_items_minat.js lakon_items_pick2.js
 lakon_bank.js lakon_scoring.js lakon_assessment.js lakon_nuansa.js lakon_hexagon.js
@@ -46,6 +46,17 @@ if [ -d images ]; then
   cp -r images "$KELUARAN/"
   echo "gambar: $(ls -1 images | wc -l) berkas"
 fi
+# Halaman tambahan (subfolder) — tes, privasi, syarat
+for d in tes privasi syarat; do
+  if [ -f "$d/index.html" ]; then
+    mkdir -p "$KELUARAN/$d"
+    cp "$d/index.html" "$KELUARAN/$d/index.html"
+    echo "halaman: /$d/"
+  else
+    echo "GAGAL: halaman tambahan hilang: $d/index.html"
+    exit 1
+  fi
+done
 touch "$KELUARAN/.nojekyll"
 
 # Pemeriksa 1: berkas terlarang tidak boleh ada di keluaran

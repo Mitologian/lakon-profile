@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 296 386" width="296" height="386" role="img" aria-label="Lambang Lakon">
+  <circle cx="148" cy="170" r="128" fill="#F7E2D5"/>
+  <circle cx="148" cy="170" r="146" fill="none" stroke="#9E5029" stroke-opacity=".18" stroke-dasharray="6 10"/>
+  <g transform="translate(148 170) scale(6.4) translate(-15 -15.5)" fill="none" stroke="#9E5029" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 27C15 27 6 22 6 13C6 8 10 4 15 4C20 4 24 8 24 13C24 22 15 27 15 27Z"/>
+    <path d="M15 26V9"/>
+    <path d="M15 15C15 15 11.5 16 10 18.5"/>
+    <path d="M15 19.5C15 19.5 18.5 20.5 20 23"/>
+  </g>
+  <g fill="#9E5029" fill-opacity=".5">
+    <circle cx="52" cy="300" r="4"/><circle cx="244" cy="290" r="3"/>
+    <circle cx="86" cy="336" r="3"/><circle cx="214" cy="332" r="4"/>
+  </g>
+</svg>
