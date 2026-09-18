@@ -319,11 +319,14 @@
   function pasangAlihHasil() {
     var asli = window.showResult;
     window.showResult = function (skor, dariServer) {
+      var simpan = { skor: skor, server: dariServer || null, waktu: Date.now(), nama: '', email: '', perusahaan: '' };
       try {
-        localStorage.setItem('lakon_hasil_v1', JSON.stringify({
-          skor: skor, server: dariServer || null, waktu: Date.now()
-        }));
-      } catch (e) {}
+        var n = $('f-name'), e = $('f-email'), c = $('f-company');
+        if (n) simpan.nama = n.value || '';
+        if (e) simpan.email = e.value || '';
+        if (c) simpan.perusahaan = c.value || '';
+      } catch (err) {}
+      try { localStorage.setItem('lakon_hasil_v1', JSON.stringify(simpan)); } catch (err) {}
       if (skor) { window.location.href = '/hasil/'; return; }
       if (typeof asli === 'function') asli(skor, dariServer);
     };
