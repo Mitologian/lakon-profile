@@ -57,6 +57,17 @@ for d in tes privasi syarat; do
     exit 1
   fi
 done
+# Halaman tambahan (subfolder) — tes, privasi, syarat
+for d in tes privasi syarat; do
+  if [ -f "$d/index.html" ]; then
+    mkdir -p "$KELUARAN/$d"
+    cp "$d/index.html" "$KELUARAN/$d/index.html"
+    echo "halaman: /$d/"
+  else
+    echo "GAGAL: halaman tambahan hilang: $d/index.html"
+    exit 1
+  fi
+done
 touch "$KELUARAN/.nojekyll"
 
 # Pemeriksa 1: berkas terlarang tidak boleh ada di keluaran
