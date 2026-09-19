@@ -204,7 +204,7 @@ a:hover { color: var(--clay-gelap); }
 .tahap li.is-selesai { color: var(--clay); }
 
 /* ─── kartu soal ────────────────────────────────────────── */
-.arena { flex-grow: 1; display: flex; align-items: center; padding-block: 24px; }
+.arena { flex-grow: 1; display: block; padding-block: 24px; }
 .soal {
   width: 100%; background: var(--krem-terang); border: 1px solid var(--garis);
   border-radius: var(--r-besar); padding: 44px 52px 38px;
