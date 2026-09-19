@@ -160,22 +160,51 @@
     return true;
   }
 
-  /* ── 4. Bantuan soal ──────────────────────────────────────────────────── */
-  function pasangBantuan() {
-    var tomb = $('btn-bantuan');
-    if (!tomb) return;
-    var kotak = document.createElement('div');
-    kotak.className = 'bantuan';
-    kotak.id = 'bantuan-soal';
-    kotak.hidden = true;
-    kotak.textContent = 'Tidak ada jawaban benar atau salah. Jawab sesuai kebiasaan kamu yang sebenarnya, ' +
-      'bukan yang menurut kamu seharusnya. Kalau ragu antara dua pilihan, pilih yang lebih sering terjadi.';
-    var mount = $('q-mount');
-    if (mount && mount.parentNode) mount.parentNode.insertBefore(kotak, mount.nextSibling);
-    tomb.addEventListener('click', function () {
-      kotak.hidden = !kotak.hidden;
-      tomb.setAttribute('aria-expanded', kotak.hidden ? 'false' : 'true');
-    });
+  /* ── 4. Penunjuk sisi pada baris pasangan ─────────────────────────────
+     Di ponsel, empat tombol pasangan berubah jadi satu baris empat petak
+     (lihat mesin-soal.css). Tanpa penunjuk, peserta tidak tahu dua petak
+     pertama milik pernyataan pertama. Label diambil dari kalimat pernyataan
+     itu sendiri, dipendekkan paling banyak tiga kata dan 28 huruf, lalu
+     ditandai "…" kalau memang dipotong. Bank butir tidak disentuh.       */
+  function cue(t) {
+    var kata = (t || '').replace(/\s+/g, ' ').trim().split(' ');
+    var utuh = kata.join(' ');
+    if (utuh.length <= 28) return utuh;
+    var ambil = [], i;
+    for (i = 0; i < kata.length && ambil.length < 3; i++) {
+      if (ambil.length && (ambil.join(' ') + ' ' + kata[i]).length > 28) break;
+      ambil.push(kata[i]);
+    }
+    if (!ambil.length) return utuh.slice(0, 26) + '…';
+    var hasil = ambil.join(' ');
+    return (hasil === utuh) ? hasil : hasil + '…';
+  }
+
+  function pasangPenunjukSisi() {
+    var daftar = document.querySelectorAll('#q-mount .pasangan');
+    for (var i = 0; i < daftar.length; i++) {
+      var blok = daftar[i];
+      if (blok.getAttribute('data-cap') === '1') continue;
+      var sisi = blok.querySelectorAll('.ps-sisi');
+      if (sisi.length !== 2) continue;
+      var baris = blok.nextElementSibling;
+      if (!baris || !baris.classList.contains('ps-skala')) continue;
+
+      var teksKiri = sisi[0].textContent || '', teksKanan = sisi[1].textContent || '';
+      var kiri = cue(teksKiri), kanan = cue(teksKanan);
+      if (kiri === kanan) {                     // dua pernyataan berawalan sama
+        kiri = teksKiri.replace(/\s+/g, ' ').trim().split(' ').slice(-2).join(' ');
+        kanan = teksKanan.replace(/\s+/g, ' ').trim().split(' ').slice(-2).join(' ');
+      }
+
+      var cap = document.createElement('div');
+      cap.className = 'ps-cap';
+      var s1 = document.createElement('span'); s1.textContent = '← ' + kiri;
+      var s2 = document.createElement('span'); s2.textContent = kanan + ' →';
+      cap.appendChild(s1); cap.appendChild(s2);
+      baris.parentNode.insertBefore(cap, baris);
+      blok.setAttribute('data-cap', '1');
+    }
   }
 
   /* ── 6. Mode ringkas (lima soal sekaligus) ────────────────────────────── */
@@ -282,6 +311,7 @@
     if (mount && window.MutationObserver) {
       new MutationObserver(function () {
         salinKemajuan();
+        pasangPenunjukSisi();
         if (!mungkinJeda()) salinKemajuan();
       }).observe(mount, { childList: true });
     }
@@ -312,7 +342,6 @@
       if (b !== lanjut) b.addEventListener('click', keSoal);
     });
 
-    pasangBantuan();
     pasangModeRingkas();
     pasangPintasan();
     pasangTautanLanjut();
