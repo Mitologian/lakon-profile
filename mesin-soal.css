@@ -50,45 +50,52 @@
 @media (min-width: 720px) { .skala5 { grid-template-columns: repeat(5, minmax(0, 1fr)); } .sk-btn { flex-direction: column; align-items: flex-start; gap: 10px; font-size: 15px; } }
 
 /* ── Format B · pasangan: dua pernyataan + empat titik kecenderungan ──────
-   Kisi pernyataan dan kisi pilihannya WAJIB memakai gap yang sama supaya tepi
-   tiap pasangan pilihan jatuh persis di bawah tepi kotak pernyataannya:
-   lebar kotak = W/2 - gap/2, lebar dua pilihan = W/2 - gap/2.
-   Kotak pernyataan cuma dibaca (tanpa titik, tanpa hover); pilihannya
-   berbentuk tombol dengan titik radio dan reaksi hover supaya jelas yang mana
-   yang bisa ditekan. Panah di ujung luar baris pilihan menunjukkan arah
-   kutubnya: kiri untuk pernyataan pertama, kanan untuk pernyataan kedua.   */
+   Keempat pilihan berada dalam SATU kotak bersambung yang dipisah garis,
+   bukan empat kotak terpisah. Bentuk bersambung inilah yang membuat arah
+   terbaca sebagai satu sumbu: ujung kiri paling kuat ke kiri, ujung kanan
+   paling kuat ke kanan. Empat kotak terpisah terbaca sebagai daftar pilihan
+   biasa, bukan arah.
+   Dua pilihan kiri duduk di bawah kotak pernyataan kiri dan dua pilihan
+   kanan di bawah kotak kanan: kisi empat kolom sama lebar membagi dua tepat
+   di tengah jarak antar kotak pernyataan.
+   Panah di dalam kotak pernyataan menunjuk arah kutubnya masing-masing.
+   Urutan pilihan wajib Jelas · Condong · Condong · Jelas: luar = nilai 2,
+   dalam = 1, jadi makin ke ujung makin kuat.                              */
 .pasangan { display: grid; gap: 10px; }
 @media (min-width: 720px) { .pasangan { grid-template-columns: 1fr 1fr; } }
 .ps-sisi {
+  position: relative;
   background: var(--krem-terang); border: 2px solid var(--garis); border-radius: 16px;
   padding: 22px; font: 400 17px/1.5 var(--sans); color: var(--tinta);
   min-height: 96px; display: flex; align-items: center;
 }
-.ps-skala { position: relative; display: grid; gap: 10px; margin-top: 14px; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-.ps-skala::before, .ps-skala::after {
+.ps-kiri { padding-left: 42px; }
+.ps-kanan { padding-right: 42px; }
+.ps-kiri::before, .ps-kanan::after {
   position: absolute; top: 50%; transform: translateY(-50%);
-  color: var(--clay); font: 700 16px/1 var(--sans);
+  color: var(--clay); font: 700 18px/1 var(--sans);
 }
-.ps-skala::before { content: "\2190"; left: -20px; }
-.ps-skala::after { content: "\2192"; right: -20px; }
+.ps-kiri::before { content: "\2190"; left: 16px; }
+.ps-kanan::after { content: "\2192"; right: 16px; }
+.ps-skala {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0; margin-top: 14px; background: #fff;
+  border: 2px solid var(--garis-kuat); border-radius: 14px; overflow: hidden;
+}
 .ps-btn {
-  display: flex; align-items: center; justify-content: center; gap: 9px;
-  width: 100%; text-align: left; min-height: 56px;
-  background: #fff; border: 1.5px solid var(--garis-tebal); border-radius: 12px;
-  padding: 12px 14px; font: 500 15px/1.3 var(--sans); color: var(--tinta);
-  cursor: pointer; transition: background-color .15s ease, border-color .15s ease, transform .1s ease;
+  width: 100%; min-height: 58px; padding: 10px 6px;
+  display: flex; align-items: center; justify-content: center;
+  border: 0; border-radius: 0; background: transparent;
+  font: 500 15px/1.2 var(--sans); color: var(--tinta); cursor: pointer;
+  transition: background-color .15s ease, color .15s ease;
 }
-.ps-btn:hover { border-color: var(--clay); background: var(--clay-muda); }
-.ps-btn:active { transform: translateY(1px); }
-.ps-btn:focus-visible { outline: 3px solid var(--clay); outline-offset: 2px; }
-.ps-btn .ps-dot {
-  width: 16px; height: 16px; flex-shrink: 0; border-radius: 50%;
-  border: 2px solid var(--garis-tebal); background: #fff; transition: all .15s ease;
-}
-.ps-btn:hover .ps-dot { border-color: var(--clay); }
-.ps-btn.ps-kuat .ps-lbl { font-weight: 600; }
-.ps-btn.sel { background: var(--clay); border-color: var(--clay); color: #fff; }
-.ps-btn.sel .ps-dot { border-color: #fff; background: #fff; box-shadow: inset 0 0 0 3px var(--clay); }
+.ps-btn + .ps-btn { border-left: 1px solid var(--garis); }
+.ps-btn:nth-child(3) { border-left: 2px solid var(--garis-tebal); }
+.ps-btn:hover { background: var(--clay-muda); }
+.ps-btn:focus-visible { outline: 3px solid var(--clay); outline-offset: -3px; }
+.ps-btn .ps-dot { display: none; }
+.ps-btn.sel { background: var(--clay); color: #fff; }
+.ps-btn.sel .ps-lbl { font-weight: 600; }
 
 /* ── Format C · pilih dua kegiatan ──────────────────────────────────────── */
 .pick2-grid { display: grid; gap: 12px; }
@@ -166,24 +173,22 @@ body { padding-bottom: 26px; }
 /* daftar tahap di bilah kemajuan: jangan sampai melipat dua baris */
 .tahap li { white-space: nowrap; }
 
-/* ═══ Ponsel: penyesuaian kisi pasangan (dipilih Dedy, 19 Sep 2026) ════════
-   Di bawah 720 px kisi pernyataan dan kisi pilihannya sama seperti desktop,
-   hanya jaraknya dirapatkan. Dua aturan yang harus dijaga:
-   1. gap kisi pernyataan = gap kisi pilihan, kalau tidak tepinya bergeser;
-   2. urutan pilihan tetap Jelas · Condong · Condong · Jelas, luar = nilai 2
-      (jelas), dalam = 1 (condong), jadi makin ke ujung makin kuat.        */
+/* ═══ Ponsel: penyesuaian kisi pasangan (bentuk yang disetujui Dedy) ═══════
+   Bentuk ponsel ini yang berlaku: kotak pernyataan kiri-kanan, panah di dalam
+   kotaknya, lalu satu kotak pilihan bersambung berisi empat petak.
+   Dua aturan yang harus dijaga: urutan petak tetap Jelas · Condong · Condong ·
+   Jelas (luar = nilai 2, dalam = 1), dan jarak kotak pernyataan sama dengan
+   jarak kolom pilihan supaya tepinya bertemu.                            */
 @media (max-width: 719px) {
-  .pasangan { grid-template-columns: 1fr 1fr; gap: 8px; align-items: stretch; }
+  .pasangan { grid-template-columns: 1fr 1fr; gap: 10px; align-items: stretch; }
   .ps-sisi {
-    min-height: 116px; padding: 14px;
+    min-height: 120px; padding: 14px;
     font-size: 15px; line-height: 1.4; border-radius: 14px;
   }
-  .ps-skala { gap: 8px; margin-top: 12px; }
-  .ps-skala::before { left: -11px; }
-  .ps-skala::after { right: -11px; }
-  /* titik radio disembunyikan: sel 82 px tidak cukup, penanda bisa-ditekan
-     diambil alih warna latar, bingkai, dan keadaan terpilih */
-  .ps-btn { min-height: 56px; padding: 10px 6px; font-size: 12.5px; border-radius: 11px; }
-  .ps-btn .ps-dot { display: none; }
+  .ps-kiri { padding-left: 34px; }
+  .ps-kanan { padding-right: 34px; }
+  .ps-kiri::before { left: 11px; }
+  .ps-kanan::after { right: 11px; }
+  .ps-btn { min-height: 58px; padding: 8px 4px; font-size: 13px; }
 }
 
