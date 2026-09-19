@@ -13,10 +13,16 @@
 .screen.active { display: block; }
 
 /* ── Nomor & pertanyaan ─────────────────────────────────────────────────── */
-/* max-width 1180 px: di layar 1280 tepinya jatuh persis di sisi kop, bilah
-   kemajuan, dan tombol navigasi; di layar sangat lebar tetap dibatasi dan
-   dimusatkan supaya kotak pernyataan tidak membentang terlalu jauh. */
-.q-container { max-width: 1180px; margin: 0 auto; }
+/* Kolom soal 860 px dan dimusatkan, seragam untuk ketiga jenis soal (pasangan,
+   skala, pilih dua). Ini mengembalikan maksud desainer aslinya: kolom soal
+   memang diniatkan lebih ramping dari kop. Sebelumnya kolom ini menyusut
+   karena `.arena` memakai display:flex dan tampak rata kiri.                  */
+.q-container { max-width: 860px; margin: 0 auto; }
+/* Baris tombol Sebelumnya/Lanjut mengikuti kolom soal yang sama supaya tidak
+   ada sisi yang kosong sebelah di desktop. Di ponsel tetap selebar layar. */
+@media (min-width: 720px) {
+  .navigasi { max-width: 860px; padding-inline: 0; }
+}
 .q-block + .q-block { margin-top: 40px; padding-top: 34px; border-top: 1px solid var(--garis-halus); }
 .q-num {
   display: inline-flex; align-items: center; justify-content: center;
